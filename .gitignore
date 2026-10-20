@@ -1,0 +1,8 @@
+/build*/
+/.venv/
+/.tools/
+/artifacts/
+/__pycache__/
+*.pyc
+*.log
+/tools/local.json
