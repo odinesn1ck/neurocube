@@ -13,15 +13,17 @@
 
 ## Verification so far
 
-- VERIFIED_IN_SIMULATOR: 467 native checks, including full 32-step sequence, maze victory, Commands completion, pause/navigation, gestures, record corruption recovery and registry extension.
-- VERIFIED_IN_SIMULATOR: 11 Python bridge tests; 600-frame simulator run and Russian menu rendering.
+- VERIFIED_IN_SIMULATOR: 478 native checks, including full 32-step sequence, maze victory, Commands completion, pause/navigation, gestures, record corruption recovery and registry extension.
+- VERIFIED_IN_SIMULATOR: 13 Python bridge/architecture tests; 600-frame simulator run and Russian menu rendering.
 - VERIFIED_ON_HARDWARE: runtime identity, programmatic BOOTSEL, complete factory backup with verification, firmware load/readback verification, runtime hello.
 - VERIFIED_ON_HARDWARE: QMI8658 identity 5 and samples, touch identity 0xB6, no I2C errors in sampled telemetry, framebuffer capture over CDC.
 - NOT_TESTED: visible LCD image, physical touch/button/motion, battery operation.
 
 ## Work in progress
 
-Debug firmware integration testing with synthetic input, Flash persistence across reboot, final release firmware, CI run and PR. Synthetic input is never presented as physical control verification.
+Debug integration passed on the board with synthetic input: all four mode transitions, pause/resume, Sequence and Commands actions, Magic Ball tap/shake, real Flash record persistence across reboot. Synthetic records were removed and verified empty after another reboot. Framebuffer transfer was fixed after an initial timeout and then passed.
+
+PR: https://github.com/odinesn1ck/neurocube/pull/1 (draft, not merged). Final release build and artifact publication are in progress. CI remains blocked by PAT scope. Synthetic input is never presented as physical control verification.
 
 ## Recovery
 

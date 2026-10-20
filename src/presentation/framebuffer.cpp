@@ -36,6 +36,20 @@ void Framebuffer::text(int x, int y, const char *s, uint16_t c, int scale) {
     int origin = x;
     scale = std::clamp(scale, 1, 3);
     while (*s) {
+        if (*s == ' ') {
+            const char *next = s + 1;
+            int length = 0;
+            while (*next && *next != ' ' && *next != '\n') {
+                utf8(next);
+                length++;
+            }
+            if (x + (length + 1) * 8 * scale > Width - 5) {
+                x = origin;
+                y += 18 * scale;
+                ++s;
+                continue;
+            }
+        }
         uint32_t cp = utf8(s);
         if (cp == '\n' || x + 10 * scale > Width - 5) {
             x = origin;
@@ -55,7 +69,7 @@ void Framebuffer::text(int x, int y, const char *s, uint16_t c, int scale) {
             for (int col = 0; col < 10; col++)
                 if (font_rows[g][row] & (1u << (9 - col)))
                     rect(x + col * scale, y + row * scale, scale, scale, c);
-        x += 10 * scale;
+        x += 8 * scale;
     }
 }
 } // namespace nc

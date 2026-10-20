@@ -86,6 +86,7 @@ class Connection:
         self.timeout = timeout
         self.port = None
         self.lock = None
+        self._rx = bytearray()
     def __enter__(self):
         import serial
         self.lock = exclusive(self.serial)
@@ -109,23 +110,17 @@ class Connection:
             self.lock.__exit__(*args)
     def read(self, deadline=None):
         deadline = deadline or time.monotonic() + self.timeout
-        line = bytearray()
         while time.monotonic() < deadline:
-            data = self.port.read(1)
-            if not data:
+            newline=self._rx.find(b'\n')
+            if newline>=0:
+                line=bytes(self._rx[:newline]);del self._rx[:newline+1]
+                try:obj=json.loads(line)
+                except (ValueError,UnicodeDecodeError):continue
+                if isinstance(obj,dict) and obj.get('v')==1:return obj
                 continue
-            if data == b'\n':
-                try:
-                    obj = json.loads(line)
-                except (ValueError, UnicodeDecodeError):
-                    line.clear(); continue
-                if isinstance(obj, dict) and obj.get('v') == 1:
-                    return obj
-                line.clear()
-            else:
-                line.extend(data)
-                if len(line) > 4096:
-                    raise BridgeError('Protocol line exceeds limit')
+            if len(self._rx)>4096:raise BridgeError('Protocol line exceeds limit')
+            waiting=getattr(self.port,'in_waiting',0)
+            self._rx.extend(self.port.read(max(1,min(waiting,4096))))
         raise BridgeError('Timeout: firmware may not support NeuroCube protocol')
     def request(self, command):
         if '\n' in command or '\r' in command:

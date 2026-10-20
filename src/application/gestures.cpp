@@ -2,6 +2,32 @@
 #include <algorithm>
 #include <cmath>
 namespace nc {
+ButtonEvents ButtonRecognizer::update(bool down, float dt) {
+    ButtonEvents events;
+    dt = std::clamp(dt, 0.f, .1f);
+    if (down != previous) {
+        previous = down;
+        debounce = 0;
+    } else
+        debounce += dt;
+    if (debounce >= .03f && down != stable) {
+        stable = down;
+        if (down) {
+            held = 0;
+            long_sent = false;
+        } else if (!long_sent && held >= .03f)
+            events.short_press = true;
+    }
+    if (stable) {
+        held += dt;
+        if (!long_sent && held >= .8f) {
+            events.long_press = true;
+            long_sent = true;
+        }
+    }
+    return events;
+}
+
 Actions GestureRecognizer::update(const InputFrame &i, float dt) {
     dt = std::clamp(dt, 0.f, 0.1f);
     Actions a;

@@ -12,7 +12,7 @@ composition registry ---------> application + games
 ## Слои
 
 - `include/neurocube/domain.hpp`, `src/domain`: InputFrame, Actions, Result, Metadata, Game, Renderer, RecordStore, генератор и формат рекордов.
-- `src/application`: App выполняет роль GameManager и SessionManager, маршрутизирует ввод и навигацию; GestureRecognizer фильтрует IMU, распознаёт наклон, поворот и встряхивание. GameRegistry содержит статический набор игр.
+- `src/application`: App выполняет роль GameManager и SessionManager, маршрутизирует ввод и навигацию; ButtonRecognizer устраняет дребезг и различает короткое/длинное нажатие; GestureRecognizer фильтрует IMU, распознаёт наклон, поворот и встряхивание. GameRegistry содержит статический набор игр.
 - `src/games`: независимые реализации правил. Их единственный внешний эффект — вызов Renderer при render.
 - `src/presentation`: RGB565 framebuffer, геометрия и UTF-8 текст. Русский bitmap-шрифт включён в исходники и не требует файловой системы.
 - `src/infrastructure`: Waveshare HAL, FlashStore, CDC-протокол, firmware entry point и Windows-симулятор.

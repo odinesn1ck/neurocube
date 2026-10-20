@@ -317,6 +317,48 @@ void recovery_and_extension_test() {
     app.next();
     CHECK(app.selected() == 0);
 }
+void button_and_priority_test() {
+    ButtonRecognizer button;
+    for (int n = 0; n < 8; n++) {
+        auto e = button.update(n % 2, .005f);
+        CHECK(!e.short_press && !e.long_press);
+    }
+    for (int n = 0; n < 20; n++)
+        button.update(false, .01f);
+    for (int n = 0; n < 20; n++)
+        button.update(true, .01f);
+    int shorts = 0, longs = 0;
+    for (int n = 0; n < 10; n++) {
+        auto e = button.update(false, .01f);
+        shorts += e.short_press;
+        longs += e.long_press;
+    }
+    CHECK(shorts == 1 && longs == 0);
+    for (int n = 0; n < 150; n++) {
+        auto e = button.update(true, .01f);
+        shorts += e.short_press;
+        longs += e.long_press;
+    }
+    for (int n = 0; n < 10; n++) {
+        auto e = button.update(false, .01f);
+        shorts += e.short_press;
+        longs += e.long_press;
+    }
+    CHECK(shorts == 1 && longs == 1);
+    MemoryStore store;
+    StubGame g1, g2, g3, g4;
+    GameRegistry registry{{&g1, &g2, &g3, &g4}};
+    App app(store, registry);
+    app.launch(0, false);
+    InputFrame frame;
+    frame.imu = true;
+    frame.az = 3;
+    frame.tap = true;
+    frame.x = 30;
+    frame.y = 220;
+    app.update(frame, .02f);
+    CHECK(app.screen() == Screen::Paused && g1.starts == 1);
+}
 int main() {
     records_test();
     app_test();
@@ -325,5 +367,6 @@ int main() {
     framebuffer_test();
     completed_games_test();
     recovery_and_extension_test();
+    button_and_priority_test();
     std::printf("PASS %d checks (portable native tests)\n", checks);
 }

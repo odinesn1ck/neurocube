@@ -1,6 +1,16 @@
 #pragma once
 #include "domain.hpp"
 namespace nc {
+struct ButtonEvents {
+    bool short_press = false, long_press = false;
+};
+class ButtonRecognizer {
+    bool previous = false, stable = false, long_sent = false;
+    float debounce = 0, held = 0;
+
+  public:
+    ButtonEvents update(bool down, float dt);
+};
 class GestureRecognizer {
     float fx = 0, fy = 0, offset_x = 0, offset_y = 0, cooldown = 0, dwell = 0, twist_cooldown = 0;
     int held = -1;

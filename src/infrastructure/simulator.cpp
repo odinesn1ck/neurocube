@@ -38,7 +38,7 @@ static void ppm(const char *path) {
 }
 #ifdef _WIN32
 static InputFrame pending;
-static bool was_click = false;
+
 static uint32_t rgb[240 * 240];
 LRESULT CALLBACK WindowProc(HWND w, UINT msg, WPARAM wp, LPARAM lp) {
     switch (msg) {

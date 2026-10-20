@@ -153,26 +153,12 @@ InputFrame Board::sample() {
         last_tap = now;
     }
     previous_touch = down;
-    bool raw = !gpio_get(KEY);
-    if (raw != previous_key) {
-        key_changed = now;
-        previous_key = raw;
-    }
-    if (now - key_changed > 30000 && raw != key_stable) {
-        key_stable = raw;
-        if (raw) {
-            key_started = now;
-            long_sent = false;
-        } else if (!long_sent && now - key_started >= 30000) {
-            f.short_button = true;
-            status.button_events++;
-        }
-    }
-    if (key_stable && !long_sent && now - key_started >= 800000) {
-        f.long_button = true;
-        long_sent = true;
+    auto key = button.update(!gpio_get(KEY), last_sample ? float(now - last_sample) / 1e6f : 0);
+    last_sample = now;
+    f.short_button = key.short_press;
+    f.long_button = key.long_press;
+    if (key.short_press || key.long_press)
         status.button_events++;
-    }
     return f;
 }
 void Board::present(const Framebuffer &f) {

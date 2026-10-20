@@ -33,9 +33,10 @@ static void status(nc::App &app, const nc::InputFrame &i) {
 static void handle(const char *cmd, nc::App &app, const nc::InputFrame &i) {
     if (!strcmp(cmd, "NC1 hello")) {
         printf("{\"v\":1,\"type\":\"hello\",\"product\":\"NeuroCube\",\"firmware\":\"0.1.0\","
-               "\"serial\":\"%s\",\"capabilities\":[\"status\",\"imu\",\"selftest\","
+               "\"serial\":\"%s\",\"revision\":\"%s\",\"capabilities\":[\"status\",\"imu\","
+               "\"selftest\","
                "\"framebuffer\",\"records\"],\"debug_input\":%s}\n",
-               serial_id,
+               serial_id, NEUROCUBE_REVISION,
 #ifdef NEUROCUBE_DEBUG_INPUT
                "true"
 #else
@@ -65,14 +66,29 @@ static void handle(const char *cmd, nc::App &app, const nc::InputFrame &i) {
         reply("frame_begin", ",\"width\":240,\"height\":240,\"format\":\"rgb565be_hex\"");
         for (int y = 0; y < 240; y++) {
             printf("{\"v\":1,\"type\":\"frame_row\",\"y\":%d,\"data\":\"", y);
-            for (int x = 0; x < 240; x++)
-                printf("%04x", frame.pixels[y * 240 + x]);
+            char row[961];
+            const char *hex = "0123456789abcdef";
+            for (int x = 0; x < 240; x++) {
+                uint16_t pixel = frame.pixels[y * 240 + x];
+                for (int n = 0; n < 4; n++)
+                    row[x * 4 + n] = hex[(pixel >> (12 - 4 * n)) & 15];
+            }
+            row[960] = 0;
+            printf("%s", row);
             printf("\"}\n");
         }
         reply("frame_end");
     }
 #ifdef NEUROCUBE_DEBUG_INPUT
-    else if (!strcmp(cmd, "NC1 debug")) {
+    else if (!strcmp(cmd, "NC1 clear_test_records")) {
+        if (app.screen() != nc::Screen::Menu)
+            reply("error", ",\"error\":\"menu_required\"");
+        else {
+            nc::Records empty;
+            empty.sequence = app.records().sequence + 1;
+            reply(storage.save(empty) ? "test_records_cleared" : "error");
+        }
+    } else if (!strcmp(cmd, "NC1 debug")) {
         if (app.selected() == 0) {
             auto &g = static_cast<nc::SequenceGame &>(app.game());
             printf("{\"v\":1,\"type\":\"debug\",\"cue\":%d,\"playback\":%s}\n", g.cue(),

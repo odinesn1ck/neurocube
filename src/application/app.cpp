@@ -169,7 +169,8 @@ void App::render(Renderer &r) const {
         const char *levels[] = {"Легко", "Обычно", "Сложно"};
         std::snprintf(b, sizeof b, "Уровень: %s", levels[int(difficulty_)]);
         button(r, 8, 48, 224, 36, b);
-        button(r, 8, 94, 224, 36, "Чувствительность");
+        std::snprintf(b, sizeof b, "Чувств.: %.1f", gestures_.sensitivity);
+        button(r, 8, 94, 224, 36, b);
         button(r, 8, 140, 224, 36, "Калибровка");
         button(r, 8, 186, 224, 36, "В меню", Gold);
         return;
