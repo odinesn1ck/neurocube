@@ -3,23 +3,25 @@
 #include "framebuffer.hpp"
 namespace nc {
 struct BoardStatus {
-    bool lcd_sent=false,touch_ok=false,imu_ok=false,storage_ok=true;
-    uint8_t touch_id=0,imu_id=0,imu_addr=0;
-    uint32_t frames=0,touches=0,button_events=0,i2c_errors=0;
+    bool lcd_sent = false, touch_ok = false, imu_ok = false, storage_ok = true;
+    uint8_t touch_id = 0, imu_id = 0, imu_addr = 0;
+    uint32_t frames = 0, touches = 0, button_events = 0, i2c_errors = 0;
 };
 class Board {
-    bool previous_touch=false,previous_key=false,key_stable=false,long_sent=false;
-    uint64_t key_changed=0,key_started=0,last_tap=0;
-    void command(uint8_t);void data(uint8_t);
-public:
+    bool previous_touch = false, previous_key = false, key_stable = false, long_sent = false;
+    uint64_t key_changed = 0, key_started = 0, last_tap = 0;
+    void command(uint8_t);
+    void data(uint8_t);
+
+  public:
     BoardStatus status;
     void init();
     InputFrame sample();
-    void present(const Framebuffer&);
+    void present(const Framebuffer &);
 };
-class FlashStore final:public RecordStore {
-public:
-    bool load(Records&)override;
-    bool save(const Records&)override;
+class FlashStore final : public RecordStore {
+  public:
+    bool load(Records &) override;
+    bool save(const Records &) override;
 };
-}
+} // namespace nc

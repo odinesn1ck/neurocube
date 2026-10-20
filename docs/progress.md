@@ -1,19 +1,32 @@
 # NeuroCube overnight progress
 
-## Authorization and scope
+## Completed implementation
 
-The user approved local tool installation, network access, USB diagnostics, BOOTSEL, resets, replacement firmware, git push and a PR without merging. No battery/charging control, OTP, secure boot or OS security changes.
+- Clean Architecture core, replaceable Renderer and RecordStore; 16-slot static registry and paged menu.
+- Russian 240x240 UI, rules, pause/restart/next/menu, three difficulties and calibration.
+- Sequence, maze and command games; separate Magic Ball mode.
+- Two-sector CRC records journal, recovery from damaged writes, schema version 2 with version 1 reads.
+- Waveshare HAL for LCD, CST816 touch, QMI8658 IMU and GPIO25 button. Battery/charging pins untouched.
+- Hardware Bridge: detect, info, logs, build, flash, selftest, records, screenshot; strict UF2 and USB identity checks.
+- Windows simulator and pinned bootstrap; GitHub Actions workflow prepared in docs/ci/build.yml.
+- BLOCKED_EXTERNAL_PERMISSION: GitHub rejected the workflow upload because the PAT lacks workflow scope. Code publishing continues; CI is not active. Only the unpublished local commit was recreated without the protected workflow path; no remote history was rewritten.
 
-## Current state
+## Verification so far
 
-- Working branch: codex/neurocube-mvp, based on bf470ee.
-- Device reconfirmed: 2E8A:0009, serial 419CB819454EA93D, CDC COM3 (discovered dynamically).
-- Factory CDC read at 115200 produced no output in a three-second window.
-- Official Waveshare source and schematic located; pin verification in progress.
-- Isolated Python environment created; toolchain installation in progress.
-- Portable core and build structure in progress; no firmware written yet.
+- VERIFIED_IN_SIMULATOR: 467 native checks, including full 32-step sequence, maze victory, Commands completion, pause/navigation, gestures, record corruption recovery and registry extension.
+- VERIFIED_IN_SIMULATOR: 11 Python bridge tests; 600-frame simulator run and Russian menu rendering.
+- VERIFIED_ON_HARDWARE: runtime identity, programmatic BOOTSEL, complete factory backup with verification, firmware load/readback verification, runtime hello.
+- VERIFIED_ON_HARDWARE: QMI8658 identity 5 and samples, touch identity 0xB6, no I2C errors in sampled telemetry, framebuffer capture over CDC.
+- NOT_TESTED: visible LCD image, physical touch/button/motion, battery operation.
 
-## Evidence levels
+## Work in progress
 
-VERIFIED_ON_HARDWARE: USB identification and CDC transport opening only.
-NOT_TESTED: display, touch, IMU, gameplay, persistence and battery operation.
+Debug firmware integration testing with synthetic input, Flash persistence across reboot, final release firmware, CI run and PR. Synthetic input is never presented as physical control verification.
+
+## Recovery
+
+Factory backup is outside git in %USERPROFILE%/neurocube-tools/backups/factory-419CB819454EA93D.uf2, SHA256 5871beca6837ba3758b6c0bf6a0408e0e2aa84e53888e290a29d9e67635a7b66. The device serial is checked before and after BOOTSEL. No OTP, secure boot, charging or battery control modifications.
+
+## Remaining human acceptance
+
+Follow docs/morning-checklist.md. Gift acceptance requires real operation of all three games, Magic Ball, records after reboot and battery autonomy; this has not yet been established.

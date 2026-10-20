@@ -1,0 +1,48 @@
+name: Build and test NeuroCube
+on:
+  push:
+    branches: [main, codex/neurocube-mvp]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  windows:
+    runs-on: windows-2022
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install pinned user-local toolchain
+        shell: pwsh
+        run: ./tools/bootstrap.ps1
+      - name: Native tests and simulator
+        shell: pwsh
+        run: |
+          $python = "$env:USERPROFILE/neurocube-tools/venv/Scripts/python.exe"
+          & $python tools/neurocube.py build --native
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          & $python -m unittest discover -s tests -p 'test_*.py' -v
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          ./build-native/neurocube_sim.exe --headless build-native/menu.ppm
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Build RP2350 firmware
+        shell: pwsh
+        run: |
+          & "$env:USERPROFILE/neurocube-tools/venv/Scripts/python.exe" tools/neurocube.py build
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          Get-FileHash build-pico/neurocube.uf2 -Algorithm SHA256 | Format-List | Out-File build-pico/SHA256.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: neurocube-mvp-${{ github.sha }}
+          if-no-files-found: error
+          path: |
+            build-pico/neurocube.uf2
+            build-pico/neurocube.elf
+            build-pico/neurocube.bin
+            build-pico/SHA256.txt
+            build-native/neurocube_sim.exe
+            build-native/core_tests.exe
+            build-native/menu.ppm

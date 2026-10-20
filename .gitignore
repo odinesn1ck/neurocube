@@ -6,3 +6,6 @@
 *.pyc
 *.log
 /tools/local.json
+
+**/__pycache__/
+sim-records.bin
