@@ -1,0 +1,5 @@
+{
+  "passed": true,
+  "uf2_sha256": "d9a35dfd90284e89cfa2a5911045e116ca97e7762cc3e62580d1261f021bea7b",
+  "method": "two independent fresh CMake build directories on the same host and date"
+}

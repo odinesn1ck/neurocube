@@ -19,11 +19,13 @@
 - VERIFIED_ON_HARDWARE: QMI8658 identity 5 and samples, touch identity 0xB6, no I2C errors in sampled telemetry, framebuffer capture over CDC.
 - NOT_TESTED: visible LCD image, physical touch/button/motion, battery operation.
 
-## Work in progress
+## Final delivery
 
 Debug integration passed on the board with synthetic input: all four mode transitions, pause/resume, Sequence and Commands actions, Magic Ball tap/shake, real Flash record persistence across reboot. Synthetic records were removed and verified empty after another reboot. Framebuffer transfer was fixed after an initial timeout and then passed.
 
-PR: https://github.com/odinesn1ck/neurocube/pull/1 (draft, not merged). Final release build and artifact publication are in progress. CI remains blocked by PAT scope. Synthetic input is never presented as physical control verification.
+PR: https://github.com/odinesn1ck/neurocube/pull/1 (draft, not merged). Final production firmware 03dc1b3e3894 is installed, debug input is disabled, electronic selftest passed and records are empty. Two fresh build directories produced identical UF2. Release files are published and their server digests verified: https://github.com/odinesn1ck/neurocube/releases/tag/nightly-2026-10-21. CI remains blocked by PAT scope.
+
+Full report: docs/overnight-results-2026-10-21.md; evidence: docs/evidence/. Synthetic input is never presented as physical control verification.
 
 ## Recovery
 
