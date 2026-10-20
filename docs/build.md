@@ -49,3 +49,5 @@ C++ core и игры одинаковы для native и Pico. Windows executabl
 Выходы: build-pico/neurocube.uf2, .elf, .bin, .elf.map. UF2 перед записью проверяется по magic, family, адресам и полноте блоков; picotool выполняет readback verify. Отдельная debug-сборка: `build --debug`, каталог build-pico-debug. Она разрешает синтетический ввод и не предназначена для подарочного использования. Обычная сборка этот ввод не принимает.
 
 Workflow подготовлен в docs/ci/build.yml, но не включён: GitHub отклонил push в .github/workflows из-за отсутствующего scope workflow у PAT. После расширения прав перенесите YAML в .github/workflows/build.yml. Готовые UF2, ELF, BIN и Windows-симулятор будут опубликованы файлами предварительного релиза. Двоичные сборки не коммитятся в git. Для локальной диагностики используйте tools/neurocube.py; CLI не поддерживает сборку на Linux, хотя переносимый core собирается обычным CMake и на Linux.
+
+Bridge выполняет configure с --fresh: это исключает остаточные compiler flags от прерванного первоначального configure. Независимая проверка сравнивает UF2 из двух build-каталогов при одном коммите и дате сборки.

@@ -186,7 +186,7 @@ def build(native=False,debug=False):
     env=tool_environment()
     cmake=TOOLS/'venv/Scripts/cmake.exe'
     out=ROOT/('build-native' if native else 'build-pico-debug' if debug else 'build-pico')
-    args=[cmake,'-S',ROOT,'-B',out,'-G','Ninja','-DCMAKE_BUILD_TYPE=Debug' if native else '-DCMAKE_BUILD_TYPE=Release']
+    args=[cmake,'--fresh','-S',ROOT,'-B',out,'-G','Ninja','-DCMAKE_BUILD_TYPE=Debug' if native else '-DCMAKE_BUILD_TYPE=Release']
     if native:
         bins=list((TOOLS/'llvm').glob('*/bin'))
         if not bins:raise BridgeError('LLVM-MinGW missing')
