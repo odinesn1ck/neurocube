@@ -11,11 +11,12 @@
   "default_game_sound_enabled": true,
   "lifecycle_sounds_ignore_mute": true,
   "physical_audio": "user accepted uop and error via RAM-only production HAL probes",
-  "firmware_flash": "NOT_TESTED: final rc2 not installed",
+  "firmware_flash": "VERIFIED_ON_HARDWARE: picotool load -v; exact serial 419CB819454EA93D; records and legacy settings preserved",
   "settings_hardware_reload": "NOT_TESTED",
   "ci": "https://github.com/odinesn1ck/neurocube/actions/runs/39653515960",
-  "ci_conclusion": "in_progress",
+  "ci_conclusion": "success",
   "sha256": "85c61caa46d8f084313d3ad7ac29c3aa4b9c6332e7abc9fe170e75835939272f",
   "blocks": 1018,
-  "size": 521216
+  "size": 521216,
+  "greeting_audio_telemetry": "played=1, faults=0; listening assessment pending"
 }
