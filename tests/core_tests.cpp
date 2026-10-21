@@ -478,6 +478,23 @@ void polish_test() {
     counter.update(false, .15f);
     counter.update(true, .02f);
     CHECK(counter.count() == 2);
+    for (int limit_index : {0, 1}) {
+        MazeGame maze;
+        maze.configure({0, uint8_t(limit_index), 0});
+        maze.start(Difficulty::Easy, 1);
+        for (int collision = 1; collision <= 4; collision++) {
+            Actions left;
+            left.tilt_x = -1;
+            for (int n = 0; n < 350; n++)
+                maze.update(left, .02f);
+            CHECK(maze.contacts() == collision);
+            CHECK(maze.result().finished == (limit_index == 1 && collision == 4));
+            Actions away;
+            away.tilt_x = 1;
+            for (int n = 0; n < 20; n++)
+                maze.update(away, .02f);
+        }
+    }
     MagicBall ball;
     ball.start(Difficulty::Easy, 987);
     Actions ask;

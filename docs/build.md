@@ -32,6 +32,7 @@ $python = "$env:USERPROFILE\neurocube-tools\venv\Scripts\python.exe"
 & $python -m unittest discover -s tests -p 'test_*.py' -v
 .\build-native\core_tests.exe
 .\build-native\neurocube_sim.exe --headless build-native/menu.ppm
+.\build-native\neurocube_sim.exe --gallery artifacts/gallery
 .\build-native\neurocube_sim.exe
 ```
 

@@ -9,6 +9,8 @@ python tools/neurocube.py detect
 python tools/neurocube.py --serial 419CB819454EA93D info
 python tools/neurocube.py logs --seconds 20
 python tools/neurocube.py records
+python tools/neurocube.py power
+python tools/neurocube.py settings
 python tools/neurocube.py selftest
 python tools/neurocube.py screenshot artifacts/frame.png
 python tools/neurocube.py build --native
@@ -29,13 +31,17 @@ NC1 hello
 NC1 status
 NC1 imu
 NC1 records
+NC1 power
+NC1 settings
 NC1 selftest
 NC1 screenshot
 ```
 
 Ответы — JSON Lines с `v:1` и `type`. hello возвращает product, firmware, revision, serial, capabilities, debug_input. Заводская прошивка не обязана поддерживать эти запросы. Несовместимый ответ или тайм-аут означает unsupported/ошибку, а не успешную диагностику.
 
-status содержит экран, игру, счёт, номер записи, состояние сохранения, IMU и счётчики аппаратных событий/ошибок. imu пока возвращает ту же структуру status. Координаты ускорения — g, скорость Z — градусы/с. records возвращает 48 значений рекордов (16 зарезервированных слотов × 3 сложности; используются первые три игровых слота) в порядке игра × сложность и sequence. Экран: 0 Menu, 1 Rules, 2 Playing, 3 Paused, 4 Result, 5 Settings.
+status содержит экран, игру, счёт, номер записи, состояние сохранения, IMU и счётчики аппаратных событий/ошибок. imu пока возвращает ту же структуру status. Координаты ускорения — g, скорость Z — градусы/с. records возвращает 48 значений рекордов (16 зарезервированных слотов × 3 сложности; используются первые три игровых слота) в порядке игра × сложность и sequence. В v3 добавлены `maze_best` (геометрия × вариант × лимит, 54 значения) и `record_version`; legacy `best` не меняет порядок. Экран: 0 Menu, 1 Rules, 2 Playing, 3 Paused, 4 Result, 5 Settings, 6 Calibration, 7 Countdown, 8 MazeSetup, 9 Splash.
+
+`power` читает BAT_EN, KEY_PWR, raw STAT/ADC, не меняет выходы; `settings` возвращает сохранённую калибровку и чувствительность. Напряжение и процент заряда не вычисляются.
 
 screenshot возвращает frame_begin, 240 frame_row с y и RGB565 big-endian hex, затем frame_end. Во время передачи игровой цикл блокируется; эта диагностическая функция не предназначена для работы во время активной игры.
 
@@ -49,6 +55,10 @@ screenshot возвращает frame_begin, 240 frame_row с y и RGB565 big-en
 
 ## Синтетическая интеграционная проверка
 
-`tools/hardware_smoke.py --allow-synthetic-and-reboot --clear-generated-records` работает только с отдельно установленной debug-сборкой. Требует изначально пустую таблицу рекордов перед разрешением очистки, проверяет навигацию, по одному успешному действию Sequence/Commands, запуск Maze, оба способа запроса Magic Ball и сохранение после настоящего перезапуска. Успешный прогон удаляет только созданные тестовые результаты. Это не физическое прохождение игр. После прерванного прогона сначала проверьте report и рекорды; не очищайте неизвестные результаты.
+Исторический сценарий `tools/hardware_smoke.py --allow-synthetic-and-reboot --clear-generated-records` рассчитан на старые экраны 0.1.x и пустые рекорды; для polish 0.2.x не подходит. Не запускать на пользовательских рекордах. Он работает только с отдельно установленной debug-сборкой. Требует изначально пустую таблицу рекордов перед разрешением очистки, проверяет навигацию, по одному успешному действию Sequence/Commands, запуск Maze, оба способа запроса Magic Ball и сохранение после настоящего перезапуска. Успешный прогон удаляет только созданные тестовые результаты. Это не физическое прохождение игр. После прерванного прогона сначала проверьте report и рекорды; не очищайте неизвестные результаты.
 
 Отчёт создаётся в artifacts/hardware-synthetic-smoke.json. На production-прошивке inject, debug, release_input и clear_test_records возвращают unsupported.
+
+## Production smoke без изменения данных
+
+`python tools/polish_smoke.py --baseline records-before.json` проверяет hello, disabled debug input, питание, настройки, электронный selftest, движение кадров, ошибки I²C и неизменность рекордов. Baseline — сохранённый JSON-ответ `NC1 records`; проверка сравнивает реальные очки. Не посылает inject, reset, BOOTSEL или команды записи. Не запускать screenshot во время физического прохождения: передача временно останавливает игровой цикл. Батарея и физическое управление остаются NOT_TESTED без ручного результата.

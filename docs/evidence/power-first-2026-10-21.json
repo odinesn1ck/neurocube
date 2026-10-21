@@ -1,0 +1,13 @@
+{
+  "power": {
+    "v": 1,
+    "type": "power",
+    "bat_en": true,
+    "key_pwr_low": false,
+    "stat_raw": 1,
+    "battery_adc_raw": 1679,
+    "battery_adc_calibrated": false,
+    "autonomy": "REQUIRES_PHYSICAL_TEST"
+  },
+  "records_preserved": true
+}

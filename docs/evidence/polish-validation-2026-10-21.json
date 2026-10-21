@@ -1,0 +1,19 @@
+{
+  "date": "2026-10-21",
+  "firmware": "0.2.0",
+  "native_checks": 1104,
+  "python_checks": 13,
+  "native_status": "VERIFIED_IN_SIMULATOR",
+  "maps_traversed": 9,
+  "magic_samples": 50000,
+  "magic_pairs_layout_checked": 24,
+  "full_polish_hardware": "NOT_TESTED",
+  "power_first_commit": "f98cf63",
+  "power_first_usb": "VERIFIED_ON_HARDWARE",
+  "battery_autonomy": "NOT_TESTED",
+  "ci": {
+    "active": false,
+    "api_status": 403,
+    "message": "Resource not accessible by personal access token"
+  }
+}
