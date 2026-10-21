@@ -47,12 +47,16 @@ static void exercise(Difficulty difficulty, uint32_t seed) {
                     pattern[count++] = cue;
                 }
                 ++on_ticks[count - 1];
-                if (count == 1 && on_ticks[0] == 1)
+                if (count == 1 && on_ticks[0] == 1) {
+                    lit.clear(Bg);
                     game.render(lit);
+                }
             } else if (count && game.phase() == SequencePhase::Showing) {
                 ++off_ticks[count - 1];
-                if (count == 1 && off_ticks[0] == 1)
+                if (count == 1 && off_ticks[0] == 1) {
+                    dark.clear(Bg);
                     game.render(dark);
+                }
             }
             previous = cue;
         }

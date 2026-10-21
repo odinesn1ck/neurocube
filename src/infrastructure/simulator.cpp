@@ -93,11 +93,15 @@ static int gallery(const std::string &directory) {
             }
             previous = cue;
             if (!captured && cue >= 0 && (round == 1 || round == 16 || round == 32)) {
+                fb.clear(Bg);
+                ui::text_box(fb, {8, 2, 224, 24}, accelerated.metadata().title, Accent);
                 accelerated.render(fb);
                 ppm((directory + "/sequence-round-" + std::to_string(round) + "-active.ppm").c_str());
                 captured = true;
             }
             if (round == 32 && captured && !dark_captured && cue < 0) {
+                fb.clear(Bg);
+                ui::text_box(fb, {8, 2, 224, 24}, accelerated.metadata().title, Accent);
                 accelerated.render(fb);
                 ppm((directory + "/sequence-round-32-dark.ppm").c_str());
                 dark_captured = true;
