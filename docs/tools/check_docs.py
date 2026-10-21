@@ -5,7 +5,7 @@ import sys
 from urllib.parse import unquote, urlsplit
 
 ROOT = Path(__file__).resolve().parents[2]
-REQUIRED = ('README.md', 'AGENTS.md', 'CHANGELOG.md', 'docs/product-vision.md',
+REQUIRED = ('README.md', 'AGENTS.md', 'CHANGELOG.md', 'LICENSE', 'CONTRIBUTING.md', 'THIRD_PARTY_LICENSES.md', 'docs/product-vision.md',
             'docs/documentation-policy.md', 'docs/architecture.md', 'docs/hardware.md',
             'docs/backlog.md', 'docs/progress.md', 'docs/tasks/README.md', 'docs/evidence/README.md')
 
@@ -32,7 +32,7 @@ def anchors(path):
 def main():
     errors = []
     links = 0
-    files = [ROOT/'README.md', ROOT/'AGENTS.md', ROOT/'CHANGELOG.md'] + sorted((ROOT/'docs').rglob('*.md'))
+    files = sorted(ROOT.glob('*.md')) + sorted((ROOT/'docs').rglob('*.md'))
     for required in REQUIRED:
         if not (ROOT/required).is_file():
             errors.append('Missing required document: '+required)

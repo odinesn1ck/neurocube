@@ -1,0 +1,19 @@
+{
+  "level": "VERIFIED_ON_HARDWARE: read-only electronics on installed 0.3.5, not 1.0 acceptance",
+  "firmware": "0.3.5",
+  "revision": "bbe08255a4c6",
+  "debug_input": false,
+  "checks": {
+    "frame_progress": true,
+    "no_new_i2c_errors": true,
+    "records_unchanged_during_readonly_test": true,
+    "latch_high": true,
+    "electronic_selftest": true,
+    "legacy_scores_preserved": true,
+    "maze_scores_preserved": true
+  },
+  "settings_preserved": true,
+  "audio_ready": true,
+  "audio_faults": 0,
+  "physical_1_0": "NOT_TESTED"
+}

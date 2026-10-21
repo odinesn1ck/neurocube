@@ -5,3 +5,7 @@
 *.md text eol=lf
 *.yml text eol=lf
 *.ps1 text eol=crlf
+
+# Keep upstream license notices byte-for-byte, including their whitespace.
+assets/licenses/* -text -whitespace
+assets/licenses/*.json text eol=lf

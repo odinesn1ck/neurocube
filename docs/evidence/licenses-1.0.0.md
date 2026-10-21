@@ -1,0 +1,21 @@
+# Лицензионный аудит 1.0.0 — 22.10.2026
+
+**Статус: BLOCKED по ES8311.** Оригинальный код NeuroCube: каноническая [MIT](../../LICENSE), copyright 2026 odinesn1ck, подтверждённый владелец GitHub и автор проекта. Авторские Git-адреса — публичные noreply. MIT не переопределяет сторонние условия. [Полная инвентаризация](../../THIRD_PARTY_LICENSES.md), [происхождение текстов и SHA256](../../assets/licenses/sources.json).
+
+## Обнаруженный блокер
+
+`third_party/waveshare_audio/es8311.c` происходит из Waveshare `51a7fe28c1e5dd19a089a062980a275709e94df6`, examples/C/02_ES8311. Заголовок ESPRESSIF MIT содержит ограничение на продукты Espressif: «for use on all ESPRESSIF SYSTEMS products». RP2350 не является таким продуктом. У файла сохранён исходный notice; лицензия Apache-2.0 в корне Waveshare сама по себе не устанавливает право игнорировать этот заголовок. Подтверждённого альтернативного grant для данного заимствованного файла не найдено.
+
+Первичные источники: [закреплённый Waveshare](https://github.com/waveshareteam/RP2350-Touch-LCD-1.54/tree/51a7fe28c1e5dd19a089a062980a275709e94df6), [legacy Espressif driver](https://github.com/espressif/esp-adf/blob/release/v2.x/components/audio_hal/driver/es8311/es8311.c). Существует [другой официальный драйвер Apache-2.0](https://github.com/espressif/esp-bsp/tree/master/components/es8311), но это не подтверждение автоматического relicensing старого файла и не проверенная drop-in замена.
+
+Для закрытия: получить письменное подтверждение прав/применимости разрешения от правообладателя либо отдельно адаптировать однозначно разрешённый драйвер и провести аппаратную регрессию. Это потребует решения владельца о выходе за текущий freeze; потенциальные вопросы истории/старых артефактов решаются отдельным планом. Агент не связывался с правообладателями, не менял старые notices, не переписывал историю и не подменял проверенный audio HAL. Одобрение стабильной публикации владельцем проекта само по себе не снимает стороннее условие.
+
+## Остальные компоненты
+
+Waveshare board reference/PIO: upstream Apache-2.0 и дополнительный permissive notice DEV_Config. Noto bitmap: SIL OFL-1.1, copyright/текст сохранены; это самостоятельная лицензия данных шрифта. QR: статическая матрица собственного GitHub URL, генератор qrcode 8.2 (BSD-3 с MIT provenance), его код в firmware не встраивается. Лицензия генератора включена консервативно.
+
+Pico SDK 2.3.1: BSD-3; TinyUSB закреплён submodule и MIT; CMSIS stub Apache-2; Pico printf MIT. Для ARM добавлены отсутствовавшие в прежних агрегатах notices newlib 4.4.0 и GCC GPLv3 с Runtime Library Exception 3.1. Компиляторы не распространяются. Windows runtime: LLVM Apache-2 с LLVM exceptions и набор MinGW COPYRIGHT/COPYING. Пакет включает эти полные тексты и изменённые файлы/источники согласно provenance, а не объявляет все бинарные компоненты MIT.
+
+[Каноническая MIT](https://opensource.org/license/mit), [GCC Runtime Exception](https://gcc.gnu.org/onlinedocs/libstdc++/manual/license.html), [newlib aggregate notices](https://sourceware.org/newlib/COPYING.NEWLIB). Новые notices исправляют комплект 1.0, но не меняют автоматически содержимое уже опубликованных старых архивов. Старые релизы не удалялись и не заменялись.
+
+Встроенных чужих музыки/иллюстраций/фильмов нет: графика процедурная, истории и звуковой синтез оригинальные. Заводские firmware backups не входят в Git или комплект. Проверка здесь фиксирует техническое происхождение и явные условия, а не заявляет юридическое разрешение спорного компонента.

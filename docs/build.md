@@ -14,7 +14,7 @@
 | CMake / Ninja | 3.31.6 / 1.11.1.3 |
 | pyserial / Pillow | 3.5 / 11.1.0 |
 
-ARM загружается с developer.arm.com; picotool, SDK и LLVM-MinGW — из release/source репозиториев разработчиков; Python-пакеты — из PyPI. В ночном прогоне ZIP Arm был скачан диапазонами после зависания одиночной передачи, проверен по официальному Content-MD5, затем распакован. Zig 0.14.1 также установлен как запасной нативный компилятор, но итоговая сборка его не использует.
+Архивы инструментов проверяются bootstrap по SHA256, Pico SDK — по закреплённому commit. Инструменты устанавливаются отдельно и не входят в пользовательский релиз.
 
 ## Установка
 
@@ -49,7 +49,7 @@ C++ core и игры одинаковы для native и Pico. Windows executabl
 
 Выходы: build-pico/neurocube.uf2, .elf, .bin, .elf.map. UF2 перед записью проверяется по magic, family, адресам и полноте блоков; picotool выполняет readback verify. Отдельная debug-сборка: `build --debug`, каталог build-pico-debug. Она разрешает синтетический ввод и не предназначена для подарочного использования. Обычная сборка этот ввод не принимает.
 
-[Workflow](../.github/workflows/build.yml) запускается при push в main/codex/neurocube-mvp и для pull request. На Windows runner он устанавливает закреплённые инструменты, проверяет документацию, запускает native/Python-тесты и headless-симулятор, собирает production UF2/ELF/BIN. Результаты доступны в артефакте `neurocube-mvp-<commit>` соответствующего run в GitHub Actions. Workflow не прошивает устройство и не создаёт релиз автоматически. Для [ручного workflow_dispatch](https://docs.github.com/en/actions/how-tos/manage-workflow-runs/manually-run-a-workflow) GitHub требует наличие workflow в default branch; до согласованного merge используйте push/PR или повторный запуск существующего run. Двоичные сборки не коммитятся в git. Для локальной диагностики используйте tools/neurocube.py; CLI не поддерживает сборку на Linux, хотя переносимый core собирается обычным CMake и на Linux.
+[Workflow](../.github/workflows/build.yml) запускается при push в main/codex/neurocube-mvp и для pull request. На Windows runner он устанавливает закреплённые инструменты, проверяет документацию, запускает native/Python-тесты и headless-симулятор, собирает production UF2/ELF/BIN. Результаты доступны в артефакте `neurocube-candidate-<commit>` соответствующего run в GitHub Actions. Workflow не прошивает устройство и не создаёт релиз автоматически. Для [ручного workflow_dispatch](https://docs.github.com/en/actions/how-tos/manage-workflow-runs/manually-run-a-workflow) GitHub требует наличие workflow в default branch; до согласованного merge используйте push/PR или повторный запуск существующего run. Двоичные сборки не коммитятся в git. Для локальной диагностики используйте tools/neurocube.py; CLI не поддерживает сборку на Linux, хотя переносимый core собирается обычным CMake и на Linux.
 
 Bridge выполняет configure с --fresh: это исключает остаточные compiler flags от прерванного первоначального configure. Независимая проверка сравнивает UF2 из двух build-каталогов при одном коммите и дате сборки.
 
@@ -58,3 +58,19 @@ Bridge выполняет configure с --fresh: это исключает ост
 Артефакт push относится к commit ветки, PR-артефакт — к временному merge commit, который GitHub создаёт только для проверки. Это не merge PR в main. Версия Git в firmware поэтому отличается; CI-сборка не заменяет опубликованный и аппаратно проверенный релиз автоматически.
 
 В оконном симуляторе клавиша P моделирует PWR: удержание → «Выключаюсь», отпускание → имитация оставшегося внешнего питания. GPIO не вызываются; это не аппаратная проверка выключения.
+
+## Воспроизводимая production-поставка
+
+Версия задаётся только `project(... VERSION ...)` в CMake; USB hello получает тот же NEUROCUBE_VERSION. `tool_environment` устанавливает SOURCE_DATE_EPOCH из даты исходного коммита; при ручном configure/build задавайте одну и ту же переменную для обеих стадий. Префиксы checkout/build/SDK удаляются из компилируемых путей, у Windows PE отключён меняющийся timestamp.
+
+```powershell
+& $python tools/prepare_release.py --verify-reproducible
+```
+
+Нужно чистое рабочее дерево. Команда сравнивает замороженные игровые/header/HAL файлы с `v0.3.5-rc1`, собирает production UF2/ELF/BIN и Release Windows simulator дважды в независимых каталогах, сравнивает SHA256, проверяет debug OFF и адреса UF2. Создаёт ZIP с исходниками, общий ZIP с лицензиями/инструкцией/manifest и отдельный Windows ZIP; внешние SHA256SUMS создаются после архивов. Никакого flash, tag, GitHub release или публикации нет. Рабочие сборочные каталоги остаются в игнорируемом artifacts.
+
+Для стабильного 1.0 остаются критерии [готовности](evidence/release-1.0.0-readiness.md), включая лицензионный блокер ES8311. Пакет с blocked manifest не означает разрешение публикации.
+
+## Резервная копия перед разрешённой прошивкой
+
+Сначала `detect`/`info`, свежие `records`/`settings` вне Git, затем точная сверка serial и USB topology. После разрешённого перехода в BOOTSEL сохранить диапазон `0x10FFE000..0x11000000` через `picotool save -r ... -v` в файл **вне репозитория**, проверить 8192 байта и SHA256. Bridge `flash --allow-flash` принимает уже идентифицированный BOOTSEL и выполняет readback verify. После запуска сравнить все scores, sequence, calibration, sensitivity и sound_enabled с исходным состоянием. Сам `flash` не заменяет предварительный backup. Никогда не применять erase-all или полный factory image для обычного обновления.

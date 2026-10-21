@@ -60,3 +60,11 @@
 - [rc4: сигналы контактов и успешных действий](game-feedback-audio-0.3.4-rc4.md).
 
 - [Плавная скорость Simon: все 32 раунда, таблица и кадры](simon-progressive-speed.md), [native-лог](simon-progressive-native.json).
+
+## Подготовка 1.0.0
+
+- [Регрессия и готовность выпуска](release-1.0.0-readiness.md).
+- [Аудит лицензий](licenses-1.0.0.md), [Public Readiness](public-readiness-1.0.0.md).
+- [Архив прогресса](progress-through-0.3.5.md), [архив бэклога](backlog-through-0.3.5.md).
+
+- [Регрессия финального ядра](final-1.0.0-regression.json), [Windows GUI](final-1.0.0-gui-summary.json), [read-only USB 0.3.5](final-1.0.0-usb-summary.json).

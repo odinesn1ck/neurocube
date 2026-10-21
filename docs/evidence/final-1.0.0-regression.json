@@ -1,0 +1,15 @@
+{
+  "baseline": "v0.3.5-rc1",
+  "native_suites": 3,
+  "timing_checks": 2986825,
+  "audio_checks": 10746,
+  "core_checks": 100640959,
+  "python_tests": 14,
+  "native_all_passed": true,
+  "headless": "PASS",
+  "gallery": "PASS",
+  "windows_gui": "PASS: hidden real window, WM_CLOSE exit 0",
+  "physical_1_0": "NOT_TESTED",
+  "usb": "PASS read-only installed 0.3.5, not 1.0 hardware acceptance",
+  "count_note": "Earlier audio-only stage had 10757 checks; progressive Simon reduces loop iterations. Final unchanged 0.3.5/1.0 source yields 10746."
+}

@@ -3,7 +3,9 @@ Waveshare hardware reference attribution
 Board register initialization and pin assignments were checked against Waveshare
 RP2350-Touch-LCD-1.54 examples, commit 51a7fe28c1e5dd19a089a062980a275709e94df6.
 Upstream: https://github.com/waveshareteam/RP2350-Touch-LCD-1.54
-The repository license is Apache-2.0, included as Waveshare-LICENSE.txt.
+The upstream repository declares Apache-2.0, included as Waveshare-LICENSE.txt.
+File-specific notices take precedence for their respective content; see
+THIRD_PARTY_LICENSES.md for the unresolved ES8311 product restriction.
 
 DEV_Config.h/c carry this additional permission notice:
 

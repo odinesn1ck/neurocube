@@ -180,6 +180,11 @@ def tool_environment():
         bins.append(str(native[0]))
     env['PATH']=os.pathsep.join(bins+[env.get('PATH','')])
     env['PICO_SDK_PATH']=str(TOOLS/'pico-sdk')
+    # GCC/Clang honour SOURCE_DATE_EPOCH for __DATE__/__TIME__ in SDK metadata.
+    if 'SOURCE_DATE_EPOCH' not in env:
+        epoch=run(['git','show','-s','--format=%ct','HEAD'],cwd=ROOT,capture_output=True,text=True).stdout.strip()
+        if not epoch.isdigit():raise BridgeError('Cannot determine reproducible source timestamp')
+        env['SOURCE_DATE_EPOCH']=epoch
     return env
 
 def build(native=False,debug=False):
