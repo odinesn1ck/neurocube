@@ -22,3 +22,9 @@ VERIFIED_IN_SIMULATOR: native suite — 100640359 assertions, включая 600
 COMPILED_ONLY: ARM UF2; валидатор защищает оба сектора record journal и reserved E10 page. 0.3.3 не загружена до отдельного разрешения. На исходной 0.3.2 read-only USB подтвердил serial 419CB819454EA93D, revision 8edc20c35597, sequence 20, i2c_errors 0. Физическая автономность 5+ минут была подтверждена пользователем ранее и не заменяет проверку нового выключения.
 
 NOT_TESTED: BAT_EN LOW на реальной плате, battery poweroff/cold start, видимые титры/подсветка и новый touch UX. [Повторный чек-лист](../morning-checklist.md). Перед разрешённой прошивкой снять свежие records/settings и резервную копию journal; не использовать прежний sequence как ожидаемый, поскольку пользователь играет.
+
+## Собранный артефакт
+
+Исходный коммит `90bfda3b6376909dba551c7a4fba087944278c8f`. UF2 412672 байт, SHA256 `0d86e06ec8a81f67bff6f51500d28394aceda4a92567d6609adbfc9cb95549fd`. [Машиночитаемая запись](acceptance-0.3.3-build.json). GitHub Actions для исходного коммита: [run 39614080335](https://github.com/odinesn1ck/neurocube/actions/runs/39614080335); статус CI проверяется отдельно, локальный успех не подменяет его.
+
+Сборка 0.3.3: [предварительный релиз и UF2](https://github.com/odinesn1ck/neurocube/releases/tag/v0.3.3-rc1). Исходный коммит `90bfda3b6376909dba551c7a4fba087944278c8f`; контрольные суммы и Windows-симулятор приложены. Статус аппаратной проверки — NOT_TESTED, на плату этот релиз пока не установлен.
