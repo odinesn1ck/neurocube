@@ -1,0 +1,21 @@
+{
+  "version": "0.3.4-rc2",
+  "source_commit": "557da49c0093a0fad868623b681e60138a936312",
+  "audio_checks": 10101,
+  "core_suite": "passed: 6000 seeds, 300 physical-model routes",
+  "python_tests": 14,
+  "simulator": "gallery passed; mock audio",
+  "docs": "39 Markdown files, 267 local links passed",
+  "pcm_peak": 1024,
+  "codec_volume": 60,
+  "default_game_sound_enabled": true,
+  "lifecycle_sounds_ignore_mute": true,
+  "physical_audio": "user accepted uop and error via RAM-only production HAL probes",
+  "firmware_flash": "NOT_TESTED: final rc2 not installed",
+  "settings_hardware_reload": "NOT_TESTED",
+  "ci": "https://github.com/odinesn1ck/neurocube/actions/runs/39653515960",
+  "ci_conclusion": "in_progress",
+  "sha256": "85c61caa46d8f084313d3ad7ac29c3aa4b9c6332e7abc9fe170e75835939272f",
+  "blocks": 1018,
+  "size": 521216
+}
