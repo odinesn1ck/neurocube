@@ -9,7 +9,7 @@
   "physical_checks": "NOT_TESTED; installed firmware still 0.3.4-rc3",
   "pcm_peak": 1280,
   "ci": "https://github.com/odinesn1ck/neurocube/actions/runs/39660151088",
-  "ci_conclusion": "in_progress",
+  "ci_conclusion": "success",
   "sha256": "3a2e3acf6c9143b1459a1cd3995c0e57cc0c3cbdc139a86df5a8b8cccb5c86c0",
   "blocks": 1019,
   "size": 521728
