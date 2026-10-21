@@ -137,6 +137,7 @@ def main():
                 raise bridge.BridgeError('Unsafe source archive path')
             target.parent.mkdir(parents=True,exist_ok=True)
             target.write_bytes(archived.read(info)); entries[info.filename]=target
+    source_entries = {f'neurocube-{version}/{name}':file for name,file in entries.items()}
     for suffix in ('uf2', 'elf', 'bin'):
         name = f'neurocube-{version}.{suffix}'
         shutil.copy2(builds['pico']/('neurocube.'+suffix), dist/name)
@@ -171,8 +172,8 @@ def main():
     (out/'windows-manifest.json').write_text(json.dumps(windows_manifest,indent=2)+'\n')
     windows['manifest.json'] = out/'windows-manifest.json'
     archive(dist/f'neurocube-{version}-windows.zip', windows, epoch)
-    subprocess.run(['git','archive','--format=zip','--prefix=neurocube-'+version+'/',
-                    '--output='+str(dist/f'neurocube-{version}-source.zip'),source],cwd=ROOT,check=True)
+    # git archive ZIP uses the host timezone; package canonical source with UTC too.
+    archive(dist/f'neurocube-{version}-source.zip', source_entries, epoch)
     if args.verify_reproducible:
         for name, payload in [(f'neurocube-{version}.zip', entries),
                               (f'neurocube-{version}-windows.zip', windows)]:
@@ -181,8 +182,7 @@ def main():
             if digest(repeated)!=digest(dist/name):
                 raise bridge.BridgeError('Archive is not reproducible: '+name)
         repeated=out/'source.zip.repeated'
-        subprocess.run(['git','archive','--format=zip','--prefix=neurocube-'+version+'/',
-                        '--output='+str(repeated),source],cwd=ROOT,check=True)
+        archive(repeated,source_entries,epoch)
         if digest(repeated)!=digest(dist/f'neurocube-{version}-source.zip'):
             raise bridge.BridgeError('Source archive is not reproducible')
     sums = ''.join(digest(file)+'  '+file.name+'\n' for file in sorted(dist.iterdir())
