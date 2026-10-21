@@ -20,8 +20,8 @@ size_t synthesize_sound(SoundEffect effect, uint32_t *out, size_t capacity) {
     for (size_t n = 0; n < count; ++n) {
         float t = float(n) / float(count - 1);
         float hz = effect == SoundEffect::Error
-                       ? 210.f - 115.f * t
-                       : (t < .4f ? 220.f + 500.f * t : 420.f - 200.f * (t - .4f));
+                       ? 700.f - 400.f * t
+                       : (t < .4f ? 600.f + 1250.f * t : 1100.f - 500.f * (t - .4f));
         phase += uint32_t(hz * (4294967296.0 / AudioSampleRate));
         int value = sine[phase >> 26];
         if (effect == SoundEffect::Error) {
@@ -42,7 +42,8 @@ bool SimAudio::play(SoundEffect effect) {
         ++dropped;
         return false;
     }
-    remaining_ = float(sound_samples(effect)) / AudioSampleRate;
+    remaining_ = float(sound_samples(effect)) / AudioSampleRate +
+                 float(AudioPreparationMs + AudioReleaseMs) / 1000;
     last = effect;
     ++played;
     return true;

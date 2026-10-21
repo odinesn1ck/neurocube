@@ -8,17 +8,50 @@ extern "C" {
 #include "es8311.h"
 }
 #include "audio_pio.pio.h"
+// NS4150B datasheet: startup 120 ms, wake 35 ms, shutdown 80 ms.
+// Feed zeroes before/after PCM; never cut the codec clock during PA shutdown.
+static constexpr size_t Lead = nc::AudioPreparationMs * nc::AudioSampleRate / 1000,
+                        Tail = nc::AudioReleaseMs * nc::AudioSampleRate / 1000;
+static_assert(nc::AudioPreparationMs - 50 >= 120 &&
+              nc::AudioReleaseMs - 10 >= 80); // 180/120 ms at 24 kHz.
 static bool codec_io_ok = true;
-static volatile bool completed = false, timed_out = false;
-static int64_t hard_silence(alarm_id_t, void *) {
-    if (!completed) {
-        gpio_put(0, false);
-        timed_out = true;
-        completed = true;
+static volatile bool completed = false, timed_out = false, voice_gate = false;
+static volatile bool amp_live = false, amp_seen = false;
+static volatile uint32_t amp_off_at = 0, voice_started_at = 0;
+static int audio_dma = -1;
+static void cut_amp() {
+    gpio_put(0, false);
+    if (amp_live) {
+        amp_off_at = time_us_32();
+        amp_live = false;
+    }
+}
+static int64_t enable_after_settling(alarm_id_t, void *) {
+    if (voice_gate && !completed) {
+        // A delayed IRQ must not enable an amplifier with too little warmup left.
+        if (uint32_t(time_us_32() - voice_started_at) > 50000) {
+            timed_out = completed = true;
+            voice_gate = false;
+            return 0;
+        }
+        amp_seen = amp_live = true;
+        gpio_put(0, true);
     }
     return 0;
 }
-static int audio_dma = -1;
+static int64_t release_before_tail(alarm_id_t, void *) {
+    voice_gate = false;
+    cut_amp();
+    return 0;
+}
+static int64_t hard_silence(alarm_id_t, void *) {
+    if (!completed) {
+        voice_gate = false;
+        cut_amp();
+        timed_out = completed = true;
+    }
+    return 0;
+}
 extern "C" void DEV_Delay_Ms(uint32_t ms) {
     sleep_ms(ms);
 }
@@ -37,7 +70,8 @@ extern "C" uint8_t DEV_I2C_Read_Byte(i2c_inst_t *port, uint8_t addr, uint8_t reg
 static void audio_complete() {
     if (audio_dma >= 0 && (dma_hw->ints1 & (1u << audio_dma))) {
         dma_hw->ints1 = 1u << audio_dma;
-        gpio_put(0, false); // Immediate amp silence even during LCD or USB work.
+        voice_gate = false;
+        cut_amp();
         completed = true;
     }
 }
@@ -51,6 +85,8 @@ bool AudioHardware::init() {
         ++faults;
         return false;
     }
+    pio_sm_claim(pio1, 2);
+    pio_sm_claim(pio2, 0);
     auto mclk = pio_add_program(pio1, &mclk_pio_program);
     mclk_pio_program_init(pio1, 2, mclk, 3);
     pio_sm_set_clkdiv(pio1, 2, float(clock_get_hz(clk_sys)) / (24000.f * 256.f * 5.f));
@@ -72,32 +108,63 @@ bool AudioHardware::init() {
                            PICO_SHARED_IRQ_HANDLER_DEFAULT_ORDER_PRIORITY);
     irq_set_enabled(DMA_IRQ_1, true);
     ready_ = true;
-    stop();
+    finish_quiet();
     return true;
 }
-void AudioHardware::stop() {
-    gpio_put(0, false);
-    if (!ready_)
-        return;
-    if (alarm_ > 0) {
-        cancel_alarm(alarm_);
-        alarm_ = 0;
-    }
+void AudioHardware::transfer(size_t count, bool pcm) {
+    auto config = dma_channel_get_default_config(dma_);
+    channel_config_set_transfer_data_size(&config, DMA_SIZE_32);
+    channel_config_set_read_increment(&config, pcm);
+    channel_config_set_write_increment(&config, false);
+    channel_config_set_dreq(&config, pio_get_dreq(pio2, 0, true));
+    dma_channel_set_irq1_enabled(dma_, pcm);
+    dma_channel_configure(dma_, &config, &pio2->txf[0], pcm ? samples_ : &zero_, count, true);
+}
+void AudioHardware::finish_quiet() {
     dma_channel_set_irq1_enabled(dma_, false);
     dma_channel_abort(dma_);
     dma_hw->ints1 = 1u << dma_;
     pio_sm_set_enabled(pio2, 0, false);
     Es8311_Voice_Mute(true);
     pio_sm_set_enabled(pio1, 2, false);
-    active_ = false;
+    active_ = cooling_ = false;
     completed = false;
     if (!codec_io_ok) {
         ready_ = false;
         ++faults;
     }
 }
+void AudioHardware::stop() {
+    voice_gate = false;
+    cut_amp();
+    if (!ready_)
+        return;
+    for (auto *id : {&warmup_alarm_, &release_alarm_, &alarm_})
+        if (*id > 0) {
+            cancel_alarm(*id);
+            *id = 0;
+        }
+    if (cooling_)
+        return;
+    dma_channel_set_irq1_enabled(dma_, false);
+    dma_channel_abort(dma_);
+    dma_hw->ints1 = 1u << dma_;
+    if (amp_seen && uint32_t(time_us_32() - amp_off_at) < 90000) {
+        // Explicit mute/shutdown can interrupt PCM: switch to zeroes immediately,
+        // then let the amplifier's 80 ms shutdown finish without a clock transient.
+        pio_sm_clear_fifos(pio2, 0);
+        transfer(AudioSampleRate / 10, false);
+        active_ = false;
+        cooling_ = true;
+        completed = false;
+        return;
+    }
+    finish_quiet();
+}
 void AudioHardware::poll() {
-    if (active_ && (completed || time_us_64() - started_ > 250000)) {
+    if (cooling_ && uint32_t(time_us_32() - amp_off_at) >= 90000)
+        finish_quiet();
+    if (active_ && (completed || time_us_64() - started_ > 550000)) {
         if (!completed || timed_out)
             ++faults;
         stop();
@@ -105,20 +172,22 @@ void AudioHardware::poll() {
 }
 bool AudioHardware::play(SoundEffect effect) {
     poll();
-    if (!ready_ || active_) {
+    if (!ready_ || busy()) {
         ++dropped;
         return false;
     }
-    auto count = synthesize_sound(effect, samples_, MaxAudioSamples);
-    if (!count)
+    for (size_t n = 0; n < Lead; ++n)
+        samples_[n] = 0;
+    auto signal = synthesize_sound(effect, samples_ + Lead, MaxAudioSamples);
+    if (!signal)
         return false;
+    for (size_t n = Lead + signal; n < Lead + signal + Tail; ++n)
+        samples_[n] = 0;
     pio_sm_clear_fifos(pio2, 0);
     pio_sm_restart(pio2, 0);
-    // Reinitialise the instruction counter as a prior stop can occur mid-frame.
-    auto config = pio2->sm[0].execctrl;
-    uint wrap_bottom =
-        (config & PIO_SM0_EXECCTRL_WRAP_BOTTOM_BITS) >> PIO_SM0_EXECCTRL_WRAP_BOTTOM_LSB;
-    pio_sm_exec(pio2, 0, pio_encode_jmp(wrap_bottom));
+    auto ctrl = pio2->sm[0].execctrl;
+    uint bottom = (ctrl & PIO_SM0_EXECCTRL_WRAP_BOTTOM_BITS) >> PIO_SM0_EXECCTRL_WRAP_BOTTOM_LSB;
+    pio_sm_exec(pio2, 0, pio_encode_jmp(bottom));
     pio_sm_set_enabled(pio1, 2, true);
     Es8311_Voice_Mute(false);
     if (!codec_io_ok) {
@@ -126,25 +195,22 @@ bool AudioHardware::play(SoundEffect effect) {
         stop();
         return false;
     }
-    auto dma = dma_channel_get_default_config(dma_);
-    channel_config_set_transfer_data_size(&dma, DMA_SIZE_32);
-    channel_config_set_read_increment(&dma, true);
-    channel_config_set_write_increment(&dma, false);
-    channel_config_set_dreq(&dma, pio_get_dreq(pio2, 0, true));
-    completed = false;
-    timed_out = false;
-    alarm_ = add_alarm_in_ms(240, hard_silence, nullptr, true);
-    if (alarm_ <= 0) {
+    completed = timed_out = amp_seen = amp_live = false;
+    voice_gate = true;
+    started_ = time_us_64();
+    voice_started_at = time_us_32();
+    active_ = true;
+    warmup_alarm_ = add_alarm_in_ms(15, enable_after_settling, nullptr, true);
+    release_alarm_ = add_alarm_in_ms(AudioPreparationMs + int(signal * 1000 / AudioSampleRate) + 10,
+                                     release_before_tail, nullptr, true);
+    alarm_ = add_alarm_in_ms(550, hard_silence, nullptr, true);
+    if (warmup_alarm_ <= 0 || release_alarm_ <= 0 || alarm_ <= 0) {
         ++faults;
         stop();
         return false;
     }
-    started_ = time_us_64();
-    active_ = true;
-    dma_channel_set_irq1_enabled(dma_, true);
-    dma_channel_configure(dma_, &dma, &pio2->txf[0], samples_, count, true);
+    transfer(Lead + signal + Tail, true);
     pio_sm_set_enabled(pio2, 0, true);
-    gpio_put(0, true);
     ++played;
     return true;
 }

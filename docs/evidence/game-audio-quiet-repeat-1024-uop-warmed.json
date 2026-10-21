@@ -1,0 +1,33 @@
+{
+  "ram_only": true,
+  "pcm_peak": 1024,
+  "max_seconds": 300,
+  "logs": [
+    "QUIET_REPEAT uop ready=1 peak=1024 preroll_ms=180 tail_ms=120 max_seconds=300",
+    "QUIET_REPEAT completed played=294 faults=0 stopped=1"
+  ],
+  "elf_sha256": "06c6ed428d0b2ead90d7f2d8b5b99eaa0811631d4b87ef0ec06465f87adeca98",
+  "data_preserved": true,
+  "returned_hello": {
+    "v": 1,
+    "type": "hello",
+    "product": "NeuroCube",
+    "firmware": "0.3.4",
+    "serial": "419CB819454EA93D",
+    "revision": "0eee6ee786f3",
+    "capabilities": [
+      "status",
+      "imu",
+      "selftest",
+      "framebuffer",
+      "records",
+      "power",
+      "settings",
+      "display",
+      "ui",
+      "audio"
+    ],
+    "debug_input": false
+  },
+  "physical_user_feedback": "Слышен мягкий «уоп», громкость подходит"
+}

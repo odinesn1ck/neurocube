@@ -45,11 +45,21 @@ void App::new_maze() {
     launch(selected_, true);
     begin_play(); // Show the newly generated map immediately.
 }
+void App::play_sound(SoundEffect effect) {
+    if (audio_ && records_.sound_enabled) audio_->play(effect);
+}
+void App::frame_presented() {
+    if (screen_ == Screen::Splash && phase_time_ >= .02f && !splash_sound_sent_) {
+        splash_sound_sent_ = true;
+        if (audio_) audio_->play(SoundEffect::Answer);
+    }
+    if (screen_ == Screen::ShuttingDown) shutdown_presented_ = true;
+}
 void App::update_game(const Actions &a, float dt) {
     game().update(a, dt);
     auto event = game().take_event();
-    if (audio_ && records_.sound_enabled && event != GameEvent::None)
-        audio_->play(event == GameEvent::ErrorOccurred ? SoundEffect::Error : SoundEffect::Answer);
+    if (event != GameEvent::None)
+        play_sound(event == GameEvent::ErrorOccurred ? SoundEffect::Error : SoundEffect::Answer);
 }
 void App::pause() {
     if (screen_ == Screen::Playing) {
@@ -167,6 +177,12 @@ void App::update(const InputFrame &i, float dt) {
     else if (power_armed_) power_hold_ += dt;
     if (screen_ == Screen::ShuttingDown) {
         if (shutdown_presented_) shutdown_time_ += dt;
+        // Let stop() complete the PA's 80 ms release before the shutdown cue.
+        // Cue + warmup + release completes well before the existing 1 s power-cut gate.
+        if (shutdown_presented_ && shutdown_time_ >= .12f && !shutdown_sound_sent_) {
+            shutdown_sound_sent_ = true;
+            if (audio_) audio_->play(SoundEffect::Error);
+        }
         return;
     }
     if (screen_ == Screen::PowerNotice) {
@@ -184,6 +200,7 @@ void App::update(const InputFrame &i, float dt) {
         idle_ = IdleController{};
         shutdown_time_ = 0;
         shutdown_presented_ = false;
+        shutdown_sound_sent_ = false;
         screen_ = saved ? Screen::ShuttingDown : Screen::PowerNotice;
         return;
     }

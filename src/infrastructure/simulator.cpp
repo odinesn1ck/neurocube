@@ -68,8 +68,12 @@ static int gallery(const std::string &directory) {
             scene.update({}, .01f);
     };
     for (int game=0;game<4;++game) {
-        scene.launch(game); save("audio-"+std::to_string(game)+"-off");
+        scene.launch(game);
         auto box=game==1?ui::MazeSoundToggle:ui::SoundToggle;
+        if (scene.records().sound_enabled) {
+            tap(box.x+box.w/2,box.y+box.h/2);scene.update({},.02f);
+        }
+        save("audio-"+std::to_string(game)+"-off");
         tap(box.x+box.w/2,box.y+box.h/2);save("audio-"+std::to_string(game)+"-on");
         scene.update({},.02f);tap(box.x+box.w/2,box.y+box.h/2);scene.update({},.02f);
     }

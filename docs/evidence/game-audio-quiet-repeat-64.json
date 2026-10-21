@@ -1,0 +1,34 @@
+{
+  "ram_only": true,
+  "pcm_peak": 64,
+  "max_seconds": 120,
+  "requested_by_user": "repeat continuously for remote listening",
+  "logs": [
+    "QUIET_REPEAT ready=1 peak=64 max_seconds=120",
+    "QUIET_REPEAT completed played=651 faults=0 stopped=0"
+  ],
+  "elf_sha256": "1ea152f8cbc14bd2d0eb6c72fea386a44b86e5d2c177421b474498d36427c9ba",
+  "data_preserved": true,
+  "returned_hello": {
+    "v": 1,
+    "type": "hello",
+    "product": "NeuroCube",
+    "firmware": "0.3.4",
+    "serial": "419CB819454EA93D",
+    "revision": "0eee6ee786f3",
+    "capabilities": [
+      "status",
+      "imu",
+      "selftest",
+      "framebuffer",
+      "records",
+      "power",
+      "settings",
+      "display",
+      "ui",
+      "audio"
+    ],
+    "debug_input": false
+  },
+  "physical_assessment": "User: barely audible, buzzing; requested louder"
+}

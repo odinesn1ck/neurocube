@@ -1,0 +1,16 @@
+{
+  "version": "0.3.4",
+  "source_commit": "0eee6ee786f38dfd75358250d40cc67a7bedb1bd",
+  "audio_checks": 10091,
+  "core_suite": "passed; 6000 seeds and 300 simulated routes",
+  "python_tests": 14,
+  "firmware_flash": "picotool load -v OK, identified serial 419CB819454EA93D",
+  "physical_volume": "NOT_TESTED; user assessment requested; initial reported silence while audio remained muted and played=0",
+  "default_sound_enabled": false,
+  "pcm_peak": 64,
+  "codec_volume": 60,
+  "uf2_sha256": "558ec2484f5167ae58fd37e9c19e9c14332503fcbef1b54ca32b0b356b978fc4",
+  "uf2_size": 460800,
+  "ci": "https://github.com/odinesn1ck/neurocube/actions/runs/39646938884",
+  "ci_conclusion": "success"
+}

@@ -1,8 +1,9 @@
 #pragma once
 #include "domain.hpp"
 namespace nc {
-constexpr int AudioSampleRate = 24000, AudioPeak = 64;
+constexpr int AudioSampleRate = 24000, AudioPeak = 1024;
 constexpr size_t MaxAudioSamples = 4320;
+constexpr int AudioPreparationMs = 180, AudioReleaseMs = 120;
 size_t sound_samples(SoundEffect);
 size_t synthesize_sound(SoundEffect, uint32_t *output, size_t capacity);
 class SimAudio final : public AudioOutput {

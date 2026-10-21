@@ -2,6 +2,8 @@
 
 Основание: [game-audio-effects](../tasks/game-audio-effects.md). Пользователь подтвердил штатный звук, но прежний писк оказался очень громким. Он не повторялся.
 
+> Ниже сохранены параметры исходной rc1 / 0eee6ee (PCM 64, default mute). Актуальная настройка и новые указания пользователя: [приёмка профиля](game-audio-tuning-0.3.4.md).
+
 ## Реализация
 
 - Game публикует ErrorOccurred / AnswerAccepted ровно при переходе; App потребляет события даже при mute. Один AudioOutput. Ошибка Simon и Commands (включая timeout) — 100-мс «кх», превышение лимита лабиринта — такой же эффект. Не проигрышный контакт без звука. Новый принятый запрос Magic Ball — 180-мс «уоп», включая shake с Rules; фазы появления текста и отклонённые запросы не создают событий.
@@ -18,3 +20,13 @@ Native проверяет события ровно один раз, отсут�
 ![Правила и настройка, звук OFF/ON](../images/audio-0.3.4-rules.png)
 
 Галерея — framebuffer Windows-симулятора, не LCD. SimAudio — mock, звуки на компьютере автоматически не проигрываются. Сборка ARM/UF2 — COMPILED_ONLY до разрешённой установки; новый профиль на плате ещё не запускался. Native и CI не подтверждают комфорт громкости или реальное сохранение настройки на плате. [Физический чек-лист](../morning-checklist.md).
+
+## Установка и фактические проверки
+
+После явного разрешения пользователя установлен исходный коммит 0eee6ee786f3, UF2 SHA256 `558ec2484f5167ae58fd37e9c19e9c14332503fcbef1b54ca32b0b356b978fc4`, 460800 байт. picotool verify прошёл, serial 419CB819454EA93D и BOOTSEL topology сверены. Свежий backup journal 8192 байта сохранён вне Git, SHA256 `54f287d984c84c92feb1759bcd414c46ef5af9158097ebe3d04c9911b07e7ece`. [Flash report](game-audio-0.3.4-flash.json): все старые records/settings равны, sequence 21, sound_enabled=false. [CI исходного коммита](https://github.com/odinesn1ck/neurocube/actions/runs/39646938884) успешен. [Релиз UF2/ELF/BIN/симулятор/лицензии/хеши](https://github.com/odinesn1ck/neurocube/releases/tag/v0.3.4-rc1), [паспорт](game-audio-0.3.4-build.json).
+
+Native: полный core suite, отдельные 10091 audio checks, 14 Python tests, галерея всех четырёх OFF/ON. Это не приёмка акустической громкости.
+
+При двух первых сообщениях пользователя о тишине телеметрия оставалась enabled=false, played=0, faults=0, sequence 21, а framebuffer показывал Maze. Поэтому из этих ответов нельзя заключить, что PCM 64 неслышен, или автоматически повышать уровень.
+
+Затем по разрешению на тихую проверку выполнена однократная прямая RAM-проба того же production AudioHardware и синтеза, в обход UI/mute. Передан один Answer: ready=1, started=1, played=1, dropped=0, faults=0, busy=0 после завершения. Возврат в 0.3.4 и полное совпадение records/settings подтверждены. Flash не записывалась. [Первичный лог](game-audio-quiet-probe-64.json). Подтверждение на слух и физический цикл включения/выключения mute пока ожидаются; профиль не повышался.

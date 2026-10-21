@@ -82,7 +82,9 @@ bool decode_records(const uint8_t *p, size_t n, Records &r) {
                     s = get(p + o);
                     o += 4;
                 }
-        v.sound_enabled = get(p + 436) == 0x534E4401u; // Old v3 reserved bytes are FF: mute.
+        const auto sound = get(p + 436);
+        // Missing legacy setting uses the accepted default; an explicit mute survives.
+        v.sound_enabled = sound == 0xFFFFFFFFu || sound == 0x534E4401u;
         v.calibrated = get(p + 420) == 1;
         v.calibration_x = number(get(p + 424));
         v.calibration_y = number(get(p + 428));

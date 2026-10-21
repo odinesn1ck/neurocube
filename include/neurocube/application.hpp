@@ -63,6 +63,8 @@ class App {
     RecordStore &store_;
     AudioOutput *audio_ = nullptr;
     bool sound_touch_guard_ = false;
+    bool splash_sound_sent_ = false, shutdown_sound_sent_ = false;
+    void play_sound(SoundEffect);
     void update_game(const Actions &, float);
     void silence() { if (audio_) audio_->stop(); }
     GestureRecognizer gestures_;
@@ -93,7 +95,7 @@ class App {
                  const char *recipient = config::Recipient, AudioOutput *audio = nullptr);
     void update(const InputFrame &, float);
     void render(Renderer &) const;
-    void frame_presented() { if (screen_ == Screen::ShuttingDown) shutdown_presented_ = true; }
+    void frame_presented();
     bool power_cut_requested() const {
         return screen_ == Screen::ShuttingDown && shutdown_presented_ &&
                shutdown_time_ >= 1.f && !latest_.power_button && !power_released_;

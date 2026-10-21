@@ -96,7 +96,7 @@ struct Records {
     std::array<std::array<uint32_t, 3>, GameCapacity> best{};
     uint32_t sequence = 0;
     MazeScores maze_best{};
-    bool sound_enabled = false;
+    bool sound_enabled = true;
     bool calibrated = false;
     float calibration_x = 0, calibration_y = 0, sensitivity = 1;
 };

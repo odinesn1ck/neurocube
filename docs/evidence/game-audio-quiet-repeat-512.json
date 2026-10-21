@@ -1,0 +1,33 @@
+{
+  "ram_only": true,
+  "pcm_peak": 512,
+  "max_seconds": 120,
+  "logs": [
+    "QUIET_REPEAT ready=1 peak=512 max_seconds=120",
+    "QUIET_REPEAT completed played=506 faults=0 stopped=1"
+  ],
+  "elf_sha256": "ff87fb7b3ff444f151d74f76a00ad0a72d81577c37520b8e91f78dc4ca2d17ef",
+  "data_preserved": true,
+  "returned_hello": {
+    "v": 1,
+    "type": "hello",
+    "product": "NeuroCube",
+    "firmware": "0.3.4",
+    "serial": "419CB819454EA93D",
+    "revision": "0eee6ee786f3",
+    "capabilities": [
+      "status",
+      "imu",
+      "selftest",
+      "framebuffer",
+      "records",
+      "power",
+      "settings",
+      "display",
+      "ui",
+      "audio"
+    ],
+    "debug_input": false
+  },
+  "physical_assessment": "User: clicks and pulsations; settling prototype not accepted"
+}
