@@ -4,7 +4,7 @@
 
 После явного разрешения пользователя установлена опубликованная production 0.3.3, исходный коммит `90bfda3b6376`, serial `419CB819454EA93D`. BOOTSEL serial/USB topology проверены; picotool load -v подтвердил запись. Свежая копия обоих секторов журнала (8192 байта) сохранена вне репозитория. Полностью совпали records (sequence 20) и settings до/после. [USB smoke](evidence/acceptance-0.3.3-usb-smoke.json): VERIFIED_ON_HARDWARE для электронного обмена, IMU/touch identity, LCD SPI, BAT_EN HIGH и сохранности данных. Debug input выключен.
 
-Native suite, 14 Python tests и CI исходного коммита прошли. [Отчёт и галерея](evidence/acceptance-followup-0.3.3.md), [UF2/симулятор](https://github.com/odinesn1ck/neurocube/releases/tag/v0.3.3-rc1). Физическое выключение PWR без USB, cold start, видимый LCD и wake остаются NOT_TESTED — требуется пользовательская приёмка. Ниже сохранена история предыдущих поставок.
+Native suite, 14 Python tests и CI исходного коммита прошли. [Отчёт и галерея](evidence/acceptance-followup-0.3.3.md), [UF2/симулятор](https://github.com/odinesn1ck/neurocube/releases/tag/v0.3.3-rc1). Пользователь ответил «работает» на инструкцию физического выключения без USB и последующего включения: POWER shutdown принят (VERIFIED_ON_HARDWARE по сообщению пользователя). Видимый crawl, оба способа wake и отдельные игровые проверки этим ответом не закрываются. Ниже сохранена история предыдущих поставок.
 
 Обновлено 21.10.2026. Ветка `codex/neurocube-mvp`, [PR #1](https://github.com/odinesn1ck/neurocube/pull/1), без merge. До обновления 0.3.3 на плате `419CB819454EA93D` была установлена **production 0.3.2**, исходный коммит `8edc20c35597`; debug input отключён. Предыдущие аппаратные свидетельства ниже относятся к указанным 0.3.0/0.3.1.
 
