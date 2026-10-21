@@ -55,7 +55,7 @@ constexpr std::array<int, 6> ContactLimits{{0, 3, 5, 8, 12, 20}}; // zero means 
 struct GameOptions {
     uint8_t geometry = 1, contact_index = 2, variant = 0;
 };
-enum class GameEvent { None, ErrorOccurred, AnswerAccepted };
+enum class GameEvent { None, ErrorOccurred, AnswerAccepted, WallContact, Success };
 enum class SoundEffect { Error, Answer };
 struct AudioOutput {
     virtual ~AudioOutput() = default;

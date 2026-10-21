@@ -94,8 +94,10 @@ void SequenceGame::update(const Actions &a, float dt) {
         return;
     }
     cursor++;
-    if (cursor == length)
+    if (cursor == length) {
         outcome.score = uint32_t(length);
+        emit(GameEvent::Success);
+    }
     phase_ = SequencePhase::Correct;
     timer = .36f;
 }
@@ -217,6 +219,7 @@ void MazeGame::update(const Actions &a, float dt) {
             y = ny;
     }
     // Nearness only delays rearming; it never creates a penalty without collision.
+    const auto previous_contacts = contacts_.count();
     contacts_.update(touched, dt, !hit(x, y, 5.5f));
     outcome.contacts = contacts_.count();
     int limit = ContactLimits[std::min<int>(options_.contact_index, 5)];
@@ -225,11 +228,14 @@ void MazeGame::update(const Actions &a, float dt) {
         outcome.finished = true;
         return;
     }
+    if (outcome.contacts > previous_contacts)
+        emit(GameEvent::WallContact);
     int goal = map_.columns * map_.rows - 1;
     float dx = x - map_.center_x(goal), dy = y - map_.center_y(goal);
     if (dx * dx + dy * dy < 49) {
         outcome.score = uint32_t(std::max(1.f, 2000 - elapsed * 5 - outcome.contacts * 15));
         outcome.finished = outcome.won = true;
+        emit(GameEvent::Success);
     }
 }
 void MazeGame::render(Renderer &r) const {
@@ -337,6 +343,7 @@ void CommandsGame::update(const Actions &a, float dt) {
         return;
     }
     outcome.score++;
+    emit(GameEvent::Success);
     feedback_ = .55f;
     limit = std::max(1.2f, limit * .97f);
 

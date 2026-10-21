@@ -345,6 +345,9 @@ void completed_games_test() {
                 }
             }
             CHECK(maze.result().finished && maze.result().won && maze.result().score > 0);
+            CHECK(maze.take_event() == GameEvent::Success);
+            maze.update({}, .02f);
+            CHECK(maze.take_event() == GameEvent::None);
         }
 }
 

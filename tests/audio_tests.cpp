@@ -113,6 +113,61 @@ int main() {
             CHECK(sequence.take_event() == GameEvent::None);
         }
     }
+    SequenceGame success_sequence;
+    success_sequence.start(Difficulty::Normal, 19);
+    for (int round = 1; round <= 3; ++round) {
+        int pattern[3]{}, count = 0, previous = -1;
+        while (success_sequence.playback()) {
+            success_sequence.update({}, .02f);
+            auto cue = success_sequence.phase() == SequencePhase::Showing ? success_sequence.cue() : -1;
+            if (cue >= 0 && cue != previous) {
+                CHECK(count < 3);
+                pattern[count++] = cue;
+            }
+            previous = cue;
+            CHECK(success_sequence.take_event() == GameEvent::None);
+        }
+        CHECK(count == round);
+        for (int step = 0; step < round; ++step) {
+            Actions correct;
+            correct.direction = pattern[step];
+            success_sequence.update(correct, .02f);
+            CHECK(success_sequence.take_event() ==
+                  (step + 1 == round ? GameEvent::Success : GameEvent::None));
+            CHECK(success_sequence.take_event() == GameEvent::None);
+            if (step + 1 < round) {
+                while (success_sequence.phase() == SequencePhase::Correct) {
+                    success_sequence.update({}, .02f);
+                    CHECK(success_sequence.take_event() == GameEvent::None);
+                }
+            }
+        }
+    }
+    for (bool enabled : {false, true}) {
+        Memory success_store;
+        success_store.valid = true;
+        success_store.r.sound_enabled = enabled;
+        SimAudio success_audio;
+        App success_app(success_store, default_registry(), false, config::Recipient,
+                        &success_audio);
+        for (uint32_t seed = 1;; ++seed) {
+            success_app.reseed(seed);
+            success_app.launch(2, false);
+            if (static_cast<CommandsGame &>(success_app.game()).command() == 4)
+                break;
+        }
+        InputFrame correct;
+        correct.tap = true;
+        correct.x = 120;
+        correct.y = 132;
+        success_app.update(correct, .02f);
+        CHECK(success_app.game().result().score == 1);
+        CHECK(success_audio.played == (enabled ? 1u : 0u));
+        if (enabled)
+            CHECK(success_audio.last == SoundEffect::Answer);
+        wait(success_app, success_audio, 20);
+        CHECK(success_audio.played == (enabled ? 1u : 0u));
+    }
     CommandsGame commands;
     commands.start(Difficulty::Normal, 42);
     commands.update({}, 4); // dt clamps; wait for timeout.
@@ -143,25 +198,65 @@ int main() {
     maze.start(Difficulty::Normal, 1);
     Actions into_wall;
     into_wall.tilt_x = -1;
+    int wall_events = 0;
     for (int n = 0; n < 200; ++n) {
         maze.update(into_wall, .02f);
-        CHECK(maze.take_event() == GameEvent::None);
+        auto event = maze.take_event();
+        CHECK(event == GameEvent::None || event == GameEvent::WallContact);
+        wall_events += event == GameEvent::WallContact;
     }
+    CHECK(wall_events == 1);
     CHECK(maze.contacts() == 1); // Contact alone is not a failure.
     options.contact_index = 1;
     maze.configure(options);
     maze.start(Difficulty::Normal, 1);
     int errors = 0;
+    wall_events = 0;
     for (int cycle = 0; cycle < 10 && !maze.result().finished; ++cycle) {
         Actions push;
         push.tilt_x = cycle % 2 ? 1.f : -1.f;
         for (int n = 0; n < 150; ++n) {
             maze.update(push, .02f);
-            errors += maze.take_event() == GameEvent::ErrorOccurred;
+            auto event = maze.take_event();
+            errors += event == GameEvent::ErrorOccurred;
+            wall_events += event == GameEvent::WallContact;
         }
     }
     CHECK(maze.result().finished && !maze.result().won && errors == 1);
     CHECK(maze.take_event() == GameEvent::None);
+    CHECK(wall_events + errors == maze.contacts()); // Fatal contact produces one cue, not two.
+    for (bool enabled : {false, true}) {
+        Memory contact_store;
+        contact_store.valid = true;
+        contact_store.r.sound_enabled = enabled;
+        SimAudio contact_audio;
+        App contact_app(contact_store, default_registry(), false, config::Recipient,
+                        &contact_audio);
+        contact_app.launch(1);
+        InputFrame configure;
+        configure.tap = true;
+        configure.x = 24;
+        configure.y = 122;
+        contact_app.update(configure, .02f); // Unlimited contacts still have audible feedback.
+        configure.x = 120;
+        configure.y = 185;
+        contact_app.update(configure, .02f);
+        CHECK(contact_app.screen() == Screen::Playing);
+        InputFrame lean;
+        lean.imu = true;
+        lean.ax = -1;
+        lean.az = 1;
+        for (int n = 0; n < 300; ++n) {
+            contact_audio.tick(.02f);
+            contact_app.update(lean, .02f);
+        }
+        CHECK(static_cast<MazeGame &>(contact_app.game()).contacts() == 1);
+        CHECK(!contact_app.game().result().finished);
+        CHECK(contact_audio.played == (enabled ? 1u : 0u));
+        if (enabled)
+            CHECK(contact_audio.last == SoundEffect::Error);
+        CHECK(contact_store.writes == 0);
+    }
     MagicBall ball;
     ball.start(Difficulty::Normal, 1);
     Actions ask;

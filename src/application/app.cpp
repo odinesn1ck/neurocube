@@ -59,7 +59,8 @@ void App::update_game(const Actions &a, float dt) {
     game().update(a, dt);
     auto event = game().take_event();
     if (event != GameEvent::None)
-        play_sound(event == GameEvent::ErrorOccurred ? SoundEffect::Error : SoundEffect::Answer);
+        play_sound((event == GameEvent::AnswerAccepted || event == GameEvent::Success)
+                       ? SoundEffect::Answer : SoundEffect::Error);
 }
 void App::pause() {
     if (screen_ == Screen::Playing) {
