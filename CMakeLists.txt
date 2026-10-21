@@ -9,6 +9,9 @@ endif()
 project(neurocube VERSION 1.0.0 LANGUAGES C CXX ASM)
 # Keep reproducible release binaries free of developer checkout/build paths.
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+  get_filename_component(NEUROCUBE_COMPILER_BIN "${CMAKE_CXX_COMPILER}" DIRECTORY)
+  get_filename_component(NEUROCUBE_TOOLCHAIN_ROOT "${NEUROCUBE_COMPILER_BIN}" DIRECTORY)
+  add_compile_options("-ffile-prefix-map=${NEUROCUBE_TOOLCHAIN_ROOT}=toolchain")
   add_compile_options("-ffile-prefix-map=${CMAKE_SOURCE_DIR}=neurocube"
                       "-ffile-prefix-map=${CMAKE_BINARY_DIR}=build")
   if(NEUROCUBE_PICO)

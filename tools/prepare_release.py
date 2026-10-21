@@ -101,6 +101,9 @@ def main():
                 if digest(first/name) != digest(second/name):
                     raise bridge.BridgeError('Independent builds differ: '+name)
         builds[kind] = first
+    for file in [builds['pico']/('neurocube.'+ext) for ext in ('uf2','elf','bin')] + [builds['native']/'neurocube_sim.exe']:
+        if re.search(rb'(?i)[A-Z]:[\\/](?:Users|git)[\\/]', file.read_bytes()):
+            raise bridge.BridgeError('Developer path remains in release binary: '+file.name)
     if git('rev-parse', 'HEAD') != source or git('status', '--porcelain', '--untracked-files=normal'):
         raise bridge.BridgeError('Candidate changed during build')
     cache = (builds['pico']/'CMakeCache.txt').read_text()
