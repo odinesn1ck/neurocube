@@ -15,5 +15,6 @@
     "active": false,
     "api_status": 403,
     "message": "Resource not accessible by personal access token"
-  }
+  },
+  "scope": "Native validation snapshot before hardware install; later USB/physical evidence is indexed separately."
 }
