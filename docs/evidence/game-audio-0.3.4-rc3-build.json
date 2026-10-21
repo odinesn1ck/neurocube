@@ -18,7 +18,7 @@
   ],
   "physical_checks": "NOT_TESTED; rc3 not installed",
   "ci": "https://github.com/odinesn1ck/neurocube/actions/runs/39655564714",
-  "ci_conclusion": "in_progress",
+  "ci_conclusion": "success",
   "sha256": "ad38130e9224953956a69add8ac96c55b2b8e22744b62b32fd57896a36a3c4b1",
   "blocks": 1017,
   "size": 520704
