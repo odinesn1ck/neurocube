@@ -55,7 +55,7 @@ struct MazeMap {
         return 63 + (cell / columns + .5f) * cell_height();
     }
 };
-MazeMap make_maze(int geometry, int variant);
+MazeMap make_maze(int geometry, uint32_t seed);
 class ContactCounter {
     bool armed_ = true;
     float clear_ = 0;
@@ -67,14 +67,17 @@ class ContactCounter {
         clear_ = 0;
         count_ = 0;
     }
-    void update(bool contact, float dt) {
+    void update(bool contact, float dt, bool separated = true) {
         if (contact) {
             clear_ = 0;
             if (armed_) {
-                count_++;
+                if (count_ < UINT16_MAX)
+                    count_++;
                 armed_ = false;
             }
-        } else if ((clear_ += dt) >= .14f)
+        } else if (!separated)
+            clear_ = 0;
+        else if ((clear_ += dt) >= .14f)
             armed_ = true;
     }
     uint16_t count() const {
@@ -121,8 +124,7 @@ class MazeGame final : public Game {
 class CommandsGame final : public Game {
     Random rng;
     int expected = 0;
-    float remaining = 0, limit = 3.4f, feedback_ = 0, angle_ = 0, object_x_ = 120, object_y_ = 134,
-          target_x_ = 120, target_y_ = 134;
+    float remaining = 0, limit = 3.4f, feedback_ = 0, angle_ = 0, object_x_ = 120, object_y_ = 132;
     bool failed_ = false;
     Result outcome;
     void choose();
@@ -150,6 +152,7 @@ class CommandsGame final : public Game {
     float object_x() const {
         return object_x_;
     }
+    float angle() const { return angle_; }
     float object_y() const {
         return object_y_;
     }

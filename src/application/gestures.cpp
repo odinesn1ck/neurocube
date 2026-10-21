@@ -38,6 +38,7 @@ Actions GestureRecognizer::update(const InputFrame &i, float dt) {
     twist_cooldown = std::max(0.f, twist_cooldown - dt);
     if (!i.imu)
         return a;
+    a.turn_rate = std::abs(i.gz) >= 5.f ? std::clamp(i.gz, -512.f, 512.f) : 0;
     const float alpha = 1 - std::exp(-dt * 12.f);
     fx += (i.ax - offset_x - fx) * alpha;
     fy += (i.ay - offset_y - fy) * alpha;

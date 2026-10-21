@@ -109,6 +109,34 @@ static int gallery(const std::string &directory) {
             save("43-magic-pair");
         }
     }
+    scene.launch(1);
+    save("60-maze-setup");
+    tap(120, 185);
+    save("61-maze-first");
+    scene.restart();
+    tap(120, 185);
+    save("62-maze-retry");
+    scene.pause();
+    save("63-maze-pause");
+    tap(120, 185);
+    save("64-maze-new-setup");
+    tap(120, 185);
+    save("65-maze-new");
+    for (int command = 0; command < 6; ++command) {
+        CommandsGame game;
+        for (uint32_t seed = 1;; ++seed) {
+            game.start(Difficulty::Normal, seed);
+            if (game.command() == command) break;
+        }
+        Actions motion;
+        motion.tilt_x = command == 3 ? -.3f : .3f;
+        motion.tilt_y = command == 0 ? -.3f : .3f;
+        motion.turn_rate = command == 4 ? 90.f : 0;
+        for (int tick = 0; tick < 20; ++tick) game.update(motion, .02f);
+        fb.clear(Bg);
+        game.render(fb);
+        ppm((directory + "/command-" + std::to_string(command) + ".ppm").c_str());
+    }
     for (int index = 0; index < 24; index++) {
         MagicBall ball;
         bool found = false;

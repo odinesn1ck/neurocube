@@ -51,7 +51,8 @@ void Board::power_diagnostics() {
         (unsigned long)(raw / 8));
 }
 void Board::init() {
-    hold_power();
+    // main already initialized BAT_EN HIGH before stdio; never reinitialize its latch.
+    gpio_put(28, true);
     gpio_init(24);
     gpio_set_dir(24, GPIO_IN);
     gpio_pull_up(24);

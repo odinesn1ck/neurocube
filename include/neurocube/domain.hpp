@@ -13,7 +13,7 @@ struct InputFrame {
     bool button_down = false;
 };
 struct Actions {
-    float tilt_x = 0, tilt_y = 0;
+    float tilt_x = 0, tilt_y = 0, turn_rate = 0; // degrees/second, independent of twist event
     int direction = -1;
     bool twist = false, shake = false, tap = false;
     int x = 0, y = 0;

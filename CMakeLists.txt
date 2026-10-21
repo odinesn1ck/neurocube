@@ -6,12 +6,13 @@ if(NEUROCUBE_PICO)
   set(PICO_FLASH_SIZE_BYTES 16777216 CACHE STRING "Waveshare flash size")
   include($ENV{PICO_SDK_PATH}/external/pico_sdk_import.cmake)
 endif()
-project(neurocube VERSION 0.3.0 LANGUAGES C CXX ASM)
+project(neurocube VERSION 0.3.1 LANGUAGES C CXX ASM)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 add_library(neurocube_core
   src/domain/records.cpp
   src/domain/crawl_stories.cpp
+  src/application/registry.cpp
   src/application/gestures.cpp
   src/application/idle.cpp
   src/application/app.cpp

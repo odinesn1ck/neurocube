@@ -1,5 +1,4 @@
 #include "neurocube/games.hpp"
-#include "neurocube/application.hpp"
 #include "neurocube/ui.hpp"
 #include <algorithm>
 #include <cmath>
@@ -123,17 +122,20 @@ bool circle_hits_wall(float x, float y, float radius, const Wall &w) {
     float cx = std::clamp(x, w.x, w.x + w.w), cy = std::clamp(y, w.y, w.y + w.h);
     return (x - cx) * (x - cx) + (y - cy) * (y - cy) < radius * radius;
 }
-MazeMap make_maze(int geometry, int variant) {
+MazeMap make_maze(int geometry, uint32_t seed) {
+    geometry = std::clamp(geometry, 0, 2);
     MazeMap m;
     m.columns = 5 + std::clamp(geometry, 0, 2);
     m.rows = geometry ? 5 : 4;
     Random rng;
-    rng.state = 0xC0B0123u + uint32_t(geometry * 97 + variant * 701);
+    rng.state = seed ^ (0xC0B0123u + uint32_t(geometry) * 97u);
+    if (!rng.state) rng.state = 1;
     std::array<bool, 35> visited{};
     std::array<int, 35> stack{};
     int top = 0;
-    stack[0] = 0;
-    visited[0] = true;
+    // Vary the DFS root as well as branch choices; start/goal remain fixed for play.
+    stack[0] = int(rng.bounded(uint32_t(m.columns * m.rows)));
+    visited[stack[0]] = true;
     const int dx[] = {0, 1, 0, -1}, dy[] = {-1, 0, 1, 0};
     while (top >= 0) {
         int c = stack[top], choices[4], n = 0;
@@ -168,9 +170,9 @@ MazeMap make_maze(int geometry, int variant) {
     }
     return m;
 }
-void MazeGame::start(Difficulty d, uint32_t) {
-    options_.geometry = uint8_t(d);
-    map_ = make_maze(options_.geometry, options_.variant % 3);
+void MazeGame::start(Difficulty d, uint32_t seed) {
+    options_.geometry = uint8_t(std::clamp(int(d), 0, 2));
+    map_ = make_maze(options_.geometry, seed);
     x = map_.center_x(0);
     y = map_.center_y(0);
     vx = vy = elapsed = 0;
@@ -205,7 +207,8 @@ void MazeGame::update(const Actions &a, float dt) {
         } else
             y = ny;
     }
-    contacts_.update(touched || hit(x, y, 5.5f), dt);
+    // Nearness only delays rearming; it never creates a penalty without collision.
+    contacts_.update(touched, dt, !hit(x, y, 5.5f));
     outcome.contacts = contacts_.count();
     int limit = ContactLimits[std::min<int>(options_.contact_index, 5)];
     if (limit && outcome.contacts > limit) {
@@ -239,8 +242,8 @@ void MazeGame::render(Renderer &r) const {
 void CommandsGame::choose() {
     expected = int(rng.bounded(6));
     remaining = limit;
-    target_x_ = 120;
-    target_y_ = 132;
+    object_x_ = 120;
+    object_y_ = 132;
 }
 void CommandsGame::start(Difficulty d, uint32_t seed) {
     rng.state = seed ? seed : 1;
@@ -248,17 +251,18 @@ void CommandsGame::start(Difficulty d, uint32_t seed) {
     limit = 3.8f - int(d) * .5f;
     feedback_ = angle_ = 0;
     failed_ = false;
-    object_x_ = target_x_ = 120;
-    object_y_ = target_y_ = 132;
+    object_x_ = 120;
+    object_y_ = 132;
     choose();
 }
 void CommandsGame::update(const Actions &a, float dt) {
     if (outcome.finished)
         return;
-    float blend = 1 - std::exp(-dt * 10);
-    object_x_ += (target_x_ - object_x_) * blend;
-    object_y_ += (target_y_ - object_y_) * blend;
-    angle_ += dt * (feedback_ > 0 ? 10 : 1);
+    dt = std::clamp(dt, 0.f, .1f);
+    // Largest outline radius is 27; keep it between command and hint.
+    object_x_ = std::clamp(object_x_ + a.tilt_x * 120.f * dt, 37.f, 203.f);
+    object_y_ = std::clamp(object_y_ + a.tilt_y * 120.f * dt, 117.f, 139.f);
+    angle_ = std::fmod(angle_ + a.turn_rate * .01745329252f * dt, 6.283185307f);
     if (feedback_ > 0) {
         feedback_ -= dt;
         if (feedback_ <= 0) {
@@ -284,11 +288,9 @@ void CommandsGame::update(const Actions &a, float dt) {
     int action = a.direction;
     if (a.twist)
         action = 4;
-    if (a.tap) {
-        if ((a.x - object_x_) * (a.x - object_x_) + (a.y - object_y_) * (a.y - object_y_) > 30 * 30)
-            return;
+    if (a.tap && (a.x - object_x_) * (a.x - object_x_) +
+                     (a.y - object_y_) * (a.y - object_y_) <= 30 * 30)
         action = 5;
-    }
     if (action < 0)
         return;
     if (action != expected) {
@@ -299,21 +301,7 @@ void CommandsGame::update(const Actions &a, float dt) {
     outcome.score++;
     feedback_ = .55f;
     limit = std::max(1.2f, limit * .97f);
-    if (expected == 0)
-        target_y_ = 102;
-    else if (expected == 1)
-        target_x_ = 190;
-    else if (expected == 2)
-        target_y_ = 154;
-    else if (expected == 3)
-        target_x_ = 50;
-    else if (expected == 4) {
-        target_x_ = 170;
-        target_y_ = 104;
-        angle_ += 2;
-    } else {
-        target_y_ = 111;
-    }
+
 }
 void CommandsGame::render(Renderer &r) const {
     score(r, outcome.score);
@@ -408,11 +396,5 @@ void MagicBall::render(Renderer &r) const {
                      Ink);
     ui::button(r, {12, 177, 216, 25}, "Спросить ещё", Accent);
 }
-GameRegistry default_registry() {
-    static SequenceGame s;
-    static MazeGame m;
-    static CommandsGame c;
-    static MagicBall b;
-    return {{{&s, &m, &c, &b}}};
-}
+
 } // namespace nc

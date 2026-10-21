@@ -21,14 +21,26 @@ void App::launch(int i, bool rules) {
     selected_ = i;
     gestures_.reset();
     phase_time_ = 0;
-    ++seed_;
-    maze_options_.variant = uint8_t(seed_ % 3);
+    if (game().setup()) {
+        if (!maze_seed_) maze_seed_ = ++seed_ ? seed_ : ++seed_;
+    } else
+        ++seed_;
     active_options_ = maze_options_;
     game().configure(active_options_);
-    game().start(game().setup() ? Difficulty(active_options_.geometry) : difficulty_, seed_);
+    game().start(game().setup() ? Difficulty(active_options_.geometry) : difficulty_,
+                 game().setup() ? maze_seed_ : seed_);
     screen_ = game().setup() ? Screen::MazeSetup : rules ? Screen::Rules : Screen::Playing;
 }
 void App::restart() {
+    if (game().setup()) retry_same_maze();
+    else launch(selected_, true);
+}
+void App::retry_same_maze() {
+    if (game().setup()) launch(selected_, true);
+}
+void App::new_maze() {
+    if (!game().setup()) return;
+    maze_seed_ = ++seed_ ? seed_ : ++seed_;
     launch(selected_, true);
 }
 void App::pause() {
@@ -46,17 +58,13 @@ void App::resume() {
 }
 uint32_t App::current_record() const {
     if (registry_.games[selected_]->setup())
-        return records_.maze_best[active_options_.geometry][active_options_.variant]
-                                 [active_options_.contact_index];
+        return 0; // Generated seeds have attempt results, not cross-map records.
     return records_.best[selected_][int(difficulty_)];
 }
 void App::finish() {
     auto result = game().result();
-    if (game().metadata().scored) {
-        uint32_t &best = game().setup()
-                             ? records_.maze_best[active_options_.geometry][active_options_.variant]
-                                                 [active_options_.contact_index]
-                             : records_.best[selected_][int(difficulty_)];
+    if (game().metadata().scored && !game().setup()) {
+        uint32_t &best = records_.best[selected_][int(difficulty_)];
         if (result.score > best) {
             best = result.score;
             dirty_ = true;
@@ -193,9 +201,11 @@ void App::update(const InputFrame &i, float dt) {
                     screen_ = Screen::Settings;
                 return;
             }
-            int n = (i.y - 43) / 39;
-            if (i.y >= 43 && n + menu_page_ * 4 < registry_.count)
-                launch(n + menu_page_ * 4);
+            for (int n = 0; n < 4 && n + menu_page_ * 4 < registry_.count; ++n)
+                if (ui::menu_item(n).contains(i.x, i.y)) {
+                    launch(n + menu_page_ * 4);
+                    break;
+                }
         }
         return;
     }
@@ -204,7 +214,8 @@ void App::update(const InputFrame &i, float dt) {
             if (ui::Rect{8, 48, 224, 36}.contains(i.x, i.y))
                 difficulty_ = Difficulty((int(difficulty_) + 1) % 3);
             else if (ui::Rect{8, 94, 224, 36}.contains(i.x, i.y)) {
-                gestures_.sensitivity = gestures_.sensitivity < 1.3f ? 1.5f : .8f;
+                gestures_.sensitivity = gestures_.sensitivity < .9f ? 1.f
+                                        : gestures_.sensitivity < 1.3f ? 1.5f : .8f;
                 records_.sensitivity = gestures_.sensitivity;
                 dirty_ = true;
                 flush();
@@ -236,6 +247,13 @@ void App::update(const InputFrame &i, float dt) {
             menu();
         return;
     }
+    if (game().setup() && i.tap &&
+        ((screen_ == Screen::MazeSetup && ui::MazeNew.contains(i.x, i.y)) ||
+         ((screen_ == Screen::Paused || screen_ == Screen::Result) &&
+          ui::MazeNewAlternate.contains(i.x, i.y)))) {
+        new_maze();
+        return;
+    }
     if (screen_ == Screen::MazeSetup) {
         if ((i.touch || i.tap) && ui::MazeGeometry.contains(i.x, i.y))
             maze_options_.geometry = uint8_t(std::clamp(((i.x - 24) * 2 + 96) / 192, 0, 2));
@@ -244,7 +262,7 @@ void App::update(const InputFrame &i, float dt) {
         else if (i.tap && ui::MazePlay.contains(i.x, i.y)) {
             active_options_ = maze_options_;
             game().configure(active_options_);
-            game().start(Difficulty(active_options_.geometry), seed_);
+            game().start(Difficulty(active_options_.geometry), maze_seed_);
             begin_play();
         }
         return;
@@ -305,7 +323,7 @@ void App::render(Renderer &r) const {
         r.text(15, 10, "NeuroCube", Accent, 2);
         for (int j = 0; j < 4 && j + menu_page_ * 4 < registry_.count; j++) {
             int n = j + menu_page_ * 4;
-            ui::button(r, {10, 43 + j * 39, 220, 34}, registry_.games[n]->metadata().title,
+            ui::button(r, ui::menu_item(j), registry_.games[n]->metadata().title,
                        registry_.games[n]->metadata().scored ? Accent : Gold);
         }
         r.text(12, 212, "Настройки", Muted);
@@ -346,15 +364,18 @@ void App::render(Renderer &r) const {
     if (screen_ == Screen::MazeSetup) {
         const char *levels[] = {"Лёгкая", "Средняя", "Сложная"};
         std::snprintf(b, sizeof b, "Сложность: %s", levels[maze_options_.geometry]);
-        ui::text_box(r, {12, 28, 216, 28}, b, Ink);
+        ui::text_box(r, {12, 48, 216, 18}, b, Ink);
+        std::snprintf(b, sizeof b, "Карта: %08lX", (unsigned long)maze_seed_);
+        ui::text_box(r, {12, 28, 216, 18}, b, Muted);
         ui::slider(r, ui::MazeGeometry, maze_options_.geometry, 2);
         int limit = ContactLimits[maze_options_.contact_index];
         if (limit)
             std::snprintf(b, sizeof b, "Касания: %d", limit);
         else
             std::snprintf(b, sizeof b, "Касания: без лимита");
-        ui::text_box(r, {12, 99, 216, 22}, b, Ink);
+        ui::text_box(r, {12, 92, 216, 18}, b, Ink);
         ui::slider(r, ui::MazeContacts, maze_options_.contact_index, 5);
+        ui::button(r, ui::MazeNew, "Новый лабиринт", Accent);
         ui::button(r, ui::MazePlay, "Играть", Gold);
     } else if (screen_ == Screen::Rules) {
         ui::text_box(r, {12, 30, 216, 38}, "Как играть", Gold, 2);
@@ -382,10 +403,13 @@ void App::render(Renderer &r) const {
             std::snprintf(b, sizeof b, "Касаний: %u", result.contacts);
             ui::text_box(r, {12, 111, 216, 24}, b, Muted);
         }
-        ui::text_box(r, {12, 146, 216, 42}, save_ok_ ? "Коснись: ещё попытка" : "Ошибка сохранения",
+        ui::text_box(r, {12, 136, 216, 36}, save_ok_ ? "Коснись: ещё попытка" : "Ошибка сохранения",
                      save_ok_ ? Accent : Red);
     } else
         registry_.games[selected_]->render(r);
+    if (registry_.games[selected_]->setup() &&
+        (screen_ == Screen::Paused || screen_ == Screen::Result))
+        ui::button(r, ui::MazeNewAlternate, "Новый лабиринт", Gold);
     const char *labels[] = {screen_ == Screen::Paused ? "Играть" : "Пауза", "Заново", "Далее",
                             "Меню"};
     for (int j = 0; j < 4; j++) {

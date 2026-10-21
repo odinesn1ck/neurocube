@@ -8,6 +8,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <string>
+#include <set>
 using namespace nc;
 static int checks = 0;
 #define CHECK(x)                                                                                   \
@@ -215,8 +216,7 @@ void games_test() {
     }
     CHECK(c.result().finished && c.result().score == 30);
     c.start(Difficulty::Hard, 1);
-    c.update({}, 20);
-    c.update({}, 1);
+    for (int n = 0; n < 300; ++n) c.update({}, .02f);
     CHECK(c.result().finished);
     CHECK(circle_hits_wall(10, 10, 5, {12, 8, 4, 4}));
     CHECK(!circle_hits_wall(0, 0, 5, {12, 8, 4, 4}));
@@ -291,10 +291,10 @@ void completed_games_test() {
         sequence.update({}, .01f);
     CHECK(sequence.result().finished);
     for (int geometry = 0; geometry < 3; geometry++)
-        for (int variant = 0; variant < 3; variant++) {
+        for (int variant = 0; variant < 100; variant++) {
             MazeGame maze;
             maze.configure({uint8_t(geometry), 0, uint8_t(variant)});
-            maze.start(Difficulty(geometry), 1);
+            maze.start(Difficulty(geometry), uint32_t(variant));
             const auto &map = maze.map();
             std::array<int, 35> parent;
             parent.fill(-1);
@@ -743,7 +743,163 @@ void idle_test() {
         yellow += pixel == 0xFFE0;
     CHECK(yellow > 100);
 }
+
+void review_generation_test() {
+    for (int geometry = 0; geometry < 3; ++geometry) {
+        std::set<std::array<uint8_t, 35>> distinct;
+        for (uint32_t seed = 0; seed < 2000; ++seed) {
+            auto m = make_maze(geometry, seed), same = make_maze(geometry, seed);
+            CHECK(m.openings == same.openings && m.wall_count == same.wall_count);
+            int cells = m.columns * m.rows;
+            CHECK(cells <= 35 && m.wall_count <= int(m.walls.size()));
+            CHECK(m.wall_count == (m.columns - 1) * (m.rows - 1) + 4);
+            distinct.insert(m.openings);
+            std::array<bool, 35> visited{};
+            std::array<int, 35> queue{};
+            int head = 0, tail = 1, edges = 0;
+            visited[0] = true;
+            const int delta[] = {-m.columns, 1, m.columns, -1};
+            while (head < tail) {
+                int c = queue[head++];
+                for (int d = 0; d < 4; ++d) if (m.openings[c] & (1 << d)) {
+                    int next = c + delta[d];
+                    CHECK(next >= 0 && next < cells);
+                    CHECK(d != 1 || c % m.columns < m.columns - 1);
+                    CHECK(d != 3 || c % m.columns > 0);
+                    CHECK(m.openings[next] & (1 << ((d + 2) % 4)));
+                    edges++;
+                    // Every open corridor admits the actual ball radius.
+                    for (int step = 0; step <= 10; ++step) {
+                        float t = step / 10.f;
+                        float x = m.center_x(c) * (1-t) + m.center_x(next) * t;
+                        float y = m.center_y(c) * (1-t) + m.center_y(next) * t;
+                        for (int w = 0; w < m.wall_count; ++w)
+                            CHECK(!circle_hits_wall(x, y, 4, m.walls[w]));
+                    }
+                    if (!visited[next]) { visited[next] = true; queue[tail++] = next; }
+                }
+            }
+            CHECK(tail == cells && edges == 2 * (cells - 1));
+            for (int w = 0; w < m.wall_count; ++w) {
+                const auto &wall = m.walls[w];
+                CHECK(wall.x >= 8 && wall.y >= 61 && wall.w > 0 && wall.h > 0);
+                CHECK(wall.x + wall.w <= 232.01f && wall.y + wall.h <= 203.01f);
+            }
+        }
+        std::printf("geometry %d: %zu distinct / 2000 seeds\n", geometry, distinct.size());
+        CHECK(distinct.size() > 1900);
+    }
+    for (uint32_t seed : {0xffffffffu, 0xc0b0123u, 0x80000000u}) {
+        auto map = make_maze(2, seed);
+        CHECK(map.wall_count > 0 && map.wall_count < 96);
+    }
+    // Approach the outer wall without touching it: radius 5.5 is only a rearm margin.
+    MazeGame approach; approach.configure({0, 0, 0}); approach.start(Difficulty::Easy, 22);
+    for (int tick = 0; tick < 2000; ++tick) {
+        Actions a; a.tilt_x = std::clamp((15.2f - approach.ball_x()) * .03f, -.3f, .3f);
+        approach.update(a, .01f);
+    }
+    CHECK(approach.ball_x() > 14.f && approach.ball_x() < 15.5f && approach.contacts() == 0);
+    Actions impact; impact.tilt_x = -1;
+    for (int tick=0;tick<200;++tick) approach.update(impact,.01f);
+    CHECK(approach.contacts()==1);
+    MemoryStore store;
+    store.valid = true;
+    store.data.best[1][1] = 885;
+    store.data.maze_best[1][0][2] = 777;
+    auto before = encode_records(store.data);
+    App app(store);
+    app.launch(1);
+    auto seed = app.maze_seed();
+    InputFrame tap; tap.tap = true; tap.x = 216; tap.y = 75;
+    app.update(tap, .02f); // hard geometry
+    tap.y = 122; app.update(tap, .02f); // 20 contacts
+    tap.x = 120; tap.y = 185; app.update(tap, .02f);
+    CHECK(app.screen() == Screen::Playing);
+    auto hard = static_cast<MazeGame &>(app.game()).map().openings;
+    app.restart();
+    CHECK(app.maze_seed() == seed && app.maze_options().geometry == 2 && app.maze_options().contact_index == 5);
+    CHECK(static_cast<MazeGame &>(app.game()).map().openings == hard);
+    tap.y = 153; app.update(tap, .02f); // explicit new map
+    CHECK(app.maze_seed() != seed && app.maze_options().geometry == 2 && app.maze_options().contact_index == 5);
+    CHECK(static_cast<MazeGame &>(app.game()).map().openings != hard);
+    seed = app.maze_seed();
+    tap.y = 170; app.update(tap, .02f); // gap between buttons
+    CHECK(app.screen() == Screen::MazeSetup && app.maze_seed() == seed);
+    tap.y = 185; app.update(tap, .02f); app.pause();
+    app.update(tap, .02f); // pause new-map button
+    CHECK(app.screen() == Screen::MazeSetup && app.maze_seed() != seed);
+    CHECK(app.current_record() == 0);
+    app.menu();
+    CHECK(store.writes == 0 && encode_records(store.data) == before);
+    // Even a completed generated-map result cannot overwrite the legacy journal.
+    struct GeneratedResult : StubGame { bool setup() const override { return true; } } generated;
+    App result_app(store, {{&generated}, 1});
+    result_app.launch(0); tap.y = 185; result_app.update(tap, .02f);
+    generated.value = {9999, true, true, 0}; result_app.update({}, .02f);
+    CHECK(result_app.screen() == Screen::Result && store.writes == 0);
+    seed = result_app.maze_seed(); result_app.update(tap, .02f);
+    CHECK(result_app.screen() == Screen::MazeSetup && result_app.maze_seed() != seed);
+    CHECK(encode_records(store.data) == before);
+    CHECK(ui::layout("Новый лабиринт", 194, 23).fits);
+}
+void review_input_test() {
+    MemoryStore store; store.valid = true; store.data.sensitivity = .8f;
+    store.data.calibrated = true; store.data.calibration_x = .12f; store.data.calibration_y = -.2f;
+    for (float expected : {1.f, 1.5f, .8f, 1.f}) {
+        App app(store); InputFrame tap; tap.tap = true; tap.x = 100; tap.y = 220;
+        app.update(tap, .02f); tap.y = 110; app.update(tap, .02f);
+        CHECK(std::abs(app.records().sensitivity - expected) < .001f);
+        auto page = encode_records(store.data); Records decoded;
+        CHECK(decode_records(page.data(), page.size(), decoded));
+        CHECK(decoded.sensitivity == expected && decoded.calibrated &&
+              decoded.calibration_x == .12f && decoded.calibration_y == -.2f);
+    }
+    StubGame g[6]; GameRegistry reg{{&g[0], &g[1], &g[2], &g[3], &g[4], &g[5]}, 6};
+    for (int page = 0; page < 2; ++page) {
+        for (int y = 0; y < 210; ++y) for (int x : {0,9,10,100,229,230,239}) {
+            App app(store, reg); InputFrame tap; tap.tap = true;
+            if (page) { tap.x = 200; tap.y = 220; app.update(tap,.02f); }
+            tap.x = x; tap.y = y; app.update(tap,.02f);
+            int expected = -1;
+            for (int row=0; row<4 && row+page*4<6; ++row)
+                if (ui::menu_item(row).contains(x,y)) expected = row+page*4;
+            CHECK((app.screen() == Screen::Rules) == (expected >= 0));
+            if (expected >= 0) CHECK(app.selected() == expected);
+        }
+    }
+    ContactCounter counter;
+    counter.update(false, 1, false); CHECK(counter.count() == 0); // near, no impact
+    counter.update(true, .02f, false); CHECK(counter.count() == 1);
+    for (int n=0;n<100;++n) counter.update(false,.02f,false); // resting near wall
+    counter.update(true,.02f,false); CHECK(counter.count() == 1);
+    counter.update(false,.1f,true); counter.update(true,.02f,false); CHECK(counter.count()==1);
+    counter.update(false,.15f,true); counter.update(true,.02f,false); CHECK(counter.count()==2);
+    for (int command=0;command<6;++command) {
+        CommandsGame game;
+        for (uint32_t seed=1;;++seed) {game.start(Difficulty::Normal,seed);if(game.command()==command)break;}
+        auto x=game.object_x(); auto angle=game.angle();
+        Actions motion; motion.tilt_x=.2f; motion.tilt_y=.2f;
+        game.update(motion,.02f);
+        CHECK(game.object_x()>x && game.object_y()>132 && game.result().score==0 && game.feedback()==0);
+        CHECK(game.angle()==angle);
+        motion.turn_rate=80; game.update(motion,.02f); CHECK(game.angle()!=angle);
+        angle=game.angle(); game.update({},.02f); CHECK(game.angle()==angle);
+        motion={}; motion.tilt_x=1; motion.tilt_y=1;
+        for(int n=0;n<25;++n)game.update(motion,.1f);
+        CHECK(game.object_x()+27<=230 && game.object_y()+27<168 && game.object_y()-27>88);
+    }
+    CommandsGame game; for(uint32_t seed=1;;++seed){game.start(Difficulty::Normal,seed);if(game.command()<4)break;}
+    Actions answer;answer.direction=game.command();answer.tap=true;answer.x=0;answer.y=0;
+    game.update(answer,.02f);CHECK(game.result().score==1); // stray tap no longer masks tilt
+    GestureRecognizer gestures; InputFrame imu;imu.imu=true;imu.gz=90;
+    CHECK(gestures.update(imu,.02f).turn_rate==90);imu.gz=1;
+    CHECK(gestures.update(imu,.02f).turn_rate==0);
+}
+
 int main() {
+    review_generation_test();
+    review_input_test();
     idle_test();
     polish_test();
     records_test();

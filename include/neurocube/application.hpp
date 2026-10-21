@@ -66,7 +66,7 @@ class App {
     IdleController idle_;
     int selected_ = 0, menu_page_ = 0;
     Difficulty difficulty_ = Difficulty::Normal;
-    uint32_t seed_ = 0x4E435542;
+    uint32_t seed_ = 0x4E435542, maze_seed_ = 0;
     bool dirty_ = false, save_ok_ = true;
     float clock_ = 0, phase_time_ = 0;
     GameOptions maze_options_{}, active_options_{};
@@ -87,6 +87,9 @@ class App {
     void render(Renderer &) const;
     void launch(int, bool rules = true);
     void restart();
+    void retry_same_maze();
+    void new_maze();
+    uint32_t maze_seed() const { return maze_seed_; }
     void pause();
     void resume();
     void menu();
