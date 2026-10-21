@@ -41,7 +41,7 @@ bool circle_hits_wall(float x, float y, float radius, const Wall &);
 struct MazeMap {
     int columns = 5, rows = 4, wall_count = 0;
     std::array<Wall, 96> walls{};
-    std::array<uint8_t, 35> openings{};
+    std::array<uint8_t, 40> openings{};
     float cell_width() const {
         return 220.f / columns;
     }
@@ -125,14 +125,15 @@ class CommandsGame final : public Game {
     Random rng;
     int expected = 0;
     float remaining = 0, limit = 3.4f, feedback_ = 0, angle_ = 0, object_x_ = 120, object_y_ = 132;
-    bool failed_ = false;
+    bool failed_ = false, dragging_ = false, swipe_sent_ = false;
+    int drag_x_ = 0, drag_y_ = 0;
     Result outcome;
     void choose();
 
   public:
     Metadata metadata() const override {
         return {"commands", "Лови команду",
-                "Следи за командами. Поворот: вращай куб или коснись круга."};
+                "Следи за командами. Наклон или свайп. Поворот: куб/касание."};
     }
     bool countdown() const override {
         return true;

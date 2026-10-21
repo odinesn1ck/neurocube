@@ -35,10 +35,10 @@ static void status(nc::App &app, const nc::InputFrame &i) {
 static void handle(const char *cmd, nc::App &app, const nc::InputFrame &i) {
     if (!strcmp(cmd, "NC1 hello")) {
         printf(
-            "{\"v\":1,\"type\":\"hello\",\"product\":\"NeuroCube\",\"firmware\":\"0.3.2\","
+            "{\"v\":1,\"type\":\"hello\",\"product\":\"NeuroCube\",\"firmware\":\"0.3.3\","
             "\"serial\":\"%s\",\"revision\":\"%s\",\"capabilities\":[\"status\",\"imu\","
             "\"selftest\","
-            "\"framebuffer\",\"records\",\"power\",\"settings\",\"display\"],\"debug_input\":%s}\n",
+            "\"framebuffer\",\"records\",\"power\",\"settings\",\"display\",\"ui\"],\"debug_input\":%s}\n",
             serial_id, NEUROCUBE_REVISION,
 #ifdef NEUROCUBE_DEBUG_INPUT
             "true"
@@ -46,6 +46,10 @@ static void handle(const char *cmd, nc::App &app, const nc::InputFrame &i) {
             "false"
 #endif
         );
+    } else if (!strcmp(cmd, "NC1 ui")) {
+        printf("{\"v\":1,\"type\":\"ui\",\"screen\":%d,\"idle_phase\":%d,\"progress\":%.2f,\"brightness\":%u,\"maze_seed\":%lu}\n",
+               int(app.screen()), int(app.idle().phase()), app.idle().progress(),
+               app.brightness(), (unsigned long)app.maze_seed());
     } else if (!strcmp(cmd, "NC1 display")) {
         display_power.diagnostics(app.display_idle());
     } else if (!strcmp(cmd, "NC1 power")) {
@@ -186,9 +190,18 @@ int main() {
         if (!app.display_idle()) {
             app.render(frame);
             board.present(frame);
+            app.frame_presented();
         } else
             frame.clear(0);
         display_power.apply(app.brightness());
+        if (app.power_cut_requested()) {
+            nc::Board::release_power();
+            app.power_cut_applied();
+        }
+        if (app.power_restore_requested()) {
+            nc::Board::hold_power();
+            app.power_restored();
+        }
         for (int n = 0; n < 160; n++) {
             int c = getchar_timeout_us(0);
             if (c == PICO_ERROR_TIMEOUT)

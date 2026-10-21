@@ -32,6 +32,7 @@ Actions GestureRecognizer::update(const InputFrame &i, float dt) {
     dt = std::clamp(dt, 0.f, 0.1f);
     Actions a;
     a.tap = i.tap;
+    a.touch = i.touch;
     a.x = i.x;
     a.y = i.y;
     cooldown = std::max(0.f, cooldown - dt);

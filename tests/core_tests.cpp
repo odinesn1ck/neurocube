@@ -306,9 +306,9 @@ void completed_games_test() {
             maze.configure({uint8_t(geometry), 0, uint8_t(variant)});
             maze.start(Difficulty(geometry), uint32_t(variant));
             const auto &map = maze.map();
-            std::array<int, 35> parent;
+            std::array<int, 40> parent;
             parent.fill(-1);
-            std::array<int, 35> queue{};
+            std::array<int, 40> queue{};
             int head = 0, tail = 1;
             parent[0] = 0;
             const int delta[] = {-map.columns, 1, map.columns, -1};
@@ -325,7 +325,7 @@ void completed_games_test() {
                     }
             }
             CHECK(tail == map.columns * map.rows);
-            std::array<int, 35> route{};
+            std::array<int, 40> route{};
             int count = 0, c = map.columns * map.rows - 1;
             while (c) {
                 route[count++] = c;
@@ -648,7 +648,7 @@ void idle_test() {
     motion.ax = 3;
     motion.az = 4;
     motion.gz = 400;
-    for (int n = 0; n < 500; n++)
+    for (int n = 0; n < 1000; n++)
         app.update(motion, .1f);
     CHECK(app.screen() == Screen::DisplayIdle);
     InputFrame touch;
@@ -756,16 +756,16 @@ void idle_test() {
 
 void review_generation_test() {
     for (int geometry = 0; geometry < 3; ++geometry) {
-        std::set<std::array<uint8_t, 35>> distinct;
+        std::set<std::array<uint8_t, 40>> distinct;
         for (uint32_t seed = 0; seed < 2000; ++seed) {
             auto m = make_maze(geometry, seed), same = make_maze(geometry, seed);
             CHECK(m.openings == same.openings && m.wall_count == same.wall_count);
             int cells = m.columns * m.rows;
-            CHECK(cells <= 35 && m.wall_count <= int(m.walls.size()));
+            CHECK(cells <= 40 && m.wall_count <= int(m.walls.size()));
             CHECK(m.wall_count == (m.columns - 1) * (m.rows - 1) + 4);
             distinct.insert(m.openings);
-            std::array<bool, 35> visited{};
-            std::array<int, 35> queue{};
+            std::array<bool, 40> visited{};
+            std::array<int, 40> queue{};
             int head = 0, tail = 1, edges = 0;
             visited[0] = true;
             const int delta[] = {-m.columns, 1, m.columns, -1};
@@ -835,10 +835,10 @@ void review_generation_test() {
     CHECK(static_cast<MazeGame &>(app.game()).map().openings != hard);
     seed = app.maze_seed();
     tap.y = 170; app.update(tap, .02f); // gap between buttons
-    CHECK(app.screen() == Screen::MazeSetup && app.maze_seed() == seed);
+    CHECK(app.screen() == Screen::Playing && app.maze_seed() == seed);
     tap.y = 185; app.update(tap, .02f); app.pause();
     app.update(tap, .02f); // pause new-map button
-    CHECK(app.screen() == Screen::MazeSetup && app.maze_seed() != seed);
+    CHECK(app.screen() == Screen::Playing && app.maze_seed() != seed);
     CHECK(app.current_record() == 0);
     app.menu();
     CHECK(store.writes == 0 && encode_records(store.data) == before);
@@ -849,7 +849,7 @@ void review_generation_test() {
     generated.value = {9999, true, true, 0}; result_app.update({}, .02f);
     CHECK(result_app.screen() == Screen::Result && store.writes == 0);
     seed = result_app.maze_seed(); result_app.update(tap, .02f);
-    CHECK(result_app.screen() == Screen::MazeSetup && result_app.maze_seed() != seed);
+    CHECK(result_app.screen() == Screen::Playing && result_app.maze_seed() != seed);
     CHECK(encode_records(store.data) == before);
     CHECK(ui::layout("Новый лабиринт", 194, 23).fits);
 }
@@ -977,7 +977,66 @@ void player_feedback_test() {
     app.update(shake,.02f);CHECK(app.screen()==Screen::Rules);
 }
 
+
+void acceptance_followup_test() {
+    auto ticks=[](App &a, InputFrame i, int n) { for(int k=0;k<n;++k)a.update(i,.1f); };
+    MemoryStore store; StubGame game;
+    App app(store, {{&game},1}); InputFrame pwr; pwr.power_button=true;
+    ticks(app,pwr,30); CHECK(app.screen()==Screen::Menu); // Power-on hold is ignored.
+    app.update({},.1f); ticks(app,pwr,10); app.update({},.1f);
+    CHECK(app.screen()==Screen::Menu && !app.power_cut_requested());
+    app.launch(0,false); game.value.score=42;
+    ticks(app,pwr,19);
+    CHECK(app.screen()==Screen::ShuttingDown && store.data.best[0][1]==42);
+    int writes=store.writes;
+    ticks(app,{},30); CHECK(!app.power_cut_requested()); // No LCD acknowledgement yet.
+    app.frame_presented(); ticks(app,pwr,12);
+    CHECK(!app.power_cut_requested() && store.writes==writes); // Held PWR still powers circuit.
+    app.update({},.1f); CHECK(app.power_cut_requested());
+    app.power_cut_applied(); CHECK(!app.power_cut_requested());
+    ticks(app,{},9); CHECK(!app.power_restore_requested());
+    ticks(app,{},2); CHECK(app.power_restore_requested());
+    app.power_restored(); CHECK(app.screen()==Screen::PowerNotice);
+    InputFrame touch;touch.tap=true;app.update(touch,.1f);CHECK(app.screen()==Screen::Menu);
+    MemoryStore bad;bad.fail=true;App failed(bad,{{&game},1});failed.update({},.1f);
+    failed.launch(0,false);game.value.score=99;ticks(failed,pwr,19);
+    CHECK(failed.screen()==Screen::PowerNotice && !failed.save_ok());
+    failed.frame_presented();ticks(failed,{},30);CHECK(!failed.power_cut_requested());
+    // Idle entry is already yellow, and a long stalled frame cannot skip the crawl.
+    IdleController idle;idle.update(true,false,120);Framebuffer fb;
+    render_crawl(fb,idle.progress(),idle.episode());
+    CHECK(std::count(fb.pixels.begin(),fb.pixels.end(),uint16_t(0xFFE0))>50);
+    float progress=idle.progress();idle.update(false,false,300);
+    CHECK(idle.phase()==IdlePhase::Crawl && idle.progress()-progress<=4.01f);
+    for(int command=0;command<4;++command) {
+        CommandsGame g;for(uint32_t seed=1;;++seed){g.start(Difficulty::Normal,seed);if(g.command()==command)break;}
+        Actions a;a.tap=a.touch=true;a.x=120;a.y=132;g.update(a,.02f);
+        CHECK(g.feedback()==0 && g.result().score==0);
+        a.tap=false;a.x+=command==1?30:command==3?-30:0;
+        a.y+=command==2?25:command==0?-25:0;g.update(a,.02f);
+        CHECK(g.result().score==1);
+        for(int k=0;k<10;++k)g.update(a,.02f);CHECK(g.result().score==1);
+    }
+    // Button corners and center match actual drawn rectangles; outside edges do nothing.
+    for(auto rect : {ui::MazeNew,ui::MazeNewAlternate}) {
+        for(int x : {rect.x,rect.x+rect.w/2,rect.x+rect.w-1})
+            for(int y : {rect.y,rect.y+rect.h/2,rect.y+rect.h-1}) {
+                MemoryStore m;App maze(m);maze.launch(1);
+                if(rect.y==ui::MazeNewAlternate.y){maze.new_maze();maze.pause();}
+                auto seed=maze.maze_seed();InputFrame t;t.tap=true;t.x=x;t.y=y;maze.update(t,.02f);
+                CHECK(maze.screen()==Screen::Playing && maze.maze_seed()!=seed && m.writes==0);
+            }
+    }
+    CHECK(ui::layout("Выключаюсь",232,44,2).fits);
+    GestureRecognizer low, high; low.sensitivity=.8f;high.sensitivity=1.5f;
+    InputFrame tilt;tilt.imu=true;tilt.ax=.3f;int low_events=0,high_events=0;
+    for(int n=0;n<100;++n){low_events+=low.update(tilt,.02f).direction>=0;high_events+=high.update(tilt,.02f).direction>=0;}
+    CHECK(low_events==0 && high_events==1);
+
+}
+
 int main() {
+    acceptance_followup_test();
     player_feedback_test();
     review_generation_test();
     review_input_test();

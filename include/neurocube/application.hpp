@@ -54,7 +54,9 @@ enum class Screen {
     Splash,
     ProjectQr,
     Crawl,
-    DisplayIdle
+    DisplayIdle,
+    ShuttingDown,
+    PowerNotice
 };
 class App {
     GameRegistry registry_;
@@ -67,6 +69,8 @@ class App {
     int selected_ = 0, menu_page_ = 0;
     Difficulty difficulty_ = Difficulty::Normal;
     uint32_t seed_ = 0x4E435542, maze_seed_ = 0;
+    bool power_armed_ = false, shutdown_presented_ = false, power_released_ = false;
+    float power_hold_ = 0, shutdown_time_ = 0;
     bool dirty_ = false, save_ok_ = true;
     float clock_ = 0, phase_time_ = 0;
     GameOptions maze_options_{}, active_options_{};
@@ -85,6 +89,15 @@ class App {
                  const char *recipient = config::Recipient);
     void update(const InputFrame &, float);
     void render(Renderer &) const;
+    void frame_presented() { if (screen_ == Screen::ShuttingDown) shutdown_presented_ = true; }
+    bool power_cut_requested() const {
+        return screen_ == Screen::ShuttingDown && shutdown_presented_ &&
+               shutdown_time_ >= 1.f && !latest_.power_button && !power_released_;
+    }
+    void power_cut_applied() { power_released_ = true; shutdown_time_ = 0; }
+    bool power_restore_requested() const { return power_released_ && shutdown_time_ >= 1.f; }
+    void power_restored() { power_released_ = false; screen_ = Screen::PowerNotice; }
+
     void launch(int, bool rules = true);
     void restart();
     void retry_same_maze();

@@ -145,8 +145,10 @@ void Board::init() {
     }
     flash_safe_execute_core_init();
 }
+void Board::release_power() { gpio_put(28, false); }
 InputFrame Board::sample() {
     InputFrame f;
+    f.power_button = !gpio_get(24);
     uint8_t b[12]{};
     if (status.imu_ok) {
         if (read_regs(status.imu_addr, 53, b, 12)) {

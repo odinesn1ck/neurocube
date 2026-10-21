@@ -131,13 +131,13 @@ bool circle_hits_wall(float x, float y, float radius, const Wall &w) {
 MazeMap make_maze(int geometry, uint32_t seed) {
     geometry = std::clamp(geometry, 0, 2);
     MazeMap m;
-    m.columns = 5 + std::clamp(geometry, 0, 2);
+    m.columns = geometry >= 2 ? 8 : 5 + std::clamp(geometry, 0, 2);
     m.rows = geometry ? 5 : 4;
     Random rng;
     rng.state = seed ^ (0xC0B0123u + uint32_t(geometry) * 97u);
     if (!rng.state) rng.state = 1;
-    std::array<bool, 35> visited{};
-    std::array<int, 35> stack{};
+    std::array<bool, 40> visited{};
+    std::array<int, 40> stack{};
     int top = 0;
     // Vary the DFS root as well as branch choices; start/goal remain fixed for play.
     stack[0] = int(rng.bounded(uint32_t(m.columns * m.rows)));
@@ -257,11 +257,13 @@ void CommandsGame::start(Difficulty d, uint32_t seed) {
     limit = 3.8f - int(d) * .5f;
     feedback_ = angle_ = 0;
     failed_ = false;
+    dragging_ = swipe_sent_ = false;
     object_x_ = 120;
     object_y_ = 132;
     choose();
 }
 void CommandsGame::update(const Actions &a, float dt) {
+    if (!a.touch && !a.tap) { dragging_ = false; swipe_sent_ = false; }
     if (outcome.finished)
         return;
     dt = std::clamp(dt, 0.f, .1f);
@@ -291,13 +293,31 @@ void CommandsGame::update(const Actions &a, float dt) {
         feedback_ = .7f;
         return;
     }
+    int swipe = -1;
+    if ((a.tap || a.touch) && !dragging_ && !swipe_sent_ &&
+        a.x >= 8 && a.x < 232 && a.y >= 90 && a.y < 168) {
+        dragging_ = true; drag_x_ = a.x; drag_y_ = a.y;
+    }
+    if (dragging_ && a.touch && !swipe_sent_) {
+        int dx = a.x - drag_x_, dy = a.y - drag_y_;
+        if (std::abs(dx) >= 22 && std::abs(dx) > std::abs(dy) * 1.2f)
+            swipe = dx > 0 ? 1 : 3;
+        else if (std::abs(dy) >= 22 && std::abs(dy) > std::abs(dx) * 1.2f)
+            swipe = dy > 0 ? 2 : 0;
+        if (swipe >= 0) {
+            swipe_sent_ = true;
+            object_x_ = std::clamp(object_x_ + dx, 37.f, 203.f);
+            object_y_ = std::clamp(object_y_ + dy, 117.f, 139.f);
+        }
+    }
     int action = a.direction;
     // Tolerate incidental motion across axes; deliberate wrong actions still fail.
     const float tilt = std::max(std::abs(a.tilt_x), std::abs(a.tilt_y));
     if (expected == 4 && tilt < .65f) action = -1;
     if (a.twist && !(expected < 4 && std::abs(a.turn_rate) < 240.f))
         action = 4;
-    if (a.tap && (a.x - object_x_) * (a.x - object_x_) +
+    if (swipe >= 0) action = swipe;
+    if (expected >= 4 && a.tap && (a.x - object_x_) * (a.x - object_x_) +
                      (a.y - object_y_) * (a.y - object_y_) <= 30 * 30) {
         action = expected == 4 ? 4 : 5;
         if (expected == 4) angle_ = std::fmod(angle_ + 1.570796327f, 6.283185307f);
@@ -330,7 +350,7 @@ void CommandsGame::render(Renderer &r) const {
     ui::text_box(r, {10, 168, 220, 19},
                  expected == 4   ? "Поверни или коснись"
                  : expected == 5 ? "Коснись светлого круга"
-                                 : "Наклон двигает круг",
+                                 : "Наклони или проведи",
                  Muted);
     r.rect(12, 193, 216, 8, 0x2128);
     r.rect(12, 193, int(216 * std::clamp(remaining / limit, 0.f, 1.f)), 8, Accent);

@@ -42,6 +42,7 @@ void App::new_maze() {
     if (!game().setup()) return;
     maze_seed_ = ++seed_ ? seed_ : ++seed_;
     launch(selected_, true);
+    begin_play(); // Show the newly generated map immediately.
 }
 void App::pause() {
     if (screen_ == Screen::Playing) {
@@ -152,8 +153,32 @@ void App::update(const InputFrame &i, float dt) {
     dt = std::clamp(dt, 0.f, .1f);
     clock_ += dt;
     latest_ = i;
+    // Boot PWR must first be released before a new hold can request shutdown.
+    if (!i.power_button) { power_armed_ = true; power_hold_ = 0; }
+    else if (power_armed_) power_hold_ += dt;
+    if (screen_ == Screen::ShuttingDown) {
+        if (shutdown_presented_) shutdown_time_ += dt;
+        return;
+    }
+    if (screen_ == Screen::PowerNotice) {
+        if (i.tap || i.short_button) menu();
+        return;
+    }
+    if (power_armed_ && power_hold_ >= 1.8f) {
+        power_armed_ = false;
+        power_hold_ = 0;
+        if (screen_ == Screen::Playing || screen_ == Screen::Paused || screen_ == Screen::Result)
+            finish();
+        const bool saved = flush();
+        game().stop();
+        idle_ = IdleController{};
+        shutdown_time_ = 0;
+        shutdown_presented_ = false;
+        screen_ = saved ? Screen::ShuttingDown : Screen::PowerNotice;
+        return;
+    }
     auto a = gestures_.update(i, dt);
-    bool user_action = i.tap || i.touch || i.button_down || i.short_button || i.long_button;
+    bool user_action = i.tap || i.touch || i.button_down || i.short_button || i.long_button || i.power_button;
     auto event =
         idle_.update(screen_ == Screen::Menu || screen_ == Screen::Result, user_action, idle_dt);
     if (event == IdleEvent::Started) {
@@ -211,9 +236,9 @@ void App::update(const InputFrame &i, float dt) {
     }
     if (screen_ == Screen::Settings) {
         if (i.tap) {
-            if (ui::Rect{8, 48, 224, 36}.contains(i.x, i.y))
+            if (ui::Rect{8, 48, 224, 28}.contains(i.x, i.y))
                 difficulty_ = Difficulty((int(difficulty_) + 1) % 3);
-            else if (ui::Rect{8, 94, 224, 36}.contains(i.x, i.y)) {
+            else if (ui::Rect{8, 84, 224, 28}.contains(i.x, i.y)) {
                 gestures_.sensitivity = gestures_.sensitivity < .9f ? 1.f
                                         : gestures_.sensitivity < 1.3f ? 1.5f : .8f;
                 records_.sensitivity = gestures_.sensitivity;
@@ -303,6 +328,15 @@ void App::update(const InputFrame &i, float dt) {
 void App::render(Renderer &r) const {
     r.clear(Bg);
     char b[128];
+    if (screen_ == Screen::ShuttingDown) {
+        ui::text_box(r, {4, 94, 232, 44}, "Выключаюсь", Ink, 2);
+        return;
+    }
+    if (screen_ == Screen::PowerNotice) {
+        ui::text_box(r, {8, 60, 224, 60}, save_ok_ ? "Питание осталось" : "Ошибка сохранения", Gold, 2);
+        ui::text_box(r, {8, 135, 224, 60}, "Коснись: вернуться в меню", Ink);
+        return;
+    }
     if (screen_ == Screen::Crawl) {
         render_crawl(r, idle_.progress(), idle_.episode());
         return;
@@ -338,9 +372,10 @@ void App::render(Renderer &r) const {
         ui::text_box(r, {8, 8, 224, 36}, "Настройки", Accent, 2);
         const char *levels[] = {"Легко", "Обычно", "Сложно"};
         std::snprintf(b, sizeof b, "Уровень: %s", levels[int(difficulty_)]);
-        ui::button(r, {8, 48, 224, 36}, b);
+        ui::button(r, {8, 48, 224, 28}, b);
         std::snprintf(b, sizeof b, "Чувств.: %.1f", gestures_.sensitivity);
-        ui::button(r, {8, 94, 224, 36}, b);
+        ui::button(r, {8, 84, 224, 28}, b);
+        ui::text_box(r, {8, 114, 224, 22}, "Выше: легче наклон", Muted);
         ui::button(r, ui::CalibrationItem, "Калибровка");
         ui::button(r, {8, 186, 224, 36}, "В меню", Gold);
         return;
@@ -348,7 +383,9 @@ void App::render(Renderer &r) const {
     if (screen_ == Screen::Calibration) {
         ui::text_box(r, {8, 0, 224, 36}, "Калибровка", Accent, 2);
         ui::text_box(r, {12, 38, 216, 36}, "Держи куб удобно и неподвижно", Ink);
-        std::snprintf(b, sizeof b, "X %.2f   Y %.2f", latest_.ax, latest_.ay);
+        std::snprintf(b, sizeof b, "%s %.2f / %.2f", records_.calibrated ? "От 0:" : "Raw:",
+                      latest_.ax - (records_.calibrated ? records_.calibration_x : 0),
+                      latest_.ay - (records_.calibrated ? records_.calibration_y : 0));
         ui::text_box(r, {10, 75, 220, 22}, latest_.imu ? b : "Нет данных IMU", Muted);
         ui::button(r, ui::CalibrationConfirm,
                    calibrating_         ? "Не двигай куб..."

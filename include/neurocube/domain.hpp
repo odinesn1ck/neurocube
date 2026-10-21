@@ -15,7 +15,7 @@ struct InputFrame {
 struct Actions {
     float tilt_x = 0, tilt_y = 0, turn_rate = 0; // degrees/second, independent of twist event
     int direction = -1;
-    bool twist = false, shake = false, tap = false;
+    bool twist = false, shake = false, tap = false, touch = false;
     int x = 0, y = 0;
 };
 enum class Difficulty : uint8_t { Easy, Normal, Hard };

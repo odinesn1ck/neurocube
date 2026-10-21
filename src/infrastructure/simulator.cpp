@@ -119,7 +119,7 @@ static int gallery(const std::string &directory) {
     scene.pause();
     save("63-maze-pause");
     tap(120, 185);
-    save("64-maze-new-setup");
+    save("64-maze-new-immediate");
     tap(120, 185);
     save("65-maze-new");
     for (int command = 0; command < 6; ++command) {
@@ -158,14 +158,22 @@ static int gallery(const std::string &directory) {
         ppm((directory + "/pair-" + std::to_string(index) + ".ppm").c_str());
     }
     scene.menu();
+    scene.update({},.1f);
+    InputFrame power;power.power_button=true;
+    for(int n=0;n<20;++n)scene.update(power,.1f);
+    save("49-shutdown");
+    scene.frame_presented();
+    wait(1.1f);
+    scene.power_cut_applied();wait(1.1f);scene.power_restored();
+    save("49-external-power");
+    tap(120,130);
     wait(120.1f);
-    wait(1.7f);
     save("50-crawl-start");
-    wait(4.3f);
+    wait(20.f);
     save("51-crawl-middle");
     while (scene.idle().phase() == IdlePhase::Crawl) {
         scene.update({}, .02f);
-        if (scene.idle().progress() > 2600 && scene.idle().progress() < 2602)
+        if (scene.idle().progress() > 1040 && scene.idle().progress() < 1041)
             save("52-crawl-end");
     }
     save("53-crawl-fade");
@@ -228,6 +236,7 @@ LRESULT CALLBACK WindowProc(HWND w, UINT msg, WPARAM wp, LPARAM lp) {
         bi.bmiHeader.biCompression = BI_RGB;
         StretchDIBits(dc, 0, 0, 480, 480, 0, 0, 240, 240, rgb, &bi, DIB_RGB_COLORS, SRCCOPY);
         EndPaint(w, &ps);
+        app.frame_presented();
         return 0;
     }
     }
@@ -256,7 +265,7 @@ int main(int argc, char **argv) {
     RECT rect{0, 0, 480, 480};
     AdjustWindowRect(&rect, WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX, FALSE);
     HWND w = CreateWindowW(
-        wc.lpszClassName, L"NeuroCube | arrows tilt, Q turn, Space shake, Tab next, Esc menu",
+        wc.lpszClassName, L"NeuroCube | arrows tilt, Q turn, Space shake, Tab next, Esc menu, P power (simulated)",
         WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX, CW_USEDEFAULT, CW_USEDEFAULT,
         rect.right - rect.left, rect.bottom - rect.top, nullptr, nullptr, inst, nullptr);
     ShowWindow(w, SW_SHOW);
@@ -270,6 +279,7 @@ int main(int argc, char **argv) {
         }
         pending.button_down =
             (GetAsyncKeyState(VK_TAB) & 0x8000) || (GetAsyncKeyState(VK_ESCAPE) & 0x8000);
+        pending.power_button = (GetAsyncKeyState('P') & 0x8000) != 0;
         pending.imu = true;
         pending.ax = ((GetAsyncKeyState(VK_RIGHT) & 0x8000) ? .7f : 0) -
                      ((GetAsyncKeyState(VK_LEFT) & 0x8000) ? .7f : 0);
@@ -279,6 +289,8 @@ int main(int argc, char **argv) {
         pending.az = (GetAsyncKeyState(VK_SPACE) & 0x8000) ? 3.f : 1.f;
         app.update(pending, .02f);
         app.render(fb);
+        if (app.power_cut_requested()) app.power_cut_applied();
+        if (app.power_restore_requested()) app.power_restored();
         pending.tap = pending.short_button = pending.long_button = false;
         InvalidateRect(w, nullptr, FALSE);
         Sleep(20);

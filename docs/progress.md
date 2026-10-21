@@ -1,5 +1,10 @@
 # Состояние NeuroCube
 
+## Текущая разработка: 0.3.3
+
+Реализовано задание [hardware acceptance followup](tasks/hardware-acceptance-followup-0.3.2.md). VERIFIED_IN_SIMULATOR: native suite, 6000 seed, 300 физических моделей прохождения, swipe/PWR/save failure/LCD acknowledgement/USB fallback и видимые кадры. 14 Python tests пройдены. UF2 собран (COMPILED_ONLY), но **0.3.3 ещё не прошита**: нужно отдельное разрешение на новый алгоритм выключения. На USB остаётся 0.3.2; последнее чтение sequence=20, I²C errors=0. Физическое выключение/холодный старт/видимый crawl остаются NOT_TESTED. [Отчёт и галерея](evidence/acceptance-followup-0.3.3.md).
+
+
 Обновлено 21.10.2026. Ветка `codex/neurocube-mvp`, [PR #1](https://github.com/odinesn1ck/neurocube/pull/1), без merge. На плате `419CB819454EA93D` установлена **production 0.3.2**, исходный коммит `8edc20c35597`; debug input отключён. Предыдущие аппаратные свидетельства ниже относятся к указанным 0.3.0/0.3.1.
 
 ## Обратная связь: 0.3.2

@@ -23,7 +23,8 @@ IdleEvent IdleController::update(bool eligible, bool action, float dt) {
         if (idle_seconds_ + 1e-6 < Threshold)
             return IdleEvent::None;
         phase_ = IdlePhase::Crawl;
-        progress_ = fade_ = 0;
+        progress_ = 100; // First title is visible on the entry frame.
+        fade_ = 0;
         episode_ = next_episode_;
         next_episode_ = (next_episode_ + 1) % CrawlStoryCount;
         return IdleEvent::Started;
@@ -35,6 +36,7 @@ IdleEvent IdleController::update(bool eligible, bool action, float dt) {
         quiet_ = 0;
         return IdleEvent::Woke;
     }
+    dt = std::min(dt, .1f); // A stalled USB transfer must not skip the animation.
     if (phase_ == IdlePhase::Crawl) {
         progress_ += CrawlSpeed * dt;
         if (crawl_finished(progress_, crawl_story(episode_))) {
