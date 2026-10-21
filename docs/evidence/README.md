@@ -15,3 +15,10 @@
 | [Галерея симулятора](../images/polish-simulator-gallery.png) | Программные кадры, не фотографии LCD |
 | [Архив аппаратных заметок](hardware-notes-before-governance-2026-10-21.md) | Исходные факты до разделения документации |
 | [Аудит документации](documentation-audit-2026-10-21.md) | Найденные противоречия и результат проверки ссылок |
+
+## Скринсейвер 0.3.0
+
+- [Native и QR decode](star-crawl-native-2026-10-21.json).
+- [Production USB smoke](star-usb-smoke-2026-10-21.json).
+- [Два идентичных UF2](star-reproducibility-2026-10-21.json).
+- [Кадры симулятора](../images/star-crawl-simulator-gallery.png).

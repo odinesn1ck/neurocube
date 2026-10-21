@@ -226,17 +226,19 @@ static void flash_write(void *ctx) {
 bool FlashStore::save(const Records &r) {
     if (reinterpret_cast<uintptr_t>(&__flash_binary_end) > XIP_BASE + StorageOffset)
         return false;
-    Records active_record;
+    // One foreground owner on core0. Persistent workspace avoids a multi-KiB nested stack.
+    static Records active_record;
     int active = recover_records(reinterpret_cast<const uint8_t *>(XIP_BASE + StorageOffset),
                                  reinterpret_cast<const uint8_t *>(XIP_BASE + StorageOffset + 4096),
                                  active_record);
     int target = active == 0 ? 1 : 0;
-    WriteContext ctx{StorageOffset + uint32_t(target) * 4096, encode_records(r)};
+    static WriteContext ctx;
+    ctx.offset = StorageOffset + uint32_t(target) * 4096;
+    ctx.page = encode_records(r);
     if (flash_safe_execute(flash_write, &ctx, 500) != PICO_OK)
         return false;
-    Records check;
-    return decode_records(reinterpret_cast<const uint8_t *>(XIP_BASE + ctx.offset), RecordBytes,
-                          check) &&
-           encode_records(check) == ctx.page;
+    // Exact byte readback verifies the generated CRC and payload without another Records copy.
+    return std::memcmp(reinterpret_cast<const void *>(XIP_BASE + ctx.offset), ctx.page.data(),
+                       RecordBytes) == 0;
 }
 } // namespace nc

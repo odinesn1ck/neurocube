@@ -84,7 +84,7 @@ static void handle(const char *cmd, nc::App &app, const nc::InputFrame &i) {
         reply("frame_begin", ",\"width\":240,\"height\":240,\"format\":\"rgb565be_hex\"");
         for (int y = 0; y < 240; y++) {
             printf("{\"v\":1,\"type\":\"frame_row\",\"y\":%d,\"data\":\"", y);
-            char row[961];
+            static char row[961]; // Single-threaded diagnostic transfer; keep off IRQ-shared stack.
             const char *hex = "0123456789abcdef";
             for (int x = 0; x < 240; x++) {
                 uint16_t pixel = frame.pixels[y * 240 + x];
@@ -98,7 +98,16 @@ static void handle(const char *cmd, nc::App &app, const nc::InputFrame &i) {
         reply("frame_end");
     }
 #ifdef NEUROCUBE_DEBUG_INPUT
-    else if (!strcmp(cmd, "NC1 clear_test_records")) {
+    else if (!strcmp(cmd, "NC1 migrate_records")) {
+        if (app.screen() != nc::Screen::Menu)
+            reply("error", ",\"error\":\"menu_required\"");
+        else {
+            static nc::Records migrated;
+            migrated = app.records();
+            migrated.sequence++;
+            reply(storage.save(migrated) ? "records_migrated" : "error");
+        }
+    } else if (!strcmp(cmd, "NC1 clear_test_records")) {
         if (app.screen() != nc::Screen::Menu)
             reply("error", ",\"error\":\"menu_required\"");
         else {
@@ -153,7 +162,7 @@ int main() {
     pico_get_unique_board_id_string(serial_id, sizeof serial_id);
     board.init();
     display_power.init();
-    nc::App app(storage, nc::default_registry(), true);
+    static nc::App app(storage, nc::default_registry(), true);
     app.reseed(get_rand_32());
     uint64_t last = time_us_64();
     char line[160];
