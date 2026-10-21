@@ -1,11 +1,12 @@
 # Состояние NeuroCube
 
-## Текущая разработка: 0.3.3
+## Установлена 0.3.3 — 21.10.2026
 
-Реализовано задание [hardware acceptance followup](tasks/hardware-acceptance-followup-0.3.2.md). VERIFIED_IN_SIMULATOR: native suite, 6000 seed, 300 физических моделей прохождения, swipe/PWR/save failure/LCD acknowledgement/USB fallback и видимые кадры. 14 Python tests пройдены. UF2 собран (COMPILED_ONLY), но **0.3.3 ещё не прошита**: нужно отдельное разрешение на новый алгоритм выключения. На USB остаётся 0.3.2; последнее чтение sequence=20, I²C errors=0. Физическое выключение/холодный старт/видимый crawl остаются NOT_TESTED. [Отчёт и галерея](evidence/acceptance-followup-0.3.3.md).
+После явного разрешения пользователя установлена опубликованная production 0.3.3, исходный коммит `90bfda3b6376`, serial `419CB819454EA93D`. BOOTSEL serial/USB topology проверены; picotool load -v подтвердил запись. Свежая копия обоих секторов журнала (8192 байта) сохранена вне репозитория. Полностью совпали records (sequence 20) и settings до/после. [USB smoke](evidence/acceptance-0.3.3-usb-smoke.json): VERIFIED_ON_HARDWARE для электронного обмена, IMU/touch identity, LCD SPI, BAT_EN HIGH и сохранности данных. Debug input выключен.
 
+Native suite, 14 Python tests и CI исходного коммита прошли. [Отчёт и галерея](evidence/acceptance-followup-0.3.3.md), [UF2/симулятор](https://github.com/odinesn1ck/neurocube/releases/tag/v0.3.3-rc1). Физическое выключение PWR без USB, cold start, видимый LCD и wake остаются NOT_TESTED — требуется пользовательская приёмка. Ниже сохранена история предыдущих поставок.
 
-Обновлено 21.10.2026. Ветка `codex/neurocube-mvp`, [PR #1](https://github.com/odinesn1ck/neurocube/pull/1), без merge. На плате `419CB819454EA93D` установлена **production 0.3.2**, исходный коммит `8edc20c35597`; debug input отключён. Предыдущие аппаратные свидетельства ниже относятся к указанным 0.3.0/0.3.1.
+Обновлено 21.10.2026. Ветка `codex/neurocube-mvp`, [PR #1](https://github.com/odinesn1ck/neurocube/pull/1), без merge. До обновления 0.3.3 на плате `419CB819454EA93D` была установлена **production 0.3.2**, исходный коммит `8edc20c35597`; debug input отключён. Предыдущие аппаратные свидетельства ниже относятся к указанным 0.3.0/0.3.1.
 
 ## Обратная связь: 0.3.2
 
@@ -56,4 +57,6 @@ CI: **успешно**. После обновления PAT опубликова
 
 По новому указанию пользователя подсказка на игровом экране и в кратком описании заменена точной строкой «Задумай ответ, встряхни шар». VERIFIED_IN_SIMULATOR: 1529 существующих C++ проверок пройдены, [кадр 240×240](images/magic-hint-2026-10-21.png) просмотрен — текст полностью помещается. Механика shake/touch/«Спросить ещё», задержки и пары ответов не менялись. На этапе изменения текста плата оставалась на bfa1a73; впоследствии подсказка вошла в установленную 0.3.1 (см. выше). UF2 новой версии собирается workflow, статус и артефакт доступны в [Actions](https://github.com/odinesn1ck/neurocube/actions).
 
-Сборка 0.3.3: [предварительный релиз и UF2](https://github.com/odinesn1ck/neurocube/releases/tag/v0.3.3-rc1). Исходный коммит `90bfda3b6376909dba551c7a4fba087944278c8f`; контрольные суммы и Windows-симулятор приложены. Статус аппаратной проверки — NOT_TESTED, на плату этот релиз пока не установлен.
+Сборка 0.3.3: [предварительный релиз и UF2](https://github.com/odinesn1ck/neurocube/releases/tag/v0.3.3-rc1). Исходный коммит `90bfda3b6376909dba551c7a4fba087944278c8f`; контрольные суммы и Windows-симулятор приложены. Релиз установлен по явному разрешению; электронная проверка пройдена, физическая приёмка выключения ещё NOT_TESTED.
+
+Установленная 0.3.3: естественный цикл Awake/Crawl/Fading/Dark наблюдён по read-only USB, framebuffer начала/середины/конца сохранены; PWM=256 во время Crawl и 0 в Dark. [Свидетельство](evidence/acceptance-0.3.3-crawl-usb.json). Физический LCD/wake не подменяется этой проверкой.

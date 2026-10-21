@@ -28,3 +28,16 @@ NOT_TESTED: BAT_EN LOW на реальной плате, battery poweroff/cold s
 Исходный коммит `90bfda3b6376909dba551c7a4fba087944278c8f`. UF2 412672 байт, SHA256 `0d86e06ec8a81f67bff6f51500d28394aceda4a92567d6609adbfc9cb95549fd`. [Машиночитаемая запись](acceptance-0.3.3-build.json). GitHub Actions для исходного коммита: [run 39614080335](https://github.com/odinesn1ck/neurocube/actions/runs/39614080335); статус CI проверяется отдельно, локальный успех не подменяет его.
 
 Сборка 0.3.3: [предварительный релиз и UF2](https://github.com/odinesn1ck/neurocube/releases/tag/v0.3.3-rc1). Исходный коммит `90bfda3b6376909dba551c7a4fba087944278c8f`; контрольные суммы и Windows-симулятор приложены. Статус аппаратной проверки — NOT_TESTED, на плату этот релиз пока не установлен.
+
+## Обновление: установка после разрешения пользователя
+
+0.3.3 установлена на serial 419CB819454EA93D; проверены BOOTSEL serial и прежний LocationPath. SHA256 UF2 совпал с опубликованным выше, picotool load -v завершён OK. Предварительно сохранены records/settings JSON и 8192 байта journal вне Git; SHA256 journal `7bea752f79117305d527a810fd0106ee5a2d1029ee7a120b807f28df6bae0f97`. [Read-only USB smoke](acceptance-0.3.3-usb-smoke.json) прошёл, включая полное равенство records/settings, sequence 20. Прежние отметки «не прошито» описывают состояние при сборке. Физический PWR, холодное включение и видимый LCD ещё NOT_TESTED.
+
+## Естественный crawl на установленной 0.3.3
+
+Read-only USB наблюдал штатный цикл меню без действий: Awake → Crawl → Fading → Dark. Сняты framebuffer начала, середины и конца; в Crawl PWM=256, в Dark PWM=0 и screen=12. [Сырые фазы/PWM и кадры](acceptance-0.3.3-crawl-usb.json). Это VERIFIED_ON_HARDWARE только для исполнения прошивки, framebuffer и регистров; видимый LCD, touch/PLUS wake и батарейное выключение остаются NOT_TESTED.
+
+![Начало](../images/hardware-0.3.3-crawl-start.png)
+![Середина](../images/hardware-0.3.3-crawl-middle.png)
+![Конец](../images/hardware-0.3.3-crawl-end.png)
+![Dark](../images/hardware-0.3.3-crawl-dark.png)
