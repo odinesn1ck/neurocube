@@ -6,7 +6,7 @@
   "native_suites": 3,
   "python_tests": 14,
   "simulator": "all 32 rounds; active/dark captures 1/16/32; mock audio",
-  "physical_checks": "NOT_TESTED; installed firmware still 0.3.4-rc3",
+  "physical_checks": "Installed with picotool verify on 419CB819454EA93D; USB smoke passed; records/settings preserved. Physical new cues and late-round LCD acceptance NOT_TESTED.",
   "pcm_peak": 1280,
   "ci": "https://github.com/odinesn1ck/neurocube/actions/runs/39660151088",
   "ci_conclusion": "success",
