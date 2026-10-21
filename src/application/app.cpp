@@ -168,6 +168,8 @@ void App::update_calibration(const InputFrame &i, float dt) {
     }
 }
 void App::update(const InputFrame &i, float dt) {
+    const bool touch_started = i.tap || (i.touch && !touch_down_);
+    touch_down_ = i.tap || i.touch;
     const float idle_dt = std::isfinite(dt) ? std::max(0.f, dt) : 0;
     dt = std::clamp(dt, 0.f, .1f);
     clock_ += dt;
@@ -240,8 +242,9 @@ void App::update(const InputFrame &i, float dt) {
         if (!i.tap && !i.touch) sound_touch_guard_ = false;
         return;
     }
-    if (i.tap && ((screen_ == Screen::Rules && ui::SoundToggle.contains(i.x, i.y)) ||
-                  (screen_ == Screen::MazeSetup && ui::MazeSoundToggle.contains(i.x, i.y)))) {
+    if (touch_started &&
+        ((screen_ == Screen::Rules && ui::SoundTouch.contains(i.x, i.y)) ||
+         (screen_ == Screen::MazeSetup && ui::MazeSoundTouch.contains(i.x, i.y)))) {
         records_.sound_enabled = !records_.sound_enabled;
         if (!records_.sound_enabled) silence();
         dirty_ = true; flush();
@@ -440,14 +443,14 @@ void App::render(Renderer &r) const {
                      Muted);
         return;
     }
-    ui::text_box(r, {8, 2, 224, 24}, registry_.games[selected_]->metadata().title, Accent);
+    ui::text_box(r, {8, 2, screen_ == Screen::MazeSetup ? 140 : 224, 24}, registry_.games[selected_]->metadata().title, Accent);
     if (screen_ == Screen::MazeSetup) {
         ui::sound_icon(r, ui::MazeSoundToggle, records_.sound_enabled);
         const char *levels[] = {"Лёгкая", "Средняя", "Сложная"};
         std::snprintf(b, sizeof b, "Сложность: %s", levels[maze_options_.geometry]);
         ui::text_box(r, {12, 48, 216, 18}, b, Ink);
         std::snprintf(b, sizeof b, "Карта: %08lX", (unsigned long)maze_seed_);
-        ui::text_box(r, {12, 28, 216, 18}, b, Muted);
+        ui::text_box(r, {12, 28, 140, 18}, b, Muted);
         ui::slider(r, ui::MazeGeometry, maze_options_.geometry, 2);
         int limit = ContactLimits[maze_options_.contact_index];
         if (limit)
@@ -460,7 +463,7 @@ void App::render(Renderer &r) const {
         ui::button(r, ui::MazePlay, "Играть", Gold);
     } else if (screen_ == Screen::Rules) {
         ui::sound_icon(r, ui::SoundToggle, records_.sound_enabled);
-        ui::text_box(r, {8, 30, 180, 38}, "Как играть", Gold, 2);
+        ui::text_box(r, {8, 30, 140, 38}, "Как играть", Gold);
         ui::text_box(r, {12, 72, 216, 62}, registry_.games[selected_]->metadata().rule, Ink);
         if (registry_.games[selected_]->metadata().scored) {
             std::snprintf(b, sizeof b, "Рекорд: %lu", (unsigned long)current_record());

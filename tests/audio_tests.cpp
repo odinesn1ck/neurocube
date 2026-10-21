@@ -176,6 +176,60 @@ int main() {
     ball.update({}, .5f);
     ball.update(ask, .02f);
     CHECK(ball.take_event() == GameEvent::AnswerAccepted);
+    // Enlarged edge targets consume the whole contact, including a release-tap
+    // reported over the start area. Raw touch must work even when tap is debounced.
+    for (int game = 0; game < 4; ++game) {
+        auto box = game == 1 ? ui::MazeSoundTouch : ui::SoundTouch;
+        for (int edge = 0; edge < 4; ++edge) {
+            Memory target_store;
+            target_store.valid = true;
+            target_store.r.sound_enabled = false;
+            SimAudio target_audio;
+            App target(target_store, default_registry(), false, config::Recipient, &target_audio);
+            target.launch(game);
+            const auto screen = target.screen();
+            InputFrame finger;
+            finger.touch = true;
+            finger.x = edge & 1 ? box.x + box.w - 1 : box.x;
+            finger.y = edge & 2 ? box.y + box.h - 1 : box.y;
+            target.update(finger, .02f);
+            CHECK(target.records().sound_enabled && target_store.writes == 1 &&
+                  target.screen() == screen);
+            finger.x = 120;
+            finger.y = 185;
+            for (int n = 0; n < 15; ++n)
+                target.update(finger, .02f);
+            finger.touch = false;
+            finger.tap = true;
+            target.update(finger, .02f);
+            CHECK(target.screen() == screen && target_store.writes == 1 &&
+                  target_audio.played == 0);
+            target.update({}, .02f);
+            // A fresh contact toggles again rather than remaining stuck.
+            finger.x = box.x + box.w / 2;
+            finger.y = box.y + box.h / 2;
+            target.update(finger, .02f);
+            CHECK(!target.records().sound_enabled && target_store.writes == 2 &&
+                  target.screen() == screen);
+        }
+    }
+    Memory held_store;
+    held_store.valid = true;
+    held_store.r.sound_enabled = false;
+    App held(held_store);
+    InputFrame menu_finger;
+    menu_finger.tap = menu_finger.touch = true;
+    menu_finger.x = 180;
+    menu_finger.y = 50;
+    held.update(menu_finger, .02f);
+    CHECK(held.screen() == Screen::Rules);
+    menu_finger.tap = false;
+    for (int n = 0; n < 10; ++n)
+        held.update(menu_finger, .02f);
+    CHECK(!held.records().sound_enabled && held_store.writes == 0);
+    held.update({}, .02f);
+    held.update(menu_finger, .02f);
+    CHECK(held.records().sound_enabled && held_store.writes == 1 && held.screen() == Screen::Rules);
     Memory store;
     CHECK(Records{}.sound_enabled);
     store.valid = true;

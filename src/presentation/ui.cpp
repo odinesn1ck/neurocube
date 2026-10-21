@@ -141,7 +141,7 @@ void orb(Renderer &r, float angle, uint16_t glow) {
 }
 void sound_icon(Renderer &r, Rect box, bool enabled) {
     r.rect(box.x, box.y, box.w, box.h, 0x212B);
-    int x = box.x + 6, y = box.y + 6;
+    int x = box.x + (box.w - 32) / 2, y = box.y + (box.h - 32) / 2;
     const uint16_t color = enabled ? Accent : Muted;
     r.rect(x, y + 6, 6, 10, color);
     for (int n = 0; n < 6; ++n) r.rect(x + 6 + n, y + 5 - n, 1, 12 + n*2, color);

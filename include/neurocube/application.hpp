@@ -62,7 +62,7 @@ class App {
     GameRegistry registry_;
     RecordStore &store_;
     AudioOutput *audio_ = nullptr;
-    bool sound_touch_guard_ = false;
+    bool sound_touch_guard_ = false, touch_down_ = false;
     bool splash_sound_sent_ = false, shutdown_sound_sent_ = false;
     void play_sound(SoundEffect);
     void update_game(const Actions &, float);
