@@ -70,3 +70,5 @@
 - [Регрессия финального ядра](final-1.0.0-regression.json), [Windows GUI](final-1.0.0-gui-summary.json), [read-only USB 0.3.5](final-1.0.0-usb-summary.json).
 
 - [Проверка production-поставки и CI](final-1.0.0-candidate.json), [финальный аудит](final-1.0.0-public-audit.json).
+
+- [Разрешённая установка 1.0.0 и сохранность данных](final-1.0.0-flash.json).
