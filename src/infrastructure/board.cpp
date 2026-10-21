@@ -2,6 +2,8 @@
 // examples at 51a7fe28c1e5dd19a089a062980a275709e94df6. See docs/hardware.md.
 #include "neurocube/board.hpp"
 #include "hardware/flash.h"
+#include "hardware/adc.h"
+#include <cstdio>
 #include "hardware/i2c.h"
 #include "hardware/spi.h"
 #include "pico/flash.h"
@@ -34,8 +36,16 @@ void Board::data(uint8_t c) {
     gpio_put(DC, 1);
     spi_write_blocking(spi1, &c, 1);
 }
+void Board::hold_power() { output(28,true); }
+void Board::power_diagnostics() {
+    uint32_t raw=0;adc_select_input(3);for(int n=0;n<8;n++)raw+=adc_read();
+    printf("{\"v\":1,\"type\":\"power\",\"bat_en\":%s,\"key_pwr_low\":%s,\"stat_raw\":%d,\"battery_adc_raw\":%lu,\"battery_adc_calibrated\":false,\"autonomy\":\"REQUIRES_PHYSICAL_TEST\"}\n",gpio_get(28)?"true":"false",gpio_get(24)?"false":"true",gpio_get(17),(unsigned long)(raw/8));
+}
 void Board::init() {
-    // Deliberately do not initialize BAT_EN(28), BAT_STAT(17), BAT_ADC(29), KEY_PWR(24).
+    hold_power();
+    gpio_init(24);gpio_set_dir(24,GPIO_IN);gpio_pull_up(24);
+    gpio_init(17);gpio_set_dir(17,GPIO_IN);
+    adc_init();adc_gpio_init(29);adc_select_input(3);
     output(CS, 1);
     output(DC, 0);
     output(RST, 1);

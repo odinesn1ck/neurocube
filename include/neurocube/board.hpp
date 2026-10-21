@@ -17,6 +17,8 @@ class Board {
 
   public:
     BoardStatus status;
+    static void hold_power();
+    static void power_diagnostics();
     void init();
     InputFrame sample();
     void present(const Framebuffer &);

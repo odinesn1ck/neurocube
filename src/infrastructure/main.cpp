@@ -32,7 +32,7 @@ static void status(nc::App &app, const nc::InputFrame &i) {
 }
 static void handle(const char *cmd, nc::App &app, const nc::InputFrame &i) {
     if (!strcmp(cmd, "NC1 hello")) {
-        printf("{\"v\":1,\"type\":\"hello\",\"product\":\"NeuroCube\",\"firmware\":\"0.1.0\","
+        printf("{\"v\":1,\"type\":\"hello\",\"product\":\"NeuroCube\",\"firmware\":\"0.1.1\","
                "\"serial\":\"%s\",\"revision\":\"%s\",\"capabilities\":[\"status\",\"imu\","
                "\"selftest\","
                "\"framebuffer\",\"records\"],\"debug_input\":%s}\n",
@@ -43,6 +43,7 @@ static void handle(const char *cmd, nc::App &app, const nc::InputFrame &i) {
                "false"
 #endif
         );
+    } else if (!strcmp(cmd,"NC1 power")) { nc::Board::power_diagnostics();
     } else if (!strcmp(cmd, "NC1 status") || !strcmp(cmd, "NC1 imu"))
         status(app, i);
     else if (!strcmp(cmd, "NC1 records")) {
@@ -130,6 +131,7 @@ static void handle(const char *cmd, nc::App &app, const nc::InputFrame &i) {
         reply("unsupported");
 }
 int main() {
+    nc::Board::hold_power(); // First action: preserve factory battery latch before USB/LCD waits.
     stdio_init_all();
     pico_get_unique_board_id_string(serial_id, sizeof serial_id);
     board.init();
