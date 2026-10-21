@@ -16,6 +16,7 @@ App::App(RecordStore &s, GameRegistry r, bool splash, const char *recipient)
 void App::launch(int i, bool rules) {
     if (i < 0 || i >= registry_.count)
         return;
+    idle_.reset_timer();
     game().stop();
     selected_ = i;
     gestures_.reset();
@@ -68,6 +69,7 @@ void App::menu() {
         finish();
     game().stop();
     screen_ = Screen::Menu;
+    idle_.reset_timer();
     gestures_.reset();
 }
 void App::next() {
@@ -138,16 +140,40 @@ void App::update_calibration(const InputFrame &i, float dt) {
     }
 }
 void App::update(const InputFrame &i, float dt) {
+    const float idle_dt = std::isfinite(dt) ? std::max(0.f, dt) : 0;
     dt = std::clamp(dt, 0.f, .1f);
     clock_ += dt;
     latest_ = i;
     auto a = gestures_.update(i, dt);
+    bool user_action = i.tap || i.touch || i.button_down || i.short_button || i.long_button;
+    auto event =
+        idle_.update(screen_ == Screen::Menu || screen_ == Screen::Result, user_action, idle_dt);
+    if (event == IdleEvent::Started) {
+        idle_return_ = screen_;
+        screen_ = Screen::Crawl;
+    }
+    if (event == IdleEvent::Woke) {
+        screen_ = idle_return_;
+        gestures_.reset();
+    }
+    if (idle_.phase() == IdlePhase::Dark)
+        screen_ = Screen::DisplayIdle;
+    if (event != IdleEvent::None)
+        return;
     if (screen_ == Screen::Splash) {
         phase_time_ += dt;
-        if (phase_time_ >= config::SplashSeconds || i.tap || i.short_button || i.long_button) {
+        if (i.tap) {
+            screen_ = Screen::ProjectQr;
+            phase_time_ = 0;
+        } else if (phase_time_ >= config::SplashSeconds || i.short_button || i.long_button) {
             screen_ = Screen::Menu;
             phase_time_ = 0;
         }
+        return;
+    }
+    if (screen_ == Screen::ProjectQr) {
+        if (i.tap || i.short_button || i.long_button)
+            screen_ = Screen::Menu;
         return;
     }
     if (i.long_button) {
@@ -256,17 +282,23 @@ void App::update(const InputFrame &i, float dt) {
 void App::render(Renderer &r) const {
     r.clear(Bg);
     char b[128];
+    if (screen_ == Screen::Crawl) {
+        render_crawl(r, idle_.progress(), idle_.episode());
+        return;
+    }
+    if (screen_ == Screen::DisplayIdle) {
+        r.clear(0);
+        return;
+    }
+    if (screen_ == Screen::ProjectQr) {
+        render_project_qr(r);
+        return;
+    }
     if (screen_ == Screen::Splash) {
-        for (int i = 0; i < 8; i++)
-            r.circle(30 + i * 28, 30 + int(std::sin(clock_ * 2 + i) * 12), 2, Accent);
-        ui::line(r, 94, 161, 120, 145, Gold);
-        ui::line(r, 120, 145, 146, 161, Gold);
-        ui::line(r, 94, 161, 120, 178, Accent);
-        ui::line(r, 146, 161, 120, 178, Accent);
-        ui::line(r, 120, 145, 120, 178, Ink);
+        float fade = std::clamp(phase_time_ / .45f, 0.f, 1.f);
+        uint16_t color = uint16_t((int(31 * fade) << 11) | (int(63 * fade) << 5) | int(31 * fade));
         std::snprintf(b, sizeof b, "Привет, %s", recipient_);
-        ui::text_box(r, {4, 76, 232, 44}, b, Ink, 2);
-        ui::text_box(r, {15, 190, 210, 24}, "Твой NeuroCube", Accent);
+        ui::text_box(r, {4, 94 + int((1 - fade) * 8), 232, 44}, b, color, 2);
         return;
     }
     if (screen_ == Screen::Menu) {

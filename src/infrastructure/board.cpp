@@ -177,7 +177,8 @@ InputFrame Board::sample() {
         last_tap = now;
     }
     previous_touch = down;
-    auto key = button.update(!gpio_get(KEY), last_sample ? float(now - last_sample) / 1e6f : 0);
+    f.button_down = !gpio_get(KEY);
+    auto key = button.update(f.button_down, last_sample ? float(now - last_sample) / 1e6f : 0);
     last_sample = now;
     f.short_button = key.short_press;
     f.long_button = key.long_press;

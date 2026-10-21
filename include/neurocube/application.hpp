@@ -1,6 +1,7 @@
 #pragma once
 #include "config.hpp"
 #include "domain.hpp"
+#include "idle.hpp"
 namespace nc {
 struct ButtonEvents {
     bool short_press = false, long_press = false;
@@ -50,7 +51,10 @@ enum class Screen {
     Calibration,
     Countdown,
     MazeSetup,
-    Splash
+    Splash,
+    ProjectQr,
+    Crawl,
+    DisplayIdle
 };
 class App {
     GameRegistry registry_;
@@ -58,6 +62,8 @@ class App {
     GestureRecognizer gestures_;
     Records records_{};
     Screen screen_ = Screen::Menu;
+    Screen idle_return_ = Screen::Menu;
+    IdleController idle_;
     int selected_ = 0, menu_page_ = 0;
     Difficulty difficulty_ = Difficulty::Normal;
     uint32_t seed_ = 0x4E435542;
@@ -118,6 +124,15 @@ class App {
     }
     float phase_time() const {
         return phase_time_;
+    }
+    const IdleController &idle() const {
+        return idle_;
+    }
+    uint8_t brightness() const {
+        return idle_.brightness();
+    }
+    bool display_idle() const {
+        return idle_.phase() == IdlePhase::Dark;
     }
     uint32_t current_record() const;
 };

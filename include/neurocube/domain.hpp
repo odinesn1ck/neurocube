@@ -10,6 +10,7 @@ struct InputFrame {
     int x = 0, y = 0;
     bool short_button = false, long_button = false;
     bool power_button = false;
+    bool button_down = false;
 };
 struct Actions {
     float tilt_x = 0, tilt_y = 0;

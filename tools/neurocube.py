@@ -257,7 +257,7 @@ def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--serial',default=DEFAULT_SERIAL)
     sub=parser.add_subparsers(dest='cmd',required=True)
-    sub.add_parser('detect');sub.add_parser('info');sub.add_parser('selftest');sub.add_parser('records');sub.add_parser('power');sub.add_parser('settings')
+    sub.add_parser('detect');sub.add_parser('info');sub.add_parser('selftest');sub.add_parser('records');sub.add_parser('power');sub.add_parser('settings');sub.add_parser('display')
     b=sub.add_parser('build');b.add_argument('--native',action='store_true');b.add_argument('--debug',action='store_true')
     f=sub.add_parser('flash');f.add_argument('image',type=Path);f.add_argument('--allow-flash',action='store_true')
     l=sub.add_parser('logs');l.add_argument('--seconds',type=float,default=10)
@@ -284,7 +284,7 @@ def main():
         elif args.cmd=='selftest':
             result=c.request('selftest');emit('selftest',**result)
             if result.get('type')!='selftest' or not all(result.get(k) is True for k in ('imu_identity','imu_sample','touch_identity','lcd_spi_sent')):raise BridgeError('Hardware electronic selftest did not pass')
-        elif args.cmd in ('records','power','settings'):emit(args.cmd,**c.request(args.cmd))
+        elif args.cmd in ('records','power','settings','display'):emit(args.cmd,**c.request(args.cmd))
         elif args.cmd=='screenshot':screenshot(c,args.output)
 
 if __name__=='__main__':

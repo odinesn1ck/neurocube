@@ -1,5 +1,6 @@
 #include "neurocube/application.hpp"
 #include "neurocube/board.hpp"
+#include "neurocube/display_power.hpp"
 #include "pico/rand.h"
 #include "pico/stdlib.h"
 #include "pico/unique_id.h"
@@ -13,6 +14,7 @@ static nc::InputFrame debug_input;
 #include <cstring>
 static nc::Framebuffer frame;
 static nc::Board board;
+static nc::DisplayPower display_power;
 static nc::FlashStore storage;
 static char serial_id[2 * PICO_UNIQUE_BOARD_ID_SIZE_BYTES + 1];
 static void reply(const char *type, const char *extra = "") {
@@ -32,17 +34,20 @@ static void status(nc::App &app, const nc::InputFrame &i) {
 }
 static void handle(const char *cmd, nc::App &app, const nc::InputFrame &i) {
     if (!strcmp(cmd, "NC1 hello")) {
-        printf("{\"v\":1,\"type\":\"hello\",\"product\":\"NeuroCube\",\"firmware\":\"0.2.0\","
-               "\"serial\":\"%s\",\"revision\":\"%s\",\"capabilities\":[\"status\",\"imu\","
-               "\"selftest\","
-               "\"framebuffer\",\"records\",\"power\",\"settings\"],\"debug_input\":%s}\n",
-               serial_id, NEUROCUBE_REVISION,
+        printf(
+            "{\"v\":1,\"type\":\"hello\",\"product\":\"NeuroCube\",\"firmware\":\"0.3.0\","
+            "\"serial\":\"%s\",\"revision\":\"%s\",\"capabilities\":[\"status\",\"imu\","
+            "\"selftest\","
+            "\"framebuffer\",\"records\",\"power\",\"settings\",\"display\"],\"debug_input\":%s}\n",
+            serial_id, NEUROCUBE_REVISION,
 #ifdef NEUROCUBE_DEBUG_INPUT
-               "true"
+            "true"
 #else
-               "false"
+            "false"
 #endif
         );
+    } else if (!strcmp(cmd, "NC1 display")) {
+        display_power.diagnostics(app.display_idle());
     } else if (!strcmp(cmd, "NC1 power")) {
         nc::Board::power_diagnostics();
     } else if (!strcmp(cmd, "NC1 status") || !strcmp(cmd, "NC1 imu"))
@@ -147,6 +152,7 @@ int main() {
     stdio_init_all();
     pico_get_unique_board_id_string(serial_id, sizeof serial_id);
     board.init();
+    display_power.init();
     nc::App app(storage, nc::default_registry(), true);
     app.reseed(get_rand_32());
     uint64_t last = time_us_64();
@@ -168,8 +174,12 @@ int main() {
 #else
         app.update(input, dt);
 #endif
-        app.render(frame);
-        board.present(frame);
+        if (!app.display_idle()) {
+            app.render(frame);
+            board.present(frame);
+        } else
+            frame.clear(0);
+        display_power.apply(app.brightness());
         for (int n = 0; n < 160; n++) {
             int c = getchar_timeout_us(0);
             if (c == PICO_ERROR_TIMEOUT)
@@ -189,6 +199,6 @@ int main() {
                     overflow = true;
             }
         }
-        sleep_ms(10);
+        sleep_ms(app.display_idle() ? 20 : 10);
     }
 }

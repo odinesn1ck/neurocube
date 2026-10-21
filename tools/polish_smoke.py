@@ -24,12 +24,18 @@ def main():
         report['power'] = c.request('power')
         report['settings'] = c.request('settings')
         report['selftest'] = c.request('selftest')
+        display = c.request('display') if 'display' in report['hello'].get('capabilities', []) else None
+        report['display'] = display
         before = c.request('status')
         time.sleep(1)
         after = c.request('status')
         report['status'] = after
         report['after'] = c.request('records')
-        report['checks']['frame_progress'] = after['frames'] > before['frames']
+        if display and display.get('idle'):
+            report['checks']['frame_quiescence_in_idle'] = after['frames'] == before['frames']
+            report['checks']['backlight_off_in_idle'] = display.get('pwm_level') == 0
+        else:
+            report['checks']['frame_progress'] = after['frames'] > before['frames']
         report['checks']['no_new_i2c_errors'] = after['i2c_errors'] == before['i2c_errors']
         report['checks']['records_unchanged_during_readonly_test'] = report['before'] == report['after']
         report['checks']['latch_high'] = report['power'].get('bat_en') is True

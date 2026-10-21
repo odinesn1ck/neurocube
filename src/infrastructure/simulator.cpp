@@ -63,7 +63,10 @@ static int gallery(const std::string &directory) {
         for (int i = 0; i < int(seconds * 100); i++)
             scene.update({}, .01f);
     };
+    wait(.6f);
     save("00-splash");
+    tap(120, 100);
+    save("00-project-qr");
     tap(120, 100);
     save("01-menu");
     tap(100, 220);
@@ -126,6 +129,22 @@ static int gallery(const std::string &directory) {
         ball.render(fb);
         ppm((directory + "/pair-" + std::to_string(index) + ".ppm").c_str());
     }
+    scene.menu();
+    wait(120.1f);
+    wait(1.7f);
+    save("50-crawl-start");
+    wait(4.3f);
+    save("51-crawl-middle");
+    while (scene.idle().phase() == IdlePhase::Crawl) {
+        scene.update({}, .02f);
+        if (scene.idle().progress() > 2600 && scene.idle().progress() < 2602)
+            save("52-crawl-end");
+    }
+    save("53-crawl-fade");
+    wait(1.6f);
+    save("54-idle-dark");
+    tap(100, 60);
+    save("55-wake-menu");
     std::puts("VERIFIED_IN_SIMULATOR: UI gallery and all 24 answer pairs captured; volatile "
               "records only");
     return 0;
@@ -140,9 +159,21 @@ LRESULT CALLBACK WindowProc(HWND w, UINT msg, WPARAM wp, LPARAM lp) {
         PostQuitMessage(0);
         return 0;
     case WM_LBUTTONDOWN:
+        pending.touch = true;
+        SetCapture(w);
         pending.tap = true;
         pending.x = LOWORD(lp) / 2;
         pending.y = HIWORD(lp) / 2;
+        return 0;
+    case WM_LBUTTONUP:
+        pending.touch = false;
+        ReleaseCapture();
+        return 0;
+    case WM_MOUSEMOVE:
+        if (wp & MK_LBUTTON) {
+            pending.x = LOWORD(lp) / 2;
+            pending.y = HIWORD(lp) / 2;
+        }
         return 0;
     case WM_KEYDOWN:
         if (!(lp & (1 << 30))) {
@@ -209,6 +240,8 @@ int main(int argc, char **argv) {
             TranslateMessage(&msg);
             DispatchMessage(&msg);
         }
+        pending.button_down =
+            (GetAsyncKeyState(VK_TAB) & 0x8000) || (GetAsyncKeyState(VK_ESCAPE) & 0x8000);
         pending.imu = true;
         pending.ax = ((GetAsyncKeyState(VK_RIGHT) & 0x8000) ? .7f : 0) -
                      ((GetAsyncKeyState(VK_LEFT) & 0x8000) ? .7f : 0);

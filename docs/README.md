@@ -3,7 +3,7 @@
 [README проекта](../README.md) → [продуктовый замысел](product-vision.md) → [правила агентов](../AGENTS.md) → [архитектура](architecture.md) и [hardware](hardware.md) → [текущее состояние](progress.md).
 
 - **Зачем и что строим:** [product-vision](product-vision.md).
-- **Как устроено:** [architecture](architecture.md), [hardware](hardware.md), [bridge](bridge.md).
+- **Как устроено:** [architecture](architecture.md), [hardware](hardware.md), [bridge](bridge.md), [скринсейвер и idle](screensaver.md).
 - **Как пользоваться и собирать:** [player-guide](player-guide.md), [build](build.md), [приёмка](morning-checklist.md).
 - **Что дальше и что доказано:** [backlog](backlog.md), [progress](progress.md), [CHANGELOG](../CHANGELOG.md).
 - **Как сохранять знания:** [documentation-policy](documentation-policy.md).

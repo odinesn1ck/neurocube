@@ -6,16 +6,19 @@ if(NEUROCUBE_PICO)
   set(PICO_FLASH_SIZE_BYTES 16777216 CACHE STRING "Waveshare flash size")
   include($ENV{PICO_SDK_PATH}/external/pico_sdk_import.cmake)
 endif()
-project(neurocube VERSION 0.2.0 LANGUAGES C CXX ASM)
+project(neurocube VERSION 0.3.0 LANGUAGES C CXX ASM)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 add_library(neurocube_core
   src/domain/records.cpp
+  src/domain/crawl_stories.cpp
   src/application/gestures.cpp
+  src/application/idle.cpp
   src/application/app.cpp
   src/games/games.cpp
   src/presentation/framebuffer.cpp
-  src/presentation/ui.cpp)
+  src/presentation/ui.cpp
+  src/presentation/crawl.cpp)
 target_include_directories(neurocube_core PUBLIC include)
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
   target_compile_options(neurocube_core PRIVATE -Wall -Wextra -Wpedantic)
@@ -28,8 +31,8 @@ if(NEUROCUBE_PICO)
     execute_process(COMMAND "${GIT_EXECUTABLE}" rev-parse --short=12 HEAD
       WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}" OUTPUT_VARIABLE NEUROCUBE_REVISION OUTPUT_STRIP_TRAILING_WHITESPACE)
   endif()
-  add_executable(neurocube src/infrastructure/board.cpp src/infrastructure/main.cpp)
-  target_link_libraries(neurocube PRIVATE neurocube_core pico_stdlib hardware_spi hardware_i2c hardware_adc hardware_flash pico_flash pico_unique_id pico_rand)
+  add_executable(neurocube src/infrastructure/board.cpp src/infrastructure/main.cpp src/infrastructure/display_power.cpp)
+  target_link_libraries(neurocube PRIVATE neurocube_core pico_stdlib hardware_spi hardware_i2c hardware_adc hardware_pwm hardware_flash pico_flash pico_unique_id pico_rand)
   target_compile_definitions(neurocube PRIVATE PICO_FLASH_SIZE_BYTES=16777216 PICO_STDIO_USB_CONNECT_WAIT_TIMEOUT_MS=0)
   if(NEUROCUBE_DEBUG_INPUT)
     target_compile_definitions(neurocube PRIVATE NEUROCUBE_DEBUG_INPUT=1)

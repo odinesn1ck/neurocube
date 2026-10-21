@@ -11,6 +11,7 @@ python tools/neurocube.py logs --seconds 20
 python tools/neurocube.py records
 python tools/neurocube.py power
 python tools/neurocube.py settings
+python tools/neurocube.py display
 python tools/neurocube.py selftest
 python tools/neurocube.py screenshot artifacts/frame.png
 python tools/neurocube.py build --native
@@ -33,13 +34,14 @@ NC1 imu
 NC1 records
 NC1 power
 NC1 settings
+NC1 display
 NC1 selftest
 NC1 screenshot
 ```
 
 Ответы — JSON Lines с `v:1` и `type`. hello возвращает product, firmware, revision, serial, capabilities, debug_input. Заводская прошивка не обязана поддерживать эти запросы. Несовместимый ответ или тайм-аут означает unsupported/ошибку, а не успешную диагностику.
 
-status содержит экран, игру, счёт, номер записи, состояние сохранения, IMU и счётчики аппаратных событий/ошибок. imu пока возвращает ту же структуру status. Координаты ускорения — g, скорость Z — градусы/с. records возвращает 48 значений рекордов (16 зарезервированных слотов × 3 сложности; используются первые три игровых слота) в порядке игра × сложность и sequence. В v3 добавлены `maze_best` (геометрия × вариант × лимит, 54 значения) и `record_version`; legacy `best` не меняет порядок. Экран: 0 Menu, 1 Rules, 2 Playing, 3 Paused, 4 Result, 5 Settings, 6 Calibration, 7 Countdown, 8 MazeSetup, 9 Splash.
+status содержит экран, игру, счёт, номер записи, состояние сохранения, IMU и счётчики аппаратных событий/ошибок. imu пока возвращает ту же структуру status. Координаты ускорения — g, скорость Z — градусы/с. records возвращает 48 значений рекордов (16 зарезервированных слотов × 3 сложности; используются первые три игровых слота) в порядке игра × сложность и sequence. В v3 добавлены `maze_best` (геометрия × вариант × лимит, 54 значения) и `record_version`; legacy `best` не меняет порядок. Экран: 0 Menu, 1 Rules, 2 Playing, 3 Paused, 4 Result, 5 Settings, 6 Calibration, 7 Countdown, 8 MazeSetup, 9 Splash, 10 ProjectQr, 11 Crawl (включая затухание), 12 DisplayIdle.
 
 `power` читает BAT_EN, KEY_PWR, raw STAT/ADC, не меняет выходы; `settings` возвращает сохранённую калибровку и чувствительность. Напряжение и процент заряда не вычисляются.
 
@@ -62,3 +64,5 @@ screenshot возвращает frame_begin, 240 frame_row с y и RGB565 big-en
 ## Production smoke без изменения данных
 
 `python tools/polish_smoke.py --baseline records-before.json` проверяет hello, disabled debug input, питание, настройки, электронный selftest, движение кадров, ошибки I²C и неизменность рекордов. Baseline — сохранённый JSON-ответ `NC1 records`; проверка сравнивает реальные очки. Не посылает inject, reset, BOOTSEL или команды записи. Не запускать screenshot во время физического прохождения: передача временно останавливает игровой цикл. Батарея и физическое управление остаются NOT_TESTED без ручного результата.
+
+`display` возвращает запрошенную яркость, PWM-регистр и выбранный polling idle. В Dark счётчик кадров останавливается, USB и ввод продолжаются; production smoke учитывает это. Физическое пробуждение не выводится из значения регистра.

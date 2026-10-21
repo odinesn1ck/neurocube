@@ -460,6 +460,8 @@ void calibration_and_migration_test() {
     CHECK(splash.screen() == Screen::Splash);
     tap.tap = true;
     splash.update(tap, .01f);
+    CHECK(splash.screen() == Screen::ProjectQr);
+    splash.update(tap, .01f);
     CHECK(splash.screen() == Screen::Menu);
     splash.launch(0, false);
     CHECK(splash.screen() != Screen::Splash);
@@ -576,7 +578,173 @@ void polish_test() {
     CHECK(back.best[1][1] == 885 && back.maze_best[2][1][5] == 777 &&
           back.maze_best[2][1][4] == 0 && back.calibrated);
 }
+void idle_test() {
+    IdleController wall_clock;
+    wall_clock.update(true, false, 119.5f);
+    CHECK(wall_clock.phase() == IdlePhase::Awake);
+    CHECK(wall_clock.update(true, false, .5f) == IdleEvent::Started);
+    IdleController timer;
+    for (int n = 0; n < 1199; n++)
+        timer.update(true, false, .1f);
+    CHECK(timer.phase() == IdlePhase::Awake);
+    CHECK(timer.update(true, false, .1f) == IdleEvent::Started);
+    CHECK(timer.phase() == IdlePhase::Crawl && timer.episode() == 0);
+    for (int n = 0; n < 2000 && timer.phase() == IdlePhase::Crawl; n++) {
+        CHECK(!crawl_finished(timer.progress(), crawl_story(timer.episode())));
+        timer.update(false, false, .1f);
+    }
+    CHECK(timer.phase() == IdlePhase::Fading);
+    CHECK(crawl_finished(timer.progress(), crawl_story(timer.episode())));
+    CHECK(timer.brightness() == 255);
+    for (int n = 0; n < 5; n++)
+        timer.update(false, false, .1f);
+    CHECK(timer.brightness() > 0 && timer.brightness() < 255);
+    for (int n = 0; n < 20; n++)
+        timer.update(false, false, .1f);
+    CHECK(timer.phase() == IdlePhase::Dark && timer.brightness() == 0);
+    float final_progress = timer.progress();
+    for (int n = 0; n < 3000; n++)
+        timer.update(false, false, .1f);
+    CHECK(timer.phase() == IdlePhase::Dark && timer.progress() == final_progress);
+    CHECK(timer.update(false, true, .02f) == IdleEvent::Woke && timer.brightness() == 255);
+    for (int n = 0; n < 60; n++)
+        CHECK(timer.update(true, true, .02f) == IdleEvent::Consumed);
+    for (int n = 0; n < 5; n++)
+        timer.update(true, false, .02f);
+    for (int n = 0; n < 1200; n++)
+        timer.update(true, false, .1f);
+    CHECK(timer.phase() == IdlePhase::Crawl && timer.episode() == 1);
+    IdleController reset;
+    for (int n = 0; n < 1000; n++)
+        reset.update(true, false, .1f);
+    reset.update(true, true, .1f);
+    CHECK(reset.idle_seconds() == 0);
+    for (int n = 0; n < 1300; n++)
+        reset.update(false, false, .1f);
+    CHECK(reset.phase() == IdlePhase::Awake && reset.idle_seconds() == 0);
+
+    auto wait = [](App &app, int ticks) {
+        for (int n = 0; n < ticks; n++)
+            app.update({}, .1f);
+    };
+    MemoryStore store;
+    App app(store);
+    wait(app, 1199);
+    CHECK(app.screen() == Screen::Menu);
+    wait(app, 1);
+    CHECK(app.screen() == Screen::Crawl);
+    InputFrame motion;
+    motion.imu = true;
+    motion.ax = 3;
+    motion.az = 4;
+    motion.gz = 400;
+    for (int n = 0; n < 500; n++)
+        app.update(motion, .1f);
+    CHECK(app.screen() == Screen::DisplayIdle);
+    InputFrame touch;
+    touch.tap = touch.touch = true;
+    touch.x = 100;
+    touch.y = 60;
+    app.update(touch, .02f);
+    CHECK(app.screen() == Screen::Menu);
+    touch.tap = false;
+    for (int n = 0; n < 100; n++)
+        app.update(touch, .02f);
+    CHECK(app.screen() == Screen::Menu);
+    touch.touch = false;
+    wait(app, 1);
+    touch.tap = true;
+    app.update(touch, .02f);
+    CHECK(app.screen() == Screen::Rules);
+    wait(app, 1800);
+    CHECK(app.screen() == Screen::Rules);
+    app.launch(3, false);
+    wait(app, 1800);
+    CHECK(app.screen() == Screen::Playing);
+    app.pause();
+    wait(app, 1800);
+    CHECK(app.screen() == Screen::Paused);
+    app.menu();
+    touch.x = 100;
+    touch.y = 220;
+    app.update(touch, .02f);
+    wait(app, 1800);
+    CHECK(app.screen() == Screen::Settings);
+    touch.y = 155;
+    app.update(touch, .02f);
+    wait(app, 1800);
+    CHECK(app.screen() == Screen::Calibration);
+    app.launch(1);
+    wait(app, 1800);
+    CHECK(app.screen() == Screen::MazeSetup);
+    App splash(store, default_registry(), true);
+    wait(splash, 20);
+    CHECK(splash.screen() == Screen::Splash);
+    touch.y = 100;
+    splash.update(touch, .02f);
+    wait(splash, 1800);
+    CHECK(splash.screen() == Screen::ProjectQr);
+    splash.update(touch, .02f);
+    CHECK(splash.screen() == Screen::Menu);
+    App timed_splash(store, default_registry(), true);
+    wait(timed_splash, 24);
+    CHECK(timed_splash.screen() == Screen::Menu);
+
+    StubGame game;
+    App result(store, {{&game, &game, &game, &game}});
+    result.launch(0, false);
+    game.value = {321, true};
+    result.update({}, .02f);
+    int writes = store.writes;
+    wait(result, 1200);
+    CHECK(result.screen() == Screen::Crawl);
+    InputFrame button;
+    button.button_down = true;
+    result.update(button, .02f);
+    CHECK(result.screen() == Screen::Result);
+    button.long_button = true;
+    result.update(button, .02f);
+    CHECK(result.screen() == Screen::Result);
+    button = {};
+    result.update(button, .02f);
+    button.short_button = true;
+    result.update(button, .02f);
+    CHECK(result.screen() == Screen::Result);
+    wait(result, 2);
+    CHECK(store.writes == writes && result.game().result().score == 321);
+    touch.y = 100;
+    result.update(touch, .02f);
+    CHECK(result.screen() == Screen::Rules);
+
+    struct BoundsRenderer : Renderer {
+        Framebuffer f;
+        bool valid = true;
+        void clear(uint16_t c) override {
+            f.clear(c);
+        }
+        void rect(int x, int y, int w, int h, uint16_t c) override {
+            valid &= x >= 0 && y >= 0 && w > 0 && h > 0 && x + w <= 240 && y + h <= 240;
+            f.rect(x, y, w, h, c);
+        }
+        void circle(int x, int y, int radius, uint16_t c) override {
+            f.circle(x, y, radius, c);
+        }
+        void text(int x, int y, const char *s, uint16_t c, int scale = 1) override {
+            f.text(x, y, s, c, scale);
+        }
+    } renderer;
+    for (int episode = 0; episode < 3; episode++)
+        for (float progress = 0; progress < 3000; progress += 13)
+            render_crawl(renderer, progress, episode);
+    CHECK(renderer.valid);
+    render_crawl(renderer, 900, 0);
+    int yellow = 0;
+    for (auto pixel : renderer.f.pixels)
+        yellow += pixel == 0xFFE0;
+    CHECK(yellow > 100);
+}
 int main() {
+    idle_test();
     polish_test();
     records_test();
     app_test();
