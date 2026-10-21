@@ -21,7 +21,7 @@
 
 ## Инструменты и документация
 
-- **CI-001 — GitHub Actions. BLOCKED_EXTERNAL_PERMISSION.** Повторная загрузка `.github/workflows/build.yml` отклонена GitHub HTTP 403: `Resource not accessible by personal access token`. Нужны права PAT на изменение workflows выбранного репозитория. Шаблон сохранён в [docs/ci/build.yml](ci/build.yml), локальные проверки работают. Критерий закрытия — workflow опубликован и реальный run успешен.
+- **CI-001 — GitHub Actions. Проверка публикации.** Workflow подготовлен в [.github/workflows/build.yml](../.github/workflows/build.yml); выполняется публикация с обновлённым PAT. Критерий закрытия — успешный реальный run с артефактами.
 - **DOC-001 — управление знаниями.** Реализованы политика, маршрут чтения и распределение ответственности; проверены 149 локальных ссылок/якорей. Принято: коммит `fd13e96` опубликован, PR обновлён; исходники в этом этапе не менялись. [Аудит](evidence/documentation-audit-2026-10-21.md).
 
 ## Позже
