@@ -43,3 +43,5 @@
 - [Исправления статического ревью и процедурные карты](review-fixes-2026-10-21.md).
 
 - [USB smoke 0.3.1](review-usb-smoke-2026-10-21.json), [CI/доставка 0.3.1](review-verification-2026-10-21.json).
+
+- [Обратная связь по играм 0.3.2](player-feedback-2026-10-21.md).

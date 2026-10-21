@@ -35,7 +35,7 @@ static void status(nc::App &app, const nc::InputFrame &i) {
 static void handle(const char *cmd, nc::App &app, const nc::InputFrame &i) {
     if (!strcmp(cmd, "NC1 hello")) {
         printf(
-            "{\"v\":1,\"type\":\"hello\",\"product\":\"NeuroCube\",\"firmware\":\"0.3.1\","
+            "{\"v\":1,\"type\":\"hello\",\"product\":\"NeuroCube\",\"firmware\":\"0.3.2\","
             "\"serial\":\"%s\",\"revision\":\"%s\",\"capabilities\":[\"status\",\"imu\","
             "\"selftest\","
             "\"framebuffer\",\"records\",\"power\",\"settings\",\"display\"],\"debug_input\":%s}\n",

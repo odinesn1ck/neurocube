@@ -9,6 +9,7 @@
 #include <cstdlib>
 #include <string>
 #include <set>
+#include <vector>
 using namespace nc;
 static int checks = 0;
 #define CHECK(x)                                                                                   \
@@ -266,25 +267,34 @@ void framebuffer_test() {
     }
 }
 
+std::vector<int> observe_round(SequenceGame &game) {
+    std::vector<int> cues;
+    int previous = -1;
+    for (int tick = 0; game.playback() && tick < 5000; ++tick) {
+        game.update({}, .01f);
+        int cue = game.phase() == SequencePhase::Showing ? game.cue() : -1;
+        if (cue >= 0 && cue != previous) cues.push_back(cue);
+        previous = cue;
+    }
+    return cues;
+}
+void answer_round(SequenceGame &game, const std::vector<int> &cues) {
+    for (int cue : cues) {
+        while (game.playback()) game.update({}, .01f);
+        Actions a; a.direction = cue; game.update(a, .01f);
+    }
+}
+
 void completed_games_test() {
     SequenceGame sequence;
-    Random expected;
-    expected.state = 456;
-    int pattern[32];
-    for (auto &v : pattern)
-        v = int(expected.bounded(4));
     sequence.start(Difficulty::Hard, 456);
+    std::vector<int> previous;
     for (int round = 1; round <= 32; round++) {
-        for (int tick = 0; sequence.playback() && tick < 4000; tick++)
-            sequence.update({}, .01f);
-        CHECK(!sequence.playback());
-        for (int j = 0; j < round; j++) {
-            Actions a;
-            a.direction = pattern[j];
-            while (sequence.playback())
-                sequence.update({}, .01f);
-            sequence.update(a, .01f);
-        }
+        auto cues = observe_round(sequence);
+        CHECK(cues.size() == size_t(round));
+        CHECK(std::equal(previous.begin(), previous.end(), cues.begin()));
+        previous = cues;
+        answer_round(sequence, cues);
         CHECK(sequence.result().score == uint32_t(round));
     }
     for (int n = 0; n < 80 && !sequence.result().finished; n++)
@@ -897,7 +907,78 @@ void review_input_test() {
     CHECK(gestures.update(imu,.02f).turn_rate==0);
 }
 
+
+void player_feedback_test() {
+    int first_counts[4]{};
+    for (uint32_t seed = 1; seed <= 256; ++seed) {
+        SequenceGame game; game.start(Difficulty::Hard, seed);
+        std::vector<int> first_four;
+        for (int round=1;round<=4;++round) {
+            auto cues = observe_round(game);
+            CHECK(cues.size()==size_t(round));
+            answer_round(game,cues);first_four=cues;
+        }
+        CHECK(std::set<int>(first_four.begin(),first_four.end()).size()==4);
+        first_counts[first_four[0]]++;
+        SequenceGame repeated; repeated.start(Difficulty::Hard,seed);
+        CHECK(observe_round(repeated)[0]==first_four[0]);
+    }
+    for(int count:first_counts)CHECK(count>35 && count<95);
+    SequenceGame sequence; CommandsGame commands;
+    CHECK(ui::layout(sequence.metadata().rule,216,62).fits);
+    CHECK(ui::layout(commands.metadata().rule,216,62).fits);
+    CHECK(std::string(commands.metadata().rule).find("Следи за командами")!=std::string::npos);
+    auto start_command=[](CommandsGame &game,int command) {
+        for(uint32_t seed=1;;++seed){game.start(Difficulty::Normal,seed);if(game.command()==command)break;}
+    };
+    for(int command=0;command<5;++command) {
+        CommandsGame game;start_command(game,command);
+        GestureRecognizer gestures;InputFrame motion;motion.imu=true;
+        motion.gz=190; // turn accepted for turn task, incidental to a clear tilt
+        if(command==4)motion.ax=.45f;
+        else if(command==0)motion.ay=-.55f;
+        else if(command==1)motion.ax=.55f;
+        else if(command==2)motion.ay=.55f;
+        else motion.ax=-.55f;
+        for(int tick=0;tick<30 && game.feedback()==0;++tick)
+            game.update(gestures.update(motion,.02f),.02f);
+        CHECK(game.result().score==1 && game.feedback()>0);
+    }
+    for (int command : {4,5}) {
+        CommandsGame touch; start_command(touch,command);
+        auto angle=touch.angle();Actions tap;tap.tap=true;tap.x=int(touch.object_x());tap.y=int(touch.object_y());
+        touch.update(tap,.02f);CHECK(touch.result().score==1);
+        CHECK((touch.angle()!=angle)==(command==4));
+    }
+    CommandsGame missed;start_command(missed,4);
+    Actions miss;miss.tap=true;miss.x=0;miss.y=0;missed.update(miss,.02f);
+    CHECK(missed.result().score==0 && missed.feedback()==0);
+    CommandsGame wrong;start_command(wrong,4);
+    Actions tilt;tilt.direction=1;tilt.tilt_x=.85f;wrong.update(tilt,.02f);
+    for(int tick=0;tick<50;++tick)wrong.update({},.02f);
+    CHECK(wrong.result().finished && wrong.result().score==0);
+    start_command(wrong,0);Actions turn;turn.twist=true;turn.turn_rate=300;wrong.update(turn,.02f);
+    for(int tick=0;tick<50;++tick)wrong.update({},.02f);
+    CHECK(wrong.result().finished && wrong.result().score==0);
+    GestureRecognizer g;InputFrame spike;spike.imu=true;spike.gz=300;
+    CHECK(!g.update(spike,.02f).twist);spike.gz=0;CHECK(!g.update(spike,.02f).twist);
+    spike.gz=190;int turns=0;for(int tick=0;tick<10;++tick)turns+=g.update(spike,.02f).twist;
+    CHECK(turns==1);
+    MemoryStore store; App app(store); app.launch(3);
+    for(int tick=0;tick<60;++tick)app.update({},.02f);
+    InputFrame shake;shake.imu=true;shake.az=3;
+    app.update(shake,.02f);
+    CHECK(app.screen()==Screen::Playing);
+    CHECK(static_cast<MagicBall &>(app.game()).requests()==1);
+    app.update(shake,.02f);CHECK(static_cast<MagicBall &>(app.game()).requests()==1);
+    app.launch(3);InputFrame tap;tap.tap=true;tap.x=100;tap.y=185;app.update(tap,.02f);
+    CHECK(app.screen()==Screen::Playing);
+    app.launch(0);for(int tick=0;tick<60;++tick)app.update({},.02f);
+    app.update(shake,.02f);CHECK(app.screen()==Screen::Rules);
+}
+
 int main() {
+    player_feedback_test();
     review_generation_test();
     review_input_test();
     idle_test();

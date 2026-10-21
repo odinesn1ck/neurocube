@@ -20,8 +20,14 @@ void SequenceGame::start(Difficulty d, uint32_t seed) {
     phase_ = SequencePhase::Showing;
     outcome = {};
     step = 1.4f - int(d) * .18f;
-    for (auto &v : sequence)
-        v = int(rng.bounded(4));
+    // Each shuffled group includes all four directions, avoiding one-axis openings.
+    for (int base = 0; base < int(sequence.size()); base += 4) {
+        int bag[] = {0, 1, 2, 3};
+        for (int n = 3; n > 0; --n)
+            std::swap(bag[n], bag[rng.bounded(uint32_t(n + 1))]);
+        if (base && bag[0] == sequence[base - 1]) std::swap(bag[0], bag[1]);
+        for (int n = 0; n < 4; ++n) sequence[base + n] = bag[n];
+    }
 }
 void SequenceGame::update(const Actions &a, float dt) {
     if (outcome.finished)
@@ -286,11 +292,16 @@ void CommandsGame::update(const Actions &a, float dt) {
         return;
     }
     int action = a.direction;
-    if (a.twist)
+    // Tolerate incidental motion across axes; deliberate wrong actions still fail.
+    const float tilt = std::max(std::abs(a.tilt_x), std::abs(a.tilt_y));
+    if (expected == 4 && tilt < .65f) action = -1;
+    if (a.twist && !(expected < 4 && std::abs(a.turn_rate) < 240.f))
         action = 4;
     if (a.tap && (a.x - object_x_) * (a.x - object_x_) +
-                     (a.y - object_y_) * (a.y - object_y_) <= 30 * 30)
-        action = 5;
+                     (a.y - object_y_) * (a.y - object_y_) <= 30 * 30) {
+        action = expected == 4 ? 4 : 5;
+        if (expected == 4) angle_ = std::fmod(angle_ + 1.570796327f, 6.283185307f);
+    }
     if (action < 0)
         return;
     if (action != expected) {
@@ -317,7 +328,7 @@ void CommandsGame::render(Renderer &r) const {
     ui::line(r, int(object_x_), int(object_y_), int(object_x_) + dx, int(object_y_) + dy, Bg);
     r.circle(int(object_x_) + dx, int(object_y_) + dy, 3, Bg);
     ui::text_box(r, {10, 168, 220, 19},
-                 expected == 4   ? "Поворот вокруг экрана"
+                 expected == 4   ? "Поверни или коснись"
                  : expected == 5 ? "Коснись светлого круга"
                                  : "Наклон двигает круг",
                  Muted);

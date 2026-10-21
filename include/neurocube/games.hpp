@@ -13,7 +13,7 @@ class SequenceGame final : public Game {
   public:
     Metadata metadata() const override {
         return {"sequence", "Повтори ритм",
-                "Запомни последовательность. Повтори наклонами или касаниями."};
+                "Запомни огни. Повтори наклонами или касаниями."};
     }
     bool countdown() const override {
         return true;
@@ -132,7 +132,7 @@ class CommandsGame final : public Game {
   public:
     Metadata metadata() const override {
         return {"commands", "Лови команду",
-                "Наклони, поверни или коснись круга. Следуй крупной команде."};
+                "Следи за командами. Поворот: вращай куб или коснись круга."};
     }
     bool countdown() const override {
         return true;

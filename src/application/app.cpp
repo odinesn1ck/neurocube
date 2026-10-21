@@ -268,7 +268,10 @@ void App::update(const InputFrame &i, float dt) {
         return;
     }
     if (screen_ == Screen::Rules) {
-        if (i.tap)
+        if (a.shake && !game().metadata().restart_on_shake) {
+            begin_play();
+            game().update(a, dt); // The start shake also asks for the first answer once.
+        } else if (i.tap)
             begin_play();
         return;
     }
@@ -384,7 +387,10 @@ void App::render(Renderer &r) const {
             std::snprintf(b, sizeof b, "Рекорд: %lu", (unsigned long)current_record());
             ui::text_box(r, {12, 138, 216, 25}, b, Gold);
         }
-        ui::text_box(r, {12, 170, 216, 26}, "Коснись для старта", Accent);
+        ui::text_box(r, {12, 164, 216, 40},
+                     registry_.games[selected_]->metadata().restart_on_shake
+                         ? "Коснись для старта" : "Коснись или встряхни",
+                     Accent);
     } else if (screen_ == Screen::Countdown) {
         int n = std::max(1, 3 - int(phase_time_));
         std::snprintf(b, sizeof b, "%d", n);

@@ -49,13 +49,17 @@ Actions GestureRecognizer::update(const InputFrame &i, float dt) {
         a.shake = true;
         cooldown = 1.2f;
         held = -1;
-        dwell = 0;
+        dwell = twist_dwell = 0;
         return a;
     }
     if (std::abs(i.gz) > 160 && twist_cooldown <= 0 && cooldown <= 0) {
-        a.twist = true;
-        twist_cooldown = 0.65f;
-    }
+        twist_dwell += dt;
+        if (twist_dwell >= .06f) {
+            a.twist = true;
+            twist_cooldown = .65f;
+            twist_dwell = 0;
+        }
+    } else twist_dwell = 0;
     int dir = -1;
     float threshold = .34f / sensitivity;
     if (std::max(std::abs(fx), std::abs(fy)) > threshold) {

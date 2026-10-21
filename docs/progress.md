@@ -2,6 +2,10 @@
 
 Обновлено 21.10.2026. Ветка `codex/neurocube-mvp`, [PR #1](https://github.com/odinesn1ck/neurocube/pull/1), без merge. На плате `419CB819454EA93D` установлена **production 0.3.1**, исходный коммит `ab338f55400488d31bc811ec1a8eefe97f5e114d`; debug input отключён. Предыдущие аппаратные свидетельства ниже явно относятся к 0.3.0.
 
+## Обратная связь: 0.3.2
+
+Реализованы разнообразные первые сигналы Simon и полный текст правил, сенсорный поворот/допуски смешанных жестов Commands, shake-start Magic Ball. Native suite и 14 Python tests пройдены; правила полностью помещаются в кадр. [Отчёт](evidence/player-feedback-2026-10-21.md). Сборка/прошивка выполняются после этих проверок; установленная версия указана в начале документа.
+
 ## Исправления ревью 0.3.1
 
 Реализованы процедурная генерация/повтор, непрерывное управление Commands, чувствительность, контакты, пагинация и устранение повторного gpio_init BAT_EN. VERIFIED_IN_SIMULATOR: 6000 seed (1932/2000/2000 разных карт по сложности), проверка всех проходов радиусом шара, 300 полных прохождений игровой физикой, 14 Python-тестов. Галерея подтверждает одинаковый кадр retry и другой new maze; [отчёт](evidence/review-fixes-2026-10-21.md). Установлен на плату с readback verify; [USB smoke](evidence/review-usb-smoke-2026-10-21.json) пройден: IMU/touch identity, кадры, I²C без ошибок, BAT_EN HIGH. До/после равны все рекорды и настройки: sequence 15, Simon 3 / legacy maze 885 / Commands 5, sensitivity 1.0, калибровка сохранена. [Релиз 0.3.1-rc1](https://github.com/odinesn1ck/neurocube/releases/tag/v0.3.1-rc1), UF2 407040 байт, SHA256 `531e5045eaebd57d381710798f73857206c65eb8f12c7da0b18f4e5f9f1bbb2b`. Опубликованный UF2 скачан и побайтно совпал; push/PR CI успешны. [Verification](evidence/review-verification-2026-10-21.json). Физические PWR/автономность и UI ещё NOT_TESTED; ниже сохранены свидетельства предыдущей поставки.

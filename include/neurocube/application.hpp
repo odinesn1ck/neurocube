@@ -14,7 +14,7 @@ class ButtonRecognizer {
     ButtonEvents update(bool, float);
 };
 class GestureRecognizer {
-    float fx = 0, fy = 0, offset_x = 0, offset_y = 0, cooldown = 0, dwell = 0, twist_cooldown = 0;
+    float fx = 0, fy = 0, offset_x = 0, offset_y = 0, cooldown = 0, dwell = 0, twist_cooldown = 0, twist_dwell = 0;
     int held = -1;
 
   public:
@@ -25,12 +25,12 @@ class GestureRecognizer {
         offset_y = y;
         fx = fy = 0;
         held = -1;
-        dwell = 0;
+        dwell = twist_dwell = 0;
     }
     void reset() {
         fx = fy = 0;
         held = -1;
-        dwell = 0;
+        dwell = twist_dwell = 0;
         cooldown = 1;
         twist_cooldown = 0;
     }
