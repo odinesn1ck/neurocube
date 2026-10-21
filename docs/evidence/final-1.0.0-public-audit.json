@@ -1,0 +1,21 @@
+{
+  "source_commit": "89007ced036608535bf3ed465b22d83c428ad9bd",
+  "all_git_objects": 983,
+  "object_types": {
+    "blob": 576,
+    "tree": 335,
+    "commit": 72
+  },
+  "object_bytes": 4350884,
+  "includes_unreachable_local_objects": true,
+  "tracked_files": 206,
+  "release_count": 9,
+  "release_asset_count": 72,
+  "credential_findings": [],
+  "suspicious_tracked_dump_paths": [],
+  "repository_private_at_audit": false,
+  "scope": "all available git objects incl. commit/tag text; tracked worktree; all public release assets and ZIP members",
+  "privacy_review_location_count": 41,
+  "candidate_secret_scan": "PASS",
+  "candidate_source_commit": "89007ced036608535bf3ed465b22d83c428ad9bd"
+}

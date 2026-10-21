@@ -1,0 +1,113 @@
+{
+  "source_commit": "89007ced036608535bf3ed465b22d83c428ad9bd",
+  "uf2": {
+    "sha256": "8fee590574092ccf9ab33753d43d739ef63a09d686a7a7f97061a5d1e0128f8a",
+    "blocks": 1019,
+    "size": 521728
+  },
+  "frozen_file_count": 28,
+  "reproducibility": "PASS: two independent builds UF2/ELF/BIN/EXE and repeat ZIP/source archives",
+  "symbols": {
+    "__bss_end__": "0x2002c470",
+    "__end__": "0x2002c470"
+  },
+  "largest_static_frames": [
+    {
+      "function": "int nc::recover_records(const uint8_t*, const uint8_t*, Records&)",
+      "bytes": 880,
+      "allocation": "static"
+    },
+    {
+      "function": "void nc::App::render(nc::Renderer&) const",
+      "bytes": 696,
+      "allocation": "static"
+    },
+    {
+      "function": "bool nc::ui::text_box(nc::Renderer&, Rect, const char*, uint16_t, int, bool)",
+      "bytes": 584,
+      "allocation": "static"
+    },
+    {
+      "function": "bool nc::ui::text_box(nc::Renderer&, Rect, const char*, uint16_t, int, bool)",
+      "bytes": 568,
+      "allocation": "static"
+    },
+    {
+      "function": "virtual bool nc::FlashStore::save(const nc::Records&)",
+      "bytes": 520,
+      "allocation": "static"
+    },
+    {
+      "function": "void nc::Board::present(const nc::Framebuffer&)",
+      "bytes": 520,
+      "allocation": "static"
+    },
+    {
+      "function": "void nc::App::update(const nc::InputFrame&, float)",
+      "bytes": 488,
+      "allocation": "static"
+    },
+    {
+      "function": "bool nc::decode_records(const uint8_t*, size_t, Records&)",
+      "bytes": 472,
+      "allocation": "static"
+    },
+    {
+      "function": "0()",
+      "bytes": 456,
+      "allocation": "static"
+    },
+    {
+      "function": "int main()",
+      "bytes": 424,
+      "allocation": "static"
+    },
+    {
+      "function": "nc::MazeMap nc::make_maze(int, uint32_t)",
+      "bytes": 320,
+      "allocation": "static"
+    },
+    {
+      "function": "void nc::render_crawl(Renderer&, float, int)",
+      "bytes": 288,
+      "allocation": "static"
+    }
+  ],
+  "stack_limit_note": "Static .su values are not full dynamic high-water marks; linked prebuilt library frames/interrupt nesting are not measured. Gameplay/HAL sources unchanged.",
+  "archives": [
+    {
+      "archive": "neurocube-1.0.0-source.zip",
+      "entries": 230,
+      "crc_and_manifest": "PASS"
+    },
+    {
+      "archive": "neurocube-1.0.0-windows.zip",
+      "entries": 228,
+      "crc_and_manifest": "PASS"
+    },
+    {
+      "archive": "neurocube-1.0.0.zip",
+      "entries": 231,
+      "crc_and_manifest": "PASS"
+    }
+  ],
+  "developer_path_hits_in_new_binaries": {
+    "neurocube-1.0.0.uf2": false,
+    "neurocube-1.0.0.elf": true,
+    "neurocube-1.0.0.bin": false,
+    "neurocube_sim.exe": false
+  },
+  "production_debug_injection": false,
+  "physical_1_0": "NOT_TESTED",
+  "public_readiness": "BLOCKED: unresolved ES8311 notice",
+  "ci": {
+    "run": "https://github.com/odinesn1ck/neurocube/actions/runs/39669714265",
+    "artifact": "https://github.com/odinesn1ck/neurocube/actions/runs/39669714265/artifacts/12378454174",
+    "downloaded_uf2_byte_identical": true
+  },
+  "candidate_secret_scan": "PASS: known PAT in memory + Gitleaks on archive members",
+  "developer_paths_in_release_binaries": false,
+  "static_main_ram_bytes": 181360,
+  "main_ram_remaining_bytes": 342928,
+  "core0_stack_bytes": 4096
+}

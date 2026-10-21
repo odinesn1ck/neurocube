@@ -13,3 +13,9 @@ GitHub API при начале аудита сообщил `private=false`: ре
 В Git нет полных factory/flash backups; они хранятся вне репозитория. JSON USB evidence содержит ограниченные диагностические значения/очки, не полный приватный дамп памяти. `.gitignore` дополнен ключами/токенами/backup и firmware patterns. CI имеет только contents:read, не выполняет flash/merge/release/visibility; supply-chain pins и artifacts проверяются отдельно.
 
 Если в будущем найден секрет: блокировать дальнейшую публикацию, отозвать/ротировать через владельца и отдельно согласовать очистку истории и старых assets. Не публиковать совпавшие значения в issue/PR и не выполнять force push автоматически.
+
+## Повторная проверка кандидата
+
+На source commit `89007ced036608535bf3ed465b22d83c428ad9bd` проверены все 983 доступных Git-объекта, 206 tracked files и те же 72 assets девяти релизов. Credential findings: 0; suspicious dump paths: 0; повторный Gitleaks history/worktree/assets — PASS. Privacy review: 41 location (28 прежних build paths и 13 мест с обязательными публичными copyright email); дополнительные четыре места появились в сохранённых лицензионных уведомлениях. Эти контакты не удаляются из notices.
+
+Новые release ZIP отдельно распакованы с защитой путей, проверены известным PAT только в памяти и Gitleaks: PASS. Локальные developer paths в новых UF2/ELF/BIN/EXE отсутствуют. Скачанный CI UF2 совпал побайтно. [Сводка аудита](final-1.0.0-public-audit.json), [проверка поставки](final-1.0.0-candidate.json). Финальный коммит отчётности меняет только документацию; результаты сборки относятся к указанному source commit, а не к последующим редакционным коммитам.
