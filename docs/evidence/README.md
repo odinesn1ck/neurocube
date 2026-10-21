@@ -22,3 +22,12 @@
 - [Production USB smoke](star-usb-smoke-2026-10-21.json).
 - [Два идентичных UF2](star-reproducibility-2026-10-21.json).
 - [Кадры симулятора](../images/star-crawl-simulator-gallery.png).
+
+## Финальная поставка 0.3.0-rc1
+
+- [Production USB smoke](final-usb-smoke-2026-10-21.json), [реальная миграция журнала](record-migration-2026-10-21.json).
+- [Воспроизводимость финального UF2](final-reproducibility-2026-10-21.json), [бюджет ARM-стека](stack-audit-2026-10-21.json).
+- [Первый аппаратный idle-прогон](idle-probe-2026-10-21.json): PWM/USB, без физического wake.
+- [Итоговый отчёт](delivery-2026-10-21.md).
+
+- [Естественный idle на финальном bfa1a73](final-idle-probe-2026-10-21.json): PWM 0, USB жив, рекорды сохранены; physical wake не зарегистрирован.
