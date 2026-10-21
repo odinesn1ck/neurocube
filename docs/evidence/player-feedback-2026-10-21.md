@@ -11,3 +11,8 @@ Magic Ball: правила принимают touch или shake; shake сраз
 VERIFIED_IN_SIMULATOR: 256 seed с четырьмя различными начальными сигналами и детерминированным повтором; прохождение Simon до 32 шагов по наблюдаемым сигналам с сохранением префикса; смешанные IMU-трассы для пяти команд, явные ошибки, короткий gyro-всплеск, сенсорные команды/промах, shake-start/debounce. Полный suite: 87519237 assertions (включая прежние 6000 лабиринтов/300 маршрутов); 14 Python tests. [Кадры правил](../images/feedback-rules-2026-10-21.png) просмотрены, обрезки нет.
 
 Аппаратная версия и результат доставки — в [progress](../progress.md). Рекорды, питание, генератор лабиринтов, пары Magic Ball, приветствие/QR и idle не изменялись.
+
+
+Установлена production 0.3.2, commit [8edc20c](https://github.com/odinesn1ck/neurocube/commit/8edc20c), serial 419CB819454EA93D. Readback verify и [USB smoke](feedback-usb-smoke-2026-10-21.json) пройдены; sequence 16, все рекорды и настройки сохранены. Свежая копия обоих секторов находится вне git, SHA256 `85f021419fef257394e2209cfadc5e0c75fa9b30390a6f7df73353dd1bd74595`. [UF2/симулятор/лицензии](https://github.com/odinesn1ck/neurocube/releases/tag/v0.3.2-rc1) опубликованы; SHA256 загрузок проверены, UF2 скачан и совпал с установленным. Физические смешанные жесты, touch-turn и shake-start ещё требуют проверки пользователем.
+
+Контрольные [push CI](https://github.com/odinesn1ck/neurocube/actions/runs/39591073953) и [PR CI](https://github.com/odinesn1ck/neurocube/actions/runs/39591080156) относятся к исходному коммиту 8edc20c. Короткая приёмка: четыре направления Simon и полный текст; при «Поверни» касание круга/реальный поворот с небольшим наклоном; при наклоне небольшой поворот; встряхивание на правилах шара выдаёт первую пару ровно один раз.

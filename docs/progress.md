@@ -1,10 +1,10 @@
 # Состояние NeuroCube
 
-Обновлено 21.10.2026. Ветка `codex/neurocube-mvp`, [PR #1](https://github.com/odinesn1ck/neurocube/pull/1), без merge. На плате `419CB819454EA93D` установлена **production 0.3.1**, исходный коммит `ab338f55400488d31bc811ec1a8eefe97f5e114d`; debug input отключён. Предыдущие аппаратные свидетельства ниже явно относятся к 0.3.0.
+Обновлено 21.10.2026. Ветка `codex/neurocube-mvp`, [PR #1](https://github.com/odinesn1ck/neurocube/pull/1), без merge. На плате `419CB819454EA93D` установлена **production 0.3.2**, исходный коммит `8edc20c35597`; debug input отключён. Предыдущие аппаратные свидетельства ниже относятся к указанным 0.3.0/0.3.1.
 
 ## Обратная связь: 0.3.2
 
-Реализованы разнообразные первые сигналы Simon и полный текст правил, сенсорный поворот/допуски смешанных жестов Commands, shake-start Magic Ball. Native suite и 14 Python tests пройдены; правила полностью помещаются в кадр. [Отчёт](evidence/player-feedback-2026-10-21.md). Сборка/прошивка выполняются после этих проверок; установленная версия указана в начале документа.
+Реализованы разнообразные первые сигналы Simon и полный текст правил, сенсорный поворот/допуски смешанных жестов Commands, shake-start Magic Ball. Native suite и 14 Python tests пройдены; правила полностью помещаются в кадр. [Отчёт](evidence/player-feedback-2026-10-21.md). Установлена на serial 419CB819454EA93D с readback verify, [USB smoke](evidence/feedback-usb-smoke-2026-10-21.json) пройден. Полностью сохранены sequence 16, рекорды Simon 5 / legacy maze 885 / Commands 5 и настройки/калибровка; BAT_EN HIGH. [Релиз 0.3.2-rc1](https://github.com/odinesn1ck/neurocube/releases/tag/v0.3.2-rc1), UF2 408576 байт, SHA256 `d4294a74ce8a2f8ed14d3e6141d1d38335c642a8346fb12ff6fe75219ca45d95`; скачанный файл побайтно совпал с установленным. Физическое удобство новых жестов остаётся NOT_TESTED.
 
 ## Исправления ревью 0.3.1
 
