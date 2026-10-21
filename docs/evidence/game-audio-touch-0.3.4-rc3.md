@@ -10,4 +10,6 @@ VERIFIED_IN_SIMULATOR: 10152 audio checks, полный native core suite, 14 Py
 
 ![Звук OFF/ON, все четыре игры](../images/audio-0.3.4-rc3-rules.png)
 
-Галерея — framebuffer симулятора, не фото LCD. COMPILED_ONLY/NOT_TESTED: [UF2 rc3 опубликован](https://github.com/odinesn1ck/neurocube/releases/tag/v0.3.4-rc3), source c90b616; [паспорт](game-audio-0.3.4-rc3-build.json). CI исходного коммита c90b616 завершён успешно; физическая удобность и новая громкость требуют установки с разрешения и ответа пользователя. На плате до установки остаётся rc2 / 557da49.
+Галерея — framebuffer симулятора, не фото LCD. CI исходного c90b616 завершён успешно; [UF2/комплект](https://github.com/odinesn1ck/neurocube/releases/tag/v0.3.4-rc3), [паспорт](game-audio-0.3.4-rc3-build.json).
+
+После явного разрешения пользователя rc3 установлена на serial 419CB819454EA93D с проверкой serial/topology и picotool verify. Перед записью сохранён свежий журнал 8192 байта вне Git. [Flash report](game-audio-0.3.4-rc3-flash.json) подтверждает полное совпадение рекордов и прежних настроек; [USB smoke](game-audio-0.3.4-rc3-usb-smoke.json) пройден. Аудио готово, peak=1280, played=1 (сигнал приветствия), faults=0. Это электронная проверка, не подтверждение слышимости человеком. Физическая проверка новой кнопки и оценка громкости пользователем ещё NOT_TESTED.

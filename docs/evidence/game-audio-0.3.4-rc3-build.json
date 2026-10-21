@@ -16,7 +16,7 @@
     72,
     44
   ],
-  "physical_checks": "NOT_TESTED; rc3 not installed",
+  "physical_checks": "Installed with picotool verify on 419CB819454EA93D; USB smoke passed; records/settings preserved; physical touch and loudness assessment pending",
   "ci": "https://github.com/odinesn1ck/neurocube/actions/runs/39655564714",
   "ci_conclusion": "success",
   "sha256": "ad38130e9224953956a69add8ac96c55b2b8e22744b62b32fd57896a36a3c4b1",
