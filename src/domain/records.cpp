@@ -53,6 +53,7 @@ RecordPage encode_records(const Records &r) {
     put(p.data() + 424, bits(r.calibration_x));
     put(p.data() + 428, bits(r.calibration_y));
     put(p.data() + 432, bits(r.sensitivity));
+    put(p.data() + 436, 0x534E4400u | (r.sound_enabled ? 1u : 0u));
     put(p.data() + 508, crc(p.data(), 508));
     return p;
 }
@@ -81,6 +82,7 @@ bool decode_records(const uint8_t *p, size_t n, Records &r) {
                     s = get(p + o);
                     o += 4;
                 }
+        v.sound_enabled = get(p + 436) == 0x534E4401u; // Old v3 reserved bytes are FF: mute.
         v.calibrated = get(p + 420) == 1;
         v.calibration_x = number(get(p + 424));
         v.calibration_y = number(get(p + 428));

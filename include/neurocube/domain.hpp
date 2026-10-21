@@ -55,7 +55,23 @@ constexpr std::array<int, 6> ContactLimits{{0, 3, 5, 8, 12, 20}}; // zero means 
 struct GameOptions {
     uint8_t geometry = 1, contact_index = 2, variant = 0;
 };
+enum class GameEvent { None, ErrorOccurred, AnswerAccepted };
+enum class SoundEffect { Error, Answer };
+struct AudioOutput {
+    virtual ~AudioOutput() = default;
+    virtual bool play(SoundEffect) = 0; // Drop while busy, never layer or queue indefinitely.
+    virtual void stop() = 0;
+};
 struct Game {
+  private:
+    GameEvent pending_event_ = GameEvent::None;
+  protected:
+    void emit(GameEvent event) { pending_event_ = event; }
+    void reset_events() { pending_event_ = GameEvent::None; }
+  public:
+    GameEvent take_event() {
+        auto event = pending_event_; pending_event_ = GameEvent::None; return event;
+    }
     virtual ~Game() = default;
     virtual Metadata metadata() const = 0;
     virtual void start(Difficulty, uint32_t) = 0;
@@ -80,6 +96,7 @@ struct Records {
     std::array<std::array<uint32_t, 3>, GameCapacity> best{};
     uint32_t sequence = 0;
     MazeScores maze_best{};
+    bool sound_enabled = false;
     bool calibrated = false;
     float calibration_x = 0, calibration_y = 0, sensitivity = 1;
 };

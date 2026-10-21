@@ -13,6 +13,8 @@ constexpr Rect menu_item(int row) { return {10, 43 + row * 39, 220, 34}; }
 constexpr Rect MazeGeometry{12, 67, 216, 22}, MazeContacts{12, 111, 216, 22},
     MazeNew{20, 140, 200, 27}, MazePlay{20, 174, 200, 28},
     MazeNewAlternate{20, 174, 200, 28};
+constexpr Rect SoundToggle{192, 28, 40, 40}, MazeSoundToggle{194, 0, 44, 44};
+void sound_icon(Renderer &, Rect, bool enabled);
 struct Layout {
     std::array<std::array<char, 128>, 4> lines{};
     int count = 0;

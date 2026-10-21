@@ -31,3 +31,5 @@ see OFL.txt. Font generation is in tools/generate_font.py.
 Pico SDK and TinyUSB are external dependencies, not vendored here. Distributed
 firmware also incorporates their licensed code. See Pico-SDK-LICENSE.txt and
 TinyUSB-LICENSE.txt in release archives.
+
+Audio: third_party/waveshare_audio contains the pinned Waveshare ES8311 driver and PIO program from examples/C/02_ES8311. Driver file copyright/permission notices and upstream LICENSE are retained there. DEV_Config.h and audio_pio.h in that directory are NeuroCube shims.

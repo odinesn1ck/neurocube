@@ -1,6 +1,7 @@
 #include "neurocube/application.hpp"
 #include "neurocube/board.hpp"
 #include "neurocube/display_power.hpp"
+#include "neurocube/audio_hardware.hpp"
 #include "pico/rand.h"
 #include "pico/stdlib.h"
 #include "pico/unique_id.h"
@@ -16,6 +17,7 @@ static nc::Framebuffer frame;
 static nc::Board board;
 static nc::DisplayPower display_power;
 static nc::FlashStore storage;
+static nc::AudioHardware audio;
 static char serial_id[2 * PICO_UNIQUE_BOARD_ID_SIZE_BYTES + 1];
 static void reply(const char *type, const char *extra = "") {
     printf("{\"v\":1,\"type\":\"%s\"%s}\n", type, extra);
@@ -35,10 +37,10 @@ static void status(nc::App &app, const nc::InputFrame &i) {
 static void handle(const char *cmd, nc::App &app, const nc::InputFrame &i) {
     if (!strcmp(cmd, "NC1 hello")) {
         printf(
-            "{\"v\":1,\"type\":\"hello\",\"product\":\"NeuroCube\",\"firmware\":\"0.3.3\","
+            "{\"v\":1,\"type\":\"hello\",\"product\":\"NeuroCube\",\"firmware\":\"0.3.4\","
             "\"serial\":\"%s\",\"revision\":\"%s\",\"capabilities\":[\"status\",\"imu\","
             "\"selftest\","
-            "\"framebuffer\",\"records\",\"power\",\"settings\",\"display\",\"ui\"],\"debug_input\":%s}\n",
+            "\"framebuffer\",\"records\",\"power\",\"settings\",\"display\",\"ui\",\"audio\"],\"debug_input\":%s}\n",
             serial_id, NEUROCUBE_REVISION,
 #ifdef NEUROCUBE_DEBUG_INPUT
             "true"
@@ -46,6 +48,10 @@ static void handle(const char *cmd, nc::App &app, const nc::InputFrame &i) {
             "false"
 #endif
         );
+    } else if (!strcmp(cmd, "NC1 audio")) {
+        printf("{\"v\":1,\"type\":\"audio\",\"enabled\":%s,\"ready\":%s,\"busy\":%s,\"played\":%u,\"dropped\":%u,\"faults\":%u,\"pcm_peak\":%d}\n",
+            app.records().sound_enabled ? "true":"false",audio.ready()?"true":"false",
+            audio.busy()?"true":"false",audio.played,audio.dropped,audio.faults,nc::AudioPeak);
     } else if (!strcmp(cmd, "NC1 ui")) {
         printf("{\"v\":1,\"type\":\"ui\",\"screen\":%d,\"idle_phase\":%d,\"progress\":%.2f,\"brightness\":%u,\"maze_seed\":%lu}\n",
                int(app.screen()), int(app.idle().phase()), app.idle().progress(),
@@ -72,8 +78,8 @@ static void handle(const char *cmd, nc::App &app, const nc::InputFrame &i) {
     } else if (!strcmp(cmd, "NC1 settings")) {
         const auto &r = app.records();
         printf("{\"v\":1,\"type\":\"settings\",\"calibrated\":%s,\"calibration_x\":%.5f,"
-               "\"calibration_y\":%.5f,\"sensitivity\":%.2f}\n",
-               r.calibrated ? "true" : "false", r.calibration_x, r.calibration_y, r.sensitivity);
+               "\"calibration_y\":%.5f,\"sensitivity\":%.2f,\"sound_enabled\":%s}\n",
+               r.calibrated ? "true" : "false", r.calibration_x, r.calibration_y, r.sensitivity, r.sound_enabled ? "true" : "false");
     } else if (!strcmp(cmd, "NC1 selftest")) {
         auto &s = board.status;
         printf("{\"v\":1,\"type\":\"selftest\",\"imu_identity\":%s,\"imu_sample\":%s,\"touch_"
@@ -166,7 +172,8 @@ int main() {
     pico_get_unique_board_id_string(serial_id, sizeof serial_id);
     board.init();
     display_power.init();
-    static nc::App app(storage, nc::default_registry(), true);
+    audio.init();
+    static nc::App app(storage, nc::default_registry(), true, nc::config::Recipient, &audio);
     app.reseed(get_rand_32());
     uint64_t last = time_us_64();
     char line[160];
@@ -176,6 +183,7 @@ int main() {
         auto now = time_us_64();
         float dt = float(now - last) / 1e6f;
         last = now;
+        audio.poll();
         auto input = board.sample();
 #ifdef NEUROCUBE_DEBUG_INPUT
         if (debug_override) {

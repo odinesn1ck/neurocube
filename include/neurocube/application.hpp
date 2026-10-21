@@ -61,6 +61,10 @@ enum class Screen {
 class App {
     GameRegistry registry_;
     RecordStore &store_;
+    AudioOutput *audio_ = nullptr;
+    bool sound_touch_guard_ = false;
+    void update_game(const Actions &, float);
+    void silence() { if (audio_) audio_->stop(); }
     GestureRecognizer gestures_;
     Records records_{};
     Screen screen_ = Screen::Menu;
@@ -86,7 +90,7 @@ class App {
 
   public:
     explicit App(RecordStore &, GameRegistry registry = default_registry(), bool splash = false,
-                 const char *recipient = config::Recipient);
+                 const char *recipient = config::Recipient, AudioOutput *audio = nullptr);
     void update(const InputFrame &, float);
     void render(Renderer &) const;
     void frame_presented() { if (screen_ == Screen::ShuttingDown) shutdown_presented_ = true; }

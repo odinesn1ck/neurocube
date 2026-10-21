@@ -139,4 +139,17 @@ void orb(Renderer &r, float angle, uint16_t glow) {
     r.rect(14, 93, 212, 68, 0x108B);
     r.rect(16, 95, 208, 64, 0x0847);
 }
+void sound_icon(Renderer &r, Rect box, bool enabled) {
+    r.rect(box.x, box.y, box.w, box.h, 0x212B);
+    int x = box.x + 6, y = box.y + 6;
+    const uint16_t color = enabled ? Accent : Muted;
+    r.rect(x, y + 6, 6, 10, color);
+    for (int n = 0; n < 6; ++n) r.rect(x + 6 + n, y + 5 - n, 1, 12 + n*2, color);
+    if (enabled) {
+        line(r,x+16,y+5,x+21,y+10,color); line(r,x+21,y+10,x+21,y+13,color);
+        line(r,x+21,y+13,x+16,y+18,color);
+    } else {
+        line(r,x+16,y+7,x+24,y+15,color); line(r,x+24,y+7,x+16,y+15,color);
+    }
+}
 } // namespace nc::ui

@@ -75,3 +75,5 @@ screenshot возвращает frame_begin, 240 frame_row с y и RGB565 big-en
 Для явной проверки миграции существует только в debug-сборке `NC1 migrate_records`: в главном меню копирует текущие очки/настройки без изменения значений, увеличивает sequence и пишет совместимый v3 в неактивный сектор с readback. Перед использованием сохраняют baseline/backup; после команды требуется перезапуск для чтения нового журнала. Production возвращает unsupported. Это проверка Flash, не игровой ввод и не физическая приёмка управления.
 
 `python tools/idle_probe.py --seconds 185` только наблюдает production status/display/power/records и фиксирует переходы и реальные счётчики событий. Он не вводит touch/кнопку и не сбрасывает idle-таймер. Нулевое число wake-событий означает отсутствие подтверждения, а не успешную проверку пробуждения.
+
+Read-only `NC1 audio` (CLI `python tools/neurocube.py audio`, 0.3.4): enabled, ready, busy, played, dropped, faults, pcm_peak. Команда не воспроизводит звук. `NC1 settings` дополнен sound_enabled; старые поля не меняются.

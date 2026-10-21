@@ -12,6 +12,7 @@ static void score(Renderer &r, uint32_t s) {
     r.text(12, 28, b, Gold);
 }
 void SequenceGame::start(Difficulty d, uint32_t seed) {
+    reset_events();
     rng.state = seed ? seed : 1;
     length = 1;
     cursor = 0;
@@ -87,6 +88,7 @@ void SequenceGame::update(const Actions &a, float dt) {
         return;
     shown = direction;
     if (direction != sequence[cursor]) {
+        emit(GameEvent::ErrorOccurred);
         phase_ = SequencePhase::Failure;
         timer = .75f;
         return;
@@ -177,6 +179,7 @@ MazeMap make_maze(int geometry, uint32_t seed) {
     return m;
 }
 void MazeGame::start(Difficulty d, uint32_t seed) {
+    reset_events();
     options_.geometry = uint8_t(std::clamp(int(d), 0, 2));
     map_ = make_maze(options_.geometry, seed);
     x = map_.center_x(0);
@@ -218,6 +221,7 @@ void MazeGame::update(const Actions &a, float dt) {
     outcome.contacts = contacts_.count();
     int limit = ContactLimits[std::min<int>(options_.contact_index, 5)];
     if (limit && outcome.contacts > limit) {
+        emit(GameEvent::ErrorOccurred);
         outcome.finished = true;
         return;
     }
@@ -252,6 +256,7 @@ void CommandsGame::choose() {
     object_y_ = 132;
 }
 void CommandsGame::start(Difficulty d, uint32_t seed) {
+    reset_events();
     rng.state = seed ? seed : 1;
     outcome = {};
     limit = 3.8f - int(d) * .5f;
@@ -289,6 +294,7 @@ void CommandsGame::update(const Actions &a, float dt) {
     }
     remaining -= dt;
     if (remaining <= 0) {
+        emit(GameEvent::ErrorOccurred);
         failed_ = true;
         feedback_ = .7f;
         return;
@@ -325,6 +331,7 @@ void CommandsGame::update(const Actions &a, float dt) {
     if (action < 0)
         return;
     if (action != expected) {
+        emit(GameEvent::ErrorOccurred);
         failed_ = true;
         feedback_ = .7f;
         return;
@@ -385,6 +392,7 @@ const std::array<AnswerPair, 24> &answer_pairs() {
     return pairs;
 }
 void MagicBall::start(Difficulty, uint32_t seed) {
+    reset_events();
     rng.state = seed ? seed : 1;
     answer = -1;
     age = 100;
@@ -405,6 +413,7 @@ void MagicBall::request_answer() {
     }
     age = 0;
     requests_++;
+    emit(GameEvent::AnswerAccepted);
 }
 void MagicBall::update(const Actions &a, float dt) {
     time += dt;

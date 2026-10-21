@@ -1,6 +1,8 @@
 #include "neurocube/application.hpp"
 #include "neurocube/framebuffer.hpp"
 #include "neurocube/games.hpp"
+#include "neurocube/audio.hpp"
+#include "neurocube/ui.hpp"
 #include <cstdio>
 #include <filesystem>
 #include <fstream>
@@ -26,7 +28,8 @@ struct FileStore : RecordStore {
     }
 };
 static FileStore store;
-static App app(store, default_registry(), true);
+static SimAudio sim_audio;
+static App app(store, default_registry(), true, config::Recipient, &sim_audio);
 static Framebuffer fb;
 static void ppm(const char *path) {
     std::ofstream f(path, std::ios::binary);
@@ -47,7 +50,8 @@ static int gallery(const std::string &directory) {
             return true;
         }
     } memory;
-    App scene(memory, default_registry(), true);
+    SimAudio gallery_audio;
+    App scene(memory, default_registry(), true, config::Recipient, &gallery_audio);
     auto save = [&](const std::string &name) {
         scene.render(fb);
         ppm((directory + "/" + name + ".ppm").c_str());
@@ -63,11 +67,20 @@ static int gallery(const std::string &directory) {
         for (int i = 0; i < int(seconds * 100); i++)
             scene.update({}, .01f);
     };
+    for (int game=0;game<4;++game) {
+        scene.launch(game); save("audio-"+std::to_string(game)+"-off");
+        auto box=game==1?ui::MazeSoundToggle:ui::SoundToggle;
+        tap(box.x+box.w/2,box.y+box.h/2);save("audio-"+std::to_string(game)+"-on");
+        scene.update({},.02f);tap(box.x+box.w/2,box.y+box.h/2);scene.update({},.02f);
+    }
+    App splash_scene(memory,default_registry(),true);
+    // Restore the original scene's splash using assignment is not permitted (RecordStore reference).
+    scene.menu();
     wait(.6f);
-    save("00-splash");
-    tap(120, 100);
-    save("00-project-qr");
-    tap(120, 100);
+    splash_scene.update({},.6f);splash_scene.render(fb);
+    ppm((directory+"/00-splash.ppm").c_str());
+    InputFrame splash_tap;splash_tap.tap=true;splash_tap.x=120;splash_tap.y=100;
+    splash_scene.update(splash_tap,.02f);splash_scene.render(fb);ppm((directory+"/00-project-qr.ppm").c_str());
     save("01-menu");
     tap(100, 220);
     save("02-settings");
@@ -287,6 +300,7 @@ int main(int argc, char **argv) {
                      ((GetAsyncKeyState(VK_UP) & 0x8000) ? .7f : 0);
         pending.gz = (GetAsyncKeyState('Q') & 0x8000) ? 200.f : 0;
         pending.az = (GetAsyncKeyState(VK_SPACE) & 0x8000) ? 3.f : 1.f;
+        sim_audio.tick(.02f);
         app.update(pending, .02f);
         app.render(fb);
         if (app.power_cut_requested()) app.power_cut_applied();
