@@ -10,4 +10,4 @@ VERIFIED_IN_SIMULATOR: 10152 audio checks, полный native core suite, 14 Py
 
 ![Звук OFF/ON, все четыре игры](../images/audio-0.3.4-rc3-rules.png)
 
-Галерея — framebuffer симулятора, не фото LCD. COMPILED_ONLY/NOT_TESTED: итоговый UF2 и CI готовятся; физическая удобность и новая громкость требуют установки с разрешения и ответа пользователя. На плате до установки остаётся rc2 / 557da49.
+Галерея — framebuffer симулятора, не фото LCD. COMPILED_ONLY/NOT_TESTED: [UF2 rc3 опубликован](https://github.com/odinesn1ck/neurocube/releases/tag/v0.3.4-rc3), source c90b616; [паспорт](game-audio-0.3.4-rc3-build.json). CI выполняется; физическая удобность и новая громкость требуют установки с разрешения и ответа пользователя. На плате до установки остаётся rc2 / 557da49.
