@@ -1,10 +1,10 @@
 #include "hardware/clocks.h"
 #include "hardware/dma.h"
+#include "hardware/i2c.h"
 #include "hardware/irq.h"
 #include "neurocube/audio_hardware.hpp"
 #include "pico/stdlib.h"
 extern "C" {
-#include "DEV_Config.h"
 #include "es8311.h"
 }
 #include "audio_pio.pio.h"
@@ -52,20 +52,24 @@ static int64_t hard_silence(alarm_id_t, void *) {
     }
     return 0;
 }
-extern "C" void DEV_Delay_Ms(uint32_t ms) {
+static void codec_delay(void *, uint32_t ms) {
     sleep_ms(ms);
 }
-extern "C" void DEV_I2C_Write_Byte(i2c_inst_t *port, uint8_t addr, uint8_t reg, uint8_t value) {
+static bool codec_write(void *, uint8_t reg, uint8_t value) {
     uint8_t bytes[] = {reg, value};
-    if (i2c_write_timeout_us(port, addr, bytes, 2, false, 2000) != 2)
-        codec_io_ok = false;
+    bool ok = i2c_write_timeout_us(i2c1, 0x18, bytes, 2, false, 2000) == 2;
+    codec_io_ok = codec_io_ok && ok;
+    return ok;
 }
-extern "C" uint8_t DEV_I2C_Read_Byte(i2c_inst_t *port, uint8_t addr, uint8_t reg) {
-    uint8_t value = 0;
-    if (i2c_write_timeout_us(port, addr, &reg, 1, true, 2000) != 1 ||
-        i2c_read_timeout_us(port, addr, &value, 1, false, 2000) != 1)
-        codec_io_ok = false;
-    return value;
+static bool codec_read(void *, uint8_t reg, uint8_t *value) {
+    bool ok = i2c_write_timeout_us(i2c1, 0x18, &reg, 1, true, 2000) == 1 &&
+              i2c_read_timeout_us(i2c1, 0x18, value, 1, false, 2000) == 1;
+    codec_io_ok = codec_io_ok && ok;
+    return ok;
+}
+static es8311_t codec{{nullptr, codec_write, codec_read, codec_delay}};
+static void codec_mute(bool mute) {
+    codec_io_ok = codec_io_ok && es8311_voice_mute(&codec, mute) == ES8311_OK;
 }
 static void audio_complete() {
     if (audio_dma >= 0 && (dma_hw->ints1 & (1u << audio_dma))) {
@@ -80,7 +84,8 @@ bool AudioHardware::init() {
     gpio_init(0);
     gpio_put(0, false);
     gpio_set_dir(0, GPIO_OUT);
-    auto id = Es8311_Read_Id();
+    uint16_t id = 0;
+    codec_io_ok = es8311_read_id(&codec, &id) == ES8311_OK;
     if (!codec_io_ok || (id != 0x1183 && id != 0x8311)) {
         ++faults;
         return false;
@@ -91,10 +96,9 @@ bool AudioHardware::init() {
     mclk_pio_program_init(pio1, 2, mclk, 3);
     pio_sm_set_clkdiv(pio1, 2, float(clock_get_hz(clk_sys)) / (24000.f * 256.f * 5.f));
     pio_sm_set_enabled(pio1, 2, true);
-    pico_audio_t config{6144000, 24000, 16, 16};
-    Es8311_Init(config);
-    Es8311_Voice_Mute(true);
-    Es8311_Voice_Volume_Set(60);
+    codec_io_ok = codec_io_ok && es8311_init_24k(&codec) == ES8311_OK;
+    codec_mute(true);
+    codec_io_ok = codec_io_ok && es8311_voice_volume_set(&codec, 60, nullptr) == ES8311_OK;
     auto output = pio_add_program(pio2, &audio_pio_program);
     audio_pio_program_init(pio2, 0, output, 1, 5);
     dma_ = dma_claim_unused_channel(false);
@@ -125,7 +129,7 @@ void AudioHardware::finish_quiet() {
     dma_channel_abort(dma_);
     dma_hw->ints1 = 1u << dma_;
     pio_sm_set_enabled(pio2, 0, false);
-    Es8311_Voice_Mute(true);
+    codec_mute(true);
     pio_sm_set_enabled(pio1, 2, false);
     active_ = cooling_ = false;
     completed = false;
@@ -189,7 +193,7 @@ bool AudioHardware::play(SoundEffect effect) {
     uint bottom = (ctrl & PIO_SM0_EXECCTRL_WRAP_BOTTOM_BITS) >> PIO_SM0_EXECCTRL_WRAP_BOTTOM_LSB;
     pio_sm_exec(pio2, 0, pio_encode_jmp(bottom));
     pio_sm_set_enabled(pio1, 2, true);
-    Es8311_Voice_Mute(false);
+    codec_mute(false);
     if (!codec_io_ok) {
         ++faults;
         stop();

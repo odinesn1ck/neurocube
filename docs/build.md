@@ -67,7 +67,7 @@ Bridge выполняет configure с --fresh: это исключает ост
 & $python tools/prepare_release.py --verify-reproducible
 ```
 
-Нужно чистое рабочее дерево. Команда сравнивает замороженные игровые/header/HAL файлы с `v0.3.5-rc1`, собирает production UF2/ELF/BIN и Release Windows simulator дважды в независимых каталогах, сравнивает SHA256, проверяет debug OFF и адреса UF2. Создаёт ZIP с исходниками, общий ZIP с лицензиями/инструкцией/manifest и отдельный Windows ZIP; внешние SHA256SUMS создаются после архивов. Никакого flash, tag, GitHub release или публикации нет. Рабочие сборочные каталоги остаются в игнорируемом artifacts.
+Нужно чистое рабочее дерево. Команда сравнивает замороженные игровые/header/board/display файлы с `v0.3.5-rc1`, собирает production UF2/ELF/BIN и Release Windows simulator дважды в независимых каталогах, сравнивает SHA256, проверяет debug OFF и адреса UF2. Создаёт ZIP с исходниками, общий ZIP с лицензиями/инструкцией/manifest и отдельный Windows ZIP; внешние SHA256SUMS создаются после архивов. Codec driver — закреплённая Apache-2.0 адаптация из esp-bsp; её transport glue закреплён SHA256 в provenance. Старые codec sources и громкий RAM probe запрещены в HEAD и упаковке. Никакого flash, tag, GitHub release или публикации нет. Рабочие сборочные каталоги остаются в игнорируемом artifacts.
 
 Для стабильного 1.0 остаются критерии [готовности](evidence/release-1.0.0-readiness.md), включая лицензионный блокер ES8311. Пакет с blocked manifest не означает разрешение публикации.
 

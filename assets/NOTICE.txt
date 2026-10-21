@@ -5,7 +5,7 @@ RP2350-Touch-LCD-1.54 examples, commit 51a7fe28c1e5dd19a089a062980a275709e94df6.
 Upstream: https://github.com/waveshareteam/RP2350-Touch-LCD-1.54
 The upstream repository declares Apache-2.0, included as Waveshare-LICENSE.txt.
 File-specific notices take precedence for their respective content; see
-THIRD_PARTY_LICENSES.md for the unresolved ES8311 product restriction.
+THIRD_PARTY_LICENSES.md for the current Apache-2.0 ES8311 replacement.
 
 DEV_Config.h/c carry this additional permission notice:
 
@@ -34,4 +34,12 @@ Pico SDK and TinyUSB are external dependencies, not vendored here. Distributed
 firmware also incorporates their licensed code. See Pico-SDK-LICENSE.txt and
 TinyUSB-LICENSE.txt in release archives.
 
-Audio: third_party/waveshare_audio contains the pinned Waveshare ES8311 driver and PIO program from examples/C/02_ES8311. Driver file copyright/permission notices and upstream LICENSE are retained there. DEV_Config.h and audio_pio.h in that directory are NeuroCube shims.
+Audio PIO: third_party/waveshare_audio/audio_pio.pio is the unchanged pinned
+Waveshare program under Apache-2.0. The old ES8311 driver/shims are removed.
+Codec: third_party/espressif_es8311 is a modified Apache-2.0 derivative of
+Espressif esp-bsp f259a6abd5808019b1903a422092a4234ca95a51/components/es8311.
+Copyright 2015-2026 Espressif Systems (Shanghai) CO LTD; NeuroCube changes 2026.
+Modifications: portable callback transport, fixed 24 kHz master profile, no ESP-IDF,
+no heap; unused APIs removed. LICENSE, provenance and modification notices are
+included in source and release packages. Component upstream has no NOTICE file.
+The grant for the new component does not relicense historical removed code.

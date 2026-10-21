@@ -1,0 +1,7 @@
+# ES8311 portable Apache-2.0 adaptation
+
+Derived from [Espressif esp-bsp](https://github.com/espressif/esp-bsp/tree/f259a6abd5808019b1903a422092a4234ca95a51/components/es8311), commit `f259a6abd5808019b1903a422092a4234ca95a51`. Original copyright: Espressif Systems (Shanghai) CO LTD. [LICENSE](LICENSE), [source hashes / provenance](provenance.json). This component remains Apache-2.0; the project's MIT does not replace it.
+
+Modified by NeuroCube in 2026: ESP-IDF/FreeRTOS/I2C allocation/logging replaced by static callback transport; kept only initialization, volume, mute and ID operations. Coefficient subset: 6.144 MHz MCLK / 24 kHz / 16-bit I2S. Codec master bit is selected to preserve the existing PIO receiver of BCLK/LRCK, per ES8311 User Guide section 8.2. No code, comments or tables were sourced from the retired Waveshare ES8311 driver. The register header is unchanged from the Apache upstream. Unused microphone/rate-control APIs are absent. No ESP-IDF dependency, heap or GPIO ownership is introduced.
+
+Driver returns immediately on the first failed I2C operation. The hardware adapter latches errors, keeps the amplifier disabled on init failure, and preserves PIO/DMA timing, NS4150B sequencing, codec gain 60 and PCM 1280. Native fake-register tests verify master/clock/format and inject failure into every init transaction. They do not prove audible output; replacement hardware acceptance is pending.

@@ -72,3 +72,5 @@
 - [Проверка production-поставки и CI](final-1.0.0-candidate.json), [финальный аудит](final-1.0.0-public-audit.json).
 
 - [Разрешённая установка 1.0.0 и сохранность данных](final-1.0.0-flash.json).
+
+- [Apache-2.0 замена ES8311: источники, регистры и приёмка](es8311-license-replacement.md).

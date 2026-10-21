@@ -9,3 +9,6 @@
 # Keep upstream license notices byte-for-byte, including their whitespace.
 assets/licenses/* -text -whitespace
 assets/licenses/*.json text eol=lf
+
+third_party/espressif_es8311/LICENSE -text -whitespace
+third_party/espressif_es8311/es8311_reg.h -text

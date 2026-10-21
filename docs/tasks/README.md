@@ -21,3 +21,5 @@
 - [Игровые звуки](game-audio-effects.md).
 - [Плавная скорость Simon](simon-progressive-speed.md).
 - [Финализация 1.0.0](final-release-1.0.0.md).
+
+- [Замена ES8311 и устранение лицензионного блокера](replace-es8311-driver-license.md).

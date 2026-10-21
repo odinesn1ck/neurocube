@@ -75,13 +75,23 @@ def main():
     for directory in ('src/domain', 'src/application', 'src/games', 'src/presentation', 'include'):
         frozen += [f for f in (ROOT/directory).rglob('*') if f.is_file()]
     frozen += [ROOT/'src/infrastructure'/name for name in
-               ('audio.cpp', 'board.cpp', 'display_power.cpp')]
+               ('board.cpp', 'display_power.cpp')]
     for file in frozen:
         name = file.relative_to(ROOT).as_posix()
         old = subprocess.check_output(['git', 'show', 'v0.3.5-rc1:'+name], cwd=ROOT)
         # Git stores LF; Windows checkout may have CRLF.
         if old.replace(b'\r\n', b'\n') != file.read_bytes().replace(b'\r\n', b'\n'):
             raise bridge.BridgeError('Frozen functionality changed: '+name)
+    # Task replace-es8311-driver-license authorizes ONLY codec transport changes.
+    provenance = json.loads((ROOT/'third_party/espressif_es8311/provenance.json').read_text())
+    adapter = (ROOT/'src/infrastructure/audio.cpp').read_bytes().replace(b'\r\n', b'\n')
+    if hashlib.sha256(adapter).hexdigest() != provenance['neurocube_audio_adapter_sha256']:
+        raise bridge.BridgeError('Audio adapter differs from reviewed license replacement')
+    forbidden = ('third_party/waveshare_audio/es8311.c', 'third_party/waveshare_audio/es8311.h',
+                 'third_party/waveshare_audio/DEV_Config.h', 'third_party/waveshare_audio/audio_pio.h',
+                 'tools/audio_probe/main.c', 'tools/audio_probe/CMakeLists.txt')
+    if any((ROOT/name).exists() for name in forbidden):
+        raise bridge.BridgeError('Retired restricted driver or loud probe still present')
     out = args.output.resolve()
     if not out.is_relative_to((ROOT/'artifacts').resolve()):
         raise bridge.BridgeError('Release output must stay under ignored artifacts/')
@@ -116,7 +126,7 @@ def main():
     if any(file.name not in allowed for file in dist.iterdir()):
         raise bridge.BridgeError('Unexpected file in dist; use a fresh output directory')
     # Package committed canonical bytes, not checkout-dependent CRLF conversions.
-    canonical=out/'canonical-source'; canonical.mkdir(exist_ok=True)
+    canonical=out/'canonical-source'/source; canonical.mkdir(parents=True,exist_ok=True)
     source_zip=subprocess.check_output(['git','archive','--format=zip',source],cwd=ROOT)
     entries={}
     with zipfile.ZipFile(io.BytesIO(source_zip)) as archived:
@@ -134,15 +144,20 @@ def main():
     entries['neurocube_sim.exe'] = builds['native']/'neurocube_sim.exe'
     for file in (canonical/'assets').rglob('*'):
         if file.is_file(): entries['licenses/'+file.relative_to(canonical/'assets').as_posix()] = file
-    # Preserve the exact nonstandard notice; root MIT must not replace it.
-    notice = (canonical/'third_party/waveshare_audio/es8311.c').read_bytes().split(b'#include', 1)[0]
-    (out/'ES8311-file-notice.txt').write_bytes(notice)
-    entries['licenses/ES8311-file-notice.txt'] = out/'ES8311-file-notice.txt'
-    entries['licenses/ES8311-upstream-LICENSE.txt'] = canonical/'third_party/waveshare_audio/LICENSE'
+    if any(name in entries for name in forbidden):
+        raise bridge.BridgeError('Restricted driver or old loud probe in source archive')
+    for required in ('third_party/espressif_es8311/LICENSE',
+                     'third_party/espressif_es8311/provenance.json',
+                     'assets/licenses/ES8311-Apache-2.0.txt'):
+        if required not in entries:
+            raise bridge.BridgeError('Missing codec license/provenance: '+required)
     manifest = {
         'version':version, 'source_commit':source, 'source_date_epoch':epoch,
         'status':'PREPARED_NOT_PUBLISHED',
-        'public_readiness':'BLOCKED: ES8311 file-level licensing unresolved; physical acceptance pending',
+        'public_readiness':'BLOCKED: replacement hardware audio acceptance and historical distribution decision pending',
+        'codec_license':'Apache-2.0; unrestricted by processor vendor',
+        'codec_upstream_commit':provenance['commit'],
+        'audio_adapter_sha256':provenance['neurocube_audio_adapter_sha256'],
         'debug_injection':False, 'frozen_files_compared_to_0_3_5':len(frozen),
         'independent_builds_identical':args.verify_reproducible, 'uf2':uf2,
         'files':{name:{'size':file.stat().st_size,'sha256':digest(file)} for name,file in sorted(entries.items())}}
