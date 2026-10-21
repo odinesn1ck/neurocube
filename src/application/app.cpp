@@ -1,9 +1,17 @@
 #include "neurocube/application.hpp"
+#include "neurocube/ui.hpp"
 #include <algorithm>
+#include <cmath>
 #include <cstdio>
+#include <cstring>
 namespace nc {
-App::App(RecordStore &s, GameRegistry r) : registry_(r), store_(s) {
+App::App(RecordStore &s, GameRegistry r, bool splash, const char *recipient)
+    : registry_(r), store_(s), recipient_(recipient) {
     store_.load(records_);
+    gestures_.sensitivity = records_.sensitivity;
+    if (records_.calibrated)
+        gestures_.calibrate(records_.calibration_x, records_.calibration_y);
+    screen_ = splash ? Screen::Splash : Screen::Menu;
 }
 void App::launch(int i, bool rules) {
     if (i < 0 || i >= registry_.count)
@@ -11,11 +19,16 @@ void App::launch(int i, bool rules) {
     game().stop();
     selected_ = i;
     gestures_.reset();
-    game().start(difficulty_, ++seed_);
-    screen_ = rules ? Screen::Rules : Screen::Playing;
+    phase_time_ = 0;
+    ++seed_;
+    maze_options_.variant = uint8_t(seed_ % 3);
+    active_options_ = maze_options_;
+    game().configure(active_options_);
+    game().start(game().setup() ? Difficulty(active_options_.geometry) : difficulty_, seed_);
+    screen_ = game().setup() ? Screen::MazeSetup : rules ? Screen::Rules : Screen::Playing;
 }
 void App::restart() {
-    launch(selected_, false);
+    launch(selected_, true);
 }
 void App::pause() {
     if (screen_ == Screen::Playing) {
@@ -30,11 +43,23 @@ void App::resume() {
         screen_ = Screen::Playing;
     }
 }
+uint32_t App::current_record() const {
+    if (registry_.games[selected_]->setup())
+        return records_.maze_best[active_options_.geometry][active_options_.variant]
+                                 [active_options_.contact_index];
+    return records_.best[selected_][int(difficulty_)];
+}
 void App::finish() {
     auto result = game().result();
-    if (game().metadata().scored && result.score > records_.best[selected_][int(difficulty_)]) {
-        records_.best[selected_][int(difficulty_)] = result.score;
-        dirty_ = true;
+    if (game().metadata().scored) {
+        uint32_t &best = game().setup()
+                             ? records_.maze_best[active_options_.geometry][active_options_.variant]
+                                                 [active_options_.contact_index]
+                             : records_.best[selected_][int(difficulty_)];
+        if (result.score > best) {
+            best = result.score;
+            dirty_ = true;
+        }
     }
     flush();
 }
@@ -46,7 +71,8 @@ void App::menu() {
     gestures_.reset();
 }
 void App::next() {
-    finish();
+    if (screen_ == Screen::Playing || screen_ == Screen::Paused || screen_ == Screen::Result)
+        finish();
     launch((selected_ + 1) % registry_.count);
 }
 bool App::flush() {
@@ -61,10 +87,69 @@ bool App::flush() {
     }
     return save_ok_;
 }
+void App::begin_play() {
+    gestures_.reset();
+    phase_time_ = 0;
+    screen_ = game().countdown() ? Screen::Countdown : Screen::Playing;
+}
+void App::update_calibration(const InputFrame &i, float dt) {
+    if (i.tap && ui::CalibrationBack.contains(i.x, i.y)) {
+        screen_ = Screen::Settings;
+        return;
+    }
+    if (i.tap && ui::CalibrationRetry.contains(i.x, i.y)) {
+        calibration_ready_ = false;
+        calibrating_ = false;
+        return;
+    }
+    if (i.tap && ui::CalibrationConfirm.contains(i.x, i.y) && i.imu && !calibration_ready_) {
+        calibrating_ = true;
+        cal_time_ = cal_x_ = cal_y_ = 0;
+        cal_samples_ = 0;
+        cal_min_x_ = cal_max_x_ = i.ax;
+        cal_min_y_ = cal_max_y_ = i.ay;
+    }
+    if (!calibrating_ || !i.imu)
+        return;
+    cal_min_x_ = std::min(cal_min_x_, i.ax);
+    cal_max_x_ = std::max(cal_max_x_, i.ax);
+    cal_min_y_ = std::min(cal_min_y_, i.ay);
+    cal_max_y_ = std::max(cal_max_y_, i.ay);
+    if (cal_max_x_ - cal_min_x_ > .12f || cal_max_y_ - cal_min_y_ > .12f) {
+        cal_time_ = cal_x_ = cal_y_ = 0;
+        cal_samples_ = 0;
+        cal_min_x_ = cal_max_x_ = i.ax;
+        cal_min_y_ = cal_max_y_ = i.ay;
+        return;
+    }
+    cal_time_ += dt;
+    cal_x_ += i.ax;
+    cal_y_ += i.ay;
+    cal_samples_++;
+    if (cal_time_ >= .6f && cal_samples_ >= 6) {
+        records_.calibration_x = cal_x_ / cal_samples_;
+        records_.calibration_y = cal_y_ / cal_samples_;
+        records_.calibrated = true;
+        gestures_.calibrate(records_.calibration_x, records_.calibration_y);
+        dirty_ = true;
+        flush();
+        calibrating_ = false;
+        calibration_ready_ = true;
+    }
+}
 void App::update(const InputFrame &i, float dt) {
     dt = std::clamp(dt, 0.f, .1f);
     clock_ += dt;
+    latest_ = i;
     auto a = gestures_.update(i, dt);
+    if (screen_ == Screen::Splash) {
+        phase_time_ += dt;
+        if (phase_time_ >= config::SplashSeconds || i.tap || i.short_button || i.long_button) {
+            screen_ = Screen::Menu;
+            phase_time_ = 0;
+        }
+        return;
+    }
     if (i.long_button) {
         menu();
         return;
@@ -90,18 +175,26 @@ void App::update(const InputFrame &i, float dt) {
     }
     if (screen_ == Screen::Settings) {
         if (i.tap) {
-            if (i.y < 90)
+            if (ui::Rect{8, 48, 224, 36}.contains(i.x, i.y))
                 difficulty_ = Difficulty((int(difficulty_) + 1) % 3);
-            else if (i.y < 137)
+            else if (ui::Rect{8, 94, 224, 36}.contains(i.x, i.y)) {
                 gestures_.sensitivity = gestures_.sensitivity < 1.3f ? 1.5f : .8f;
-            else if (i.y < 183 && i.imu)
-                gestures_.calibrate(i.ax, i.ay);
-            else
+                records_.sensitivity = gestures_.sensitivity;
+                dirty_ = true;
+                flush();
+            } else if (ui::CalibrationItem.contains(i.x, i.y)) {
+                screen_ = Screen::Calibration;
+                calibrating_ = false;
+                calibration_ready_ = false;
+            } else if (ui::Rect{8, 186, 224, 36}.contains(i.x, i.y))
                 screen_ = Screen::Menu;
         }
         return;
     }
-    // Global touch toolbar consumes input before game actions and shake.
+    if (screen_ == Screen::Calibration) {
+        update_calibration(i, dt);
+        return;
+    }
     if (i.tap && i.y >= 208) {
         int cmd = std::clamp(i.x / 60, 0, 3);
         if (cmd == 0) {
@@ -109,17 +202,35 @@ void App::update(const InputFrame &i, float dt) {
                 resume();
             else
                 pause();
-        }
-        if (cmd == 1)
+        } else if (cmd == 1)
             restart();
-        if (cmd == 2)
+        else if (cmd == 2)
             next();
-        if (cmd == 3)
+        else
             menu();
         return;
     }
+    if (screen_ == Screen::MazeSetup) {
+        if ((i.touch || i.tap) && ui::MazeGeometry.contains(i.x, i.y))
+            maze_options_.geometry = uint8_t(std::clamp(((i.x - 24) * 2 + 96) / 192, 0, 2));
+        else if ((i.touch || i.tap) && ui::MazeContacts.contains(i.x, i.y))
+            maze_options_.contact_index = uint8_t(std::clamp(((i.x - 24) * 5 + 96) / 192, 0, 5));
+        else if (i.tap && ui::MazePlay.contains(i.x, i.y)) {
+            active_options_ = maze_options_;
+            game().configure(active_options_);
+            game().start(Difficulty(active_options_.geometry), seed_);
+            begin_play();
+        }
+        return;
+    }
     if (screen_ == Screen::Rules) {
-        if (i.tap) {
+        if (i.tap)
+            begin_play();
+        return;
+    }
+    if (screen_ == Screen::Countdown) {
+        phase_time_ += dt;
+        if (phase_time_ >= 3) {
             screen_ = Screen::Playing;
             gestures_.reset();
         }
@@ -136,28 +247,34 @@ void App::update(const InputFrame &i, float dt) {
         restart();
         return;
     }
-    if (!game().metadata().restart_on_shake && a.tap && a.y < 177)
-        a.tap = false;
     game().update(a, dt);
     if (game().result().finished) {
         finish();
         screen_ = Screen::Result;
     }
 }
-static void button(Renderer &r, int x, int y, int w, int h, const char *label,
-                   uint16_t c = Accent) {
-    r.rect(x, y, w, h, c);
-    r.text(x + 6, y + 5, label, Bg);
-}
 void App::render(Renderer &r) const {
     r.clear(Bg);
-    char b[96];
+    char b[128];
+    if (screen_ == Screen::Splash) {
+        for (int i = 0; i < 8; i++)
+            r.circle(30 + i * 28, 30 + int(std::sin(clock_ * 2 + i) * 12), 2, Accent);
+        ui::line(r, 94, 161, 120, 145, Gold);
+        ui::line(r, 120, 145, 146, 161, Gold);
+        ui::line(r, 94, 161, 120, 178, Accent);
+        ui::line(r, 146, 161, 120, 178, Accent);
+        ui::line(r, 120, 145, 120, 178, Ink);
+        std::snprintf(b, sizeof b, "Привет, %s", recipient_);
+        ui::text_box(r, {4, 76, 232, 44}, b, Ink, 2);
+        ui::text_box(r, {15, 190, 210, 24}, "Твой NeuroCube", Accent);
+        return;
+    }
     if (screen_ == Screen::Menu) {
         r.text(15, 10, "NeuroCube", Accent, 2);
         for (int j = 0; j < 4 && j + menu_page_ * 4 < registry_.count; j++) {
-            int index = j + menu_page_ * 4;
-            button(r, 10, 43 + j * 39, 220, 34, registry_.games[index]->metadata().title,
-                   !registry_.games[index]->metadata().scored ? Gold : Accent);
+            int n = j + menu_page_ * 4;
+            ui::button(r, {10, 43 + j * 39, 220, 34}, registry_.games[n]->metadata().title,
+                       registry_.games[n]->metadata().scored ? Accent : Gold);
         }
         r.text(12, 212, "Настройки", Muted);
         if (registry_.count > 4)
@@ -165,44 +282,83 @@ void App::render(Renderer &r) const {
         return;
     }
     if (screen_ == Screen::Settings) {
-        r.text(10, 10, "Настройки", Accent, 2);
+        ui::text_box(r, {8, 8, 224, 36}, "Настройки", Accent, 2);
         const char *levels[] = {"Легко", "Обычно", "Сложно"};
         std::snprintf(b, sizeof b, "Уровень: %s", levels[int(difficulty_)]);
-        button(r, 8, 48, 224, 36, b);
+        ui::button(r, {8, 48, 224, 36}, b);
         std::snprintf(b, sizeof b, "Чувств.: %.1f", gestures_.sensitivity);
-        button(r, 8, 94, 224, 36, b);
-        button(r, 8, 140, 224, 36, "Калибровка");
-        button(r, 8, 186, 224, 36, "В меню", Gold);
+        ui::button(r, {8, 94, 224, 36}, b);
+        ui::button(r, ui::CalibrationItem, "Калибровка");
+        ui::button(r, {8, 186, 224, 36}, "В меню", Gold);
         return;
     }
-    r.text(10, 4, registry_.games[selected_]->metadata().title, Accent);
-    if (screen_ == Screen::Rules) {
-        r.text(12, 40, "Как играть", Gold);
-        r.text(12, 69, registry_.games[selected_]->metadata().rule, Ink);
+    if (screen_ == Screen::Calibration) {
+        ui::text_box(r, {8, 0, 224, 36}, "Калибровка", Accent, 2);
+        ui::text_box(r, {12, 38, 216, 36}, "Держи куб удобно и неподвижно", Ink);
+        std::snprintf(b, sizeof b, "X %.2f   Y %.2f", latest_.ax, latest_.ay);
+        ui::text_box(r, {10, 75, 220, 22}, latest_.imu ? b : "Нет данных IMU", Muted);
+        ui::button(r, ui::CalibrationConfirm,
+                   calibrating_         ? "Не двигай куб..."
+                   : calibration_ready_ ? (save_ok_ ? "Сохранено" : "Ошибка записи")
+                                        : "Это нейтраль",
+                   calibration_ready_ ? Gold : Accent);
+        ui::button(r, ui::CalibrationRetry, "Повторить");
+        ui::button(r, ui::CalibrationBack, "Назад", Gold);
+        ui::text_box(r, {12, 188, 216, 42},
+                     calibration_ready_ ? "Наклоны отсчитываются от этой позиции"
+                                        : "Подтверди нейтральное положение",
+                     Muted);
+        return;
+    }
+    ui::text_box(r, {8, 2, 224, 24}, registry_.games[selected_]->metadata().title, Accent);
+    if (screen_ == Screen::MazeSetup) {
+        const char *levels[] = {"Лёгкая", "Средняя", "Сложная"};
+        std::snprintf(b, sizeof b, "Сложность: %s", levels[maze_options_.geometry]);
+        ui::text_box(r, {12, 28, 216, 28}, b, Ink);
+        ui::slider(r, ui::MazeGeometry, maze_options_.geometry, 2);
+        int limit = ContactLimits[maze_options_.contact_index];
+        if (limit)
+            std::snprintf(b, sizeof b, "Касания: %d", limit);
+        else
+            std::snprintf(b, sizeof b, "Касания: без лимита");
+        ui::text_box(r, {12, 99, 216, 22}, b, Ink);
+        ui::slider(r, ui::MazeContacts, maze_options_.contact_index, 5);
+        ui::button(r, ui::MazePlay, "Играть", Gold);
+    } else if (screen_ == Screen::Rules) {
+        ui::text_box(r, {12, 30, 216, 38}, "Как играть", Gold, 2);
+        ui::text_box(r, {12, 72, 216, 62}, registry_.games[selected_]->metadata().rule, Ink);
         if (registry_.games[selected_]->metadata().scored) {
-            std::snprintf(b, sizeof b, "Рекорд: %lu",
-                          (unsigned long)records_.best[selected_][int(difficulty_)]);
-            r.text(12, 140, b, Gold);
+            std::snprintf(b, sizeof b, "Рекорд: %lu", (unsigned long)current_record());
+            ui::text_box(r, {12, 138, 216, 25}, b, Gold);
         }
-        r.text(12, 174, "Коснись для старта", Accent);
+        ui::text_box(r, {12, 170, 216, 26}, "Коснись для старта", Accent);
+    } else if (screen_ == Screen::Countdown) {
+        int n = std::max(1, 3 - int(phase_time_));
+        std::snprintf(b, sizeof b, "%d", n);
+        ui::text_box(r, {20, 44, 200, 38}, "Приготовься", Gold, 2);
+        ui::text_box(r, {40, 92, 160, 60}, b, Ink, 3);
+        ui::text_box(r, {12, 166, 216, 28}, "Ввод начнётся после 1", Muted);
     } else if (screen_ == Screen::Paused) {
-        r.text(35, 75, "Пауза", Gold, 2);
-        r.text(12, 125, "Отдохни и продолжай", Ink);
+        ui::text_box(r, {12, 64, 216, 40}, "Пауза", Gold, 2);
+        ui::text_box(r, {12, 117, 216, 40}, "Отдохни и продолжай", Ink);
     } else if (screen_ == Screen::Result) {
-        r.text(12, 54, "Готово!", Gold, 2);
-        std::snprintf(b, sizeof b, "Счёт: %lu",
-                      (unsigned long)registry_.games[selected_]->result().score);
-        r.text(12, 100, b, Ink);
-        r.text(12, 145, "Коснись: ещё попытка", Accent);
-        if (!save_ok_)
-            r.text(12, 173, "Ошибка сохранения", Red);
+        auto result = registry_.games[selected_]->result();
+        ui::text_box(r, {12, 34, 216, 40}, result.won ? "Победа!" : "Попробуй ещё", Gold, 2);
+        std::snprintf(b, sizeof b, "Счёт: %lu", (unsigned long)result.score);
+        ui::text_box(r, {12, 84, 216, 24}, b, Ink);
+        if (registry_.games[selected_]->setup()) {
+            std::snprintf(b, sizeof b, "Касаний: %u", result.contacts);
+            ui::text_box(r, {12, 111, 216, 24}, b, Muted);
+        }
+        ui::text_box(r, {12, 146, 216, 42}, save_ok_ ? "Коснись: ещё попытка" : "Ошибка сохранения",
+                     save_ok_ ? Accent : Red);
     } else
         registry_.games[selected_]->render(r);
     const char *labels[] = {screen_ == Screen::Paused ? "Играть" : "Пауза", "Заново", "Далее",
                             "Меню"};
     for (int j = 0; j < 4; j++) {
         r.rect(j * 60, 208, 59, 32, 0x294A);
-        r.text(j * 60 + 2, 216, labels[j], Ink);
+        ui::text_box(r, {j * 60 + 1, 209, 58, 30}, labels[j], Ink);
     }
 }
 } // namespace nc

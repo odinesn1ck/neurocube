@@ -1,5 +1,6 @@
 #include "neurocube/games.hpp"
 #include "neurocube/application.hpp"
+#include "neurocube/ui.hpp"
 #include <algorithm>
 #include <cmath>
 #include <cstdio>
@@ -15,84 +16,165 @@ void SequenceGame::start(Difficulty d, uint32_t seed) {
     rng.state = seed ? seed : 1;
     length = 1;
     cursor = 0;
-    timer = 0;
+    timer = -.7f;
     shown = -1;
-    showing = true;
+    phase_ = SequencePhase::Showing;
     outcome = {};
-    step = .8f - int(d) * .16f;
+    step = 1.4f - int(d) * .18f;
     for (auto &v : sequence)
         v = int(rng.bounded(4));
 }
 void SequenceGame::update(const Actions &a, float dt) {
     if (outcome.finished)
         return;
-    if (showing) {
+    if (phase_ == SequencePhase::Failure) {
+        timer -= dt;
+        if (timer <= 0)
+            outcome.finished = true;
+        return;
+    }
+    if (phase_ == SequencePhase::Correct) {
+        timer -= dt;
+        if (timer > 0)
+            return;
+        shown = -1;
+        if (cursor == length) {
+            if (length == 32) {
+                phase_ = SequencePhase::Complete;
+                outcome.finished = true;
+                outcome.won = true;
+                return;
+            }
+            length++;
+            cursor = 0;
+            timer = -.7f;
+            phase_ = SequencePhase::Showing;
+        } else
+            phase_ = SequencePhase::Recall;
+        return;
+    }
+    if (phase_ == SequencePhase::Showing) {
         timer += dt;
+        if (timer < 0) {
+            shown = -1;
+            return;
+        }
         int slot = int(timer / step);
         if (slot >= length) {
-            showing = false;
+            phase_ = SequencePhase::Recall;
             timer = 0;
             cursor = 0;
             shown = -1;
         } else
-            shown = std::fmod(timer, step) < step * .72f ? sequence[slot] : -1;
+            shown = std::fmod(timer, step) < step * .65f ? sequence[slot] : -1;
         return;
     }
-    int dir = a.direction;
+    int direction = a.direction;
     if (a.tap) {
-        if (a.y < 100)
-            dir = 0;
-        else if (a.y > 160)
-            dir = 2;
+        if (a.y < 110)
+            direction = 0;
+        else if (a.y > 162)
+            direction = 2;
         else
-            dir = a.x > 120 ? 1 : 3;
+            direction = a.x > 120 ? 1 : 3;
     }
-    if (dir >= 0) {
-        shown = dir;
-        timer = .18f;
-        if (dir != sequence[cursor]) {
-            outcome.finished = true;
-            return;
-        }
-        cursor++;
-        if (cursor == length) {
-            outcome.score = uint32_t(length);
-            length++;
-            if (length > 32) {
-                outcome.finished = true;
-                return;
-            }
-            cursor = 0;
-            showing = true;
-            timer = -.4f;
-            shown = -1;
-        }
+    if (direction < 0 || direction > 3)
+        return;
+    shown = direction;
+    if (direction != sequence[cursor]) {
+        phase_ = SequencePhase::Failure;
+        timer = .75f;
+        return;
     }
-    if (!showing) {
-        timer = std::max(0.f, timer - dt);
-        if (timer == 0)
-            shown = -1;
-    }
+    cursor++;
+    if (cursor == length)
+        outcome.score = uint32_t(length);
+    phase_ = SequencePhase::Correct;
+    timer = .36f;
 }
 void SequenceGame::render(Renderer &r) const {
     score(r, outcome.score);
-    r.text(12, 50, showing ? "Смотри и запоминай" : "Теперь повтори", Ink);
-    const int xs[] = {93, 155, 93, 31}, ys[] = {73, 125, 163, 125};
+    const char *label = phase_ == SequencePhase::Showing   ? "Смотри и запоминай"
+                        : phase_ == SequencePhase::Correct ? "Верно!"
+                        : phase_ == SequencePhase::Failure ? "Не тот огонь"
+                                                           : "Твоя очередь";
+    ui::text_box(r, {10, 48, 220, 22}, label, phase_ == SequencePhase::Failure ? Red : Ink);
+    const int xs[] = {120, 184, 120, 56}, ys[] = {93, 137, 181, 137};
     for (int i = 0; i < 4; i++) {
-        r.rect(xs[i], ys[i], 54, 36, i == shown ? Ink : colors[i]);
-        r.text(xs[i] + 23, ys[i] + 8, i == 0 ? "1" : i == 1 ? "2" : i == 2 ? "3" : "4", Bg);
+        bool active = i == shown;
+        int grow = active ? 3 : 0;
+        uint16_t c = active ? (phase_ == SequencePhase::Failure ? Red : Ink) : colors[i];
+        if (active)
+            r.rect(xs[i] - 29 - grow, ys[i] - 22 - grow, 58 + 2 * grow, 44 + 2 * grow, c);
+        r.rect(xs[i] - 26, ys[i] - 19, 52, 38, active ? colors[i] : 0x18C9);
+        if (i == 0) {
+            for (int y = 0; y < 20; y++)
+                r.rect(xs[i] - y / 2, ys[i] - 10 + y, y + 1, 1, c);
+        } else if (i == 1) {
+            for (int y = -11; y <= 11; y++)
+                r.rect(xs[i] - (11 - std::abs(y)), ys[i] + y, 2 * (11 - std::abs(y)) + 1, 1, c);
+        } else if (i == 2)
+            r.circle(xs[i], ys[i], 11, c);
+        else
+            r.rect(xs[i] - 11, ys[i] - 11, 22, 22, c);
     }
 }
 bool circle_hits_wall(float x, float y, float radius, const Wall &w) {
     float cx = std::clamp(x, w.x, w.x + w.w), cy = std::clamp(y, w.y, w.y + w.h);
     return (x - cx) * (x - cx) + (y - cy) * (y - cy) < radius * radius;
 }
-static constexpr Wall walls[] = {{65, 48, 10, 104}, {125, 104, 10, 96}, {185, 48, 10, 104}};
+MazeMap make_maze(int geometry, int variant) {
+    MazeMap m;
+    m.columns = 5 + std::clamp(geometry, 0, 2);
+    m.rows = geometry ? 5 : 4;
+    Random rng;
+    rng.state = 0xC0B0123u + uint32_t(geometry * 97 + variant * 701);
+    std::array<bool, 35> visited{};
+    std::array<int, 35> stack{};
+    int top = 0;
+    stack[0] = 0;
+    visited[0] = true;
+    const int dx[] = {0, 1, 0, -1}, dy[] = {-1, 0, 1, 0};
+    while (top >= 0) {
+        int c = stack[top], choices[4], n = 0;
+        for (int d = 0; d < 4; d++) {
+            int nx = c % m.columns + dx[d], ny = c / m.columns + dy[d];
+            if (nx >= 0 && nx < m.columns && ny >= 0 && ny < m.rows &&
+                !visited[ny * m.columns + nx])
+                choices[n++] = d;
+        }
+        if (!n) {
+            top--;
+            continue;
+        }
+        int d = choices[rng.bounded(n)], next = c + dx[d] + dy[d] * m.columns;
+        m.openings[c] |= uint8_t(1 << d);
+        m.openings[next] |= uint8_t(1 << ((d + 2) % 4));
+        visited[next] = true;
+        stack[++top] = next;
+    }
+    auto wall = [&](float x, float y, float w, float h) { m.walls[m.wall_count++] = {x, y, w, h}; };
+    wall(8, 61, 224, 2);
+    wall(8, 201, 224, 2);
+    wall(8, 61, 2, 142);
+    wall(230, 61, 2, 142);
+    float cw = m.cell_width(), ch = m.cell_height();
+    for (int c = 0; c < m.columns * m.rows; c++) {
+        int col = c % m.columns, row = c / m.columns;
+        if (col < m.columns - 1 && !(m.openings[c] & 2))
+            wall(10 + (col + 1) * cw - 1, 63 + row * ch, 2, ch);
+        if (row < m.rows - 1 && !(m.openings[c] & 4))
+            wall(10 + col * cw, 63 + (row + 1) * ch - 1, cw, 2);
+    }
+    return m;
+}
 void MazeGame::start(Difficulty d, uint32_t) {
-    x = 22;
-    y = 65;
+    options_.geometry = uint8_t(d);
+    map_ = make_maze(options_.geometry, options_.variant % 3);
+    x = map_.center_x(0);
+    y = map_.center_y(0);
     vx = vy = elapsed = 0;
-    level = d;
+    contacts_.reset();
     outcome = {};
 }
 void MazeGame::update(const Actions &a, float dt) {
@@ -100,121 +182,231 @@ void MazeGame::update(const Actions &a, float dt) {
         return;
     dt = std::clamp(dt, 0.f, .1f);
     elapsed += dt;
-    float gain = 180 + int(level) * 70;
-    vx = (vx + a.tilt_x * gain * dt) * std::exp(-dt * 2);
-    vy = (vy + a.tilt_y * gain * dt) * std::exp(-dt * 2);
-    // Small substeps prevent crossing thin walls at high velocity.
-    for (int n = 0; n < 4; n++) {
-        float nx = std::clamp(x + vx * dt / 4, 8.f, 232.f);
-        bool hit = false;
-        for (auto &w : walls)
-            hit |= circle_hits_wall(nx, y, 6, w);
-        if (hit)
+    vx = (vx + std::clamp(a.tilt_x, -1.f, 1.f) * 220 * dt) * std::exp(-dt * 4);
+    vy = (vy + std::clamp(a.tilt_y, -1.f, 1.f) * 220 * dt) * std::exp(-dt * 4);
+    bool touched = false;
+    auto hit = [&](float px, float py, float radius) {
+        for (int i = 0; i < map_.wall_count; i++)
+            if (circle_hits_wall(px, py, radius, map_.walls[i]))
+                return true;
+        return false;
+    };
+    for (int n = 0; n < 8; n++) {
+        float nx = x + vx * dt / 8;
+        if (hit(nx, y, 4)) {
             vx = 0;
-        else
+            touched = true;
+        } else
             x = nx;
-        float ny = std::clamp(y + vy * dt / 4, 55.f, 196.f);
-        hit = false;
-        for (auto &w : walls)
-            hit |= circle_hits_wall(x, ny, 6, w);
-        if (hit)
+        float ny = y + vy * dt / 8;
+        if (hit(x, ny, 4)) {
             vy = 0;
-        else
+            touched = true;
+        } else
             y = ny;
     }
-    if (x > 211 && y > 171) {
-        outcome = {uint32_t(std::max(1.f, 1000 - elapsed * 8)), true};
-    }
-    if (elapsed > 120 - int(level) * 20)
+    contacts_.update(touched || hit(x, y, 5.5f), dt);
+    outcome.contacts = contacts_.count();
+    int limit = ContactLimits[std::min<int>(options_.contact_index, 5)];
+    if (limit && outcome.contacts > limit) {
         outcome.finished = true;
+        return;
+    }
+    int goal = map_.columns * map_.rows - 1;
+    float dx = x - map_.center_x(goal), dy = y - map_.center_y(goal);
+    if (dx * dx + dy * dy < 49) {
+        outcome.score = uint32_t(std::max(1.f, 2000 - elapsed * 5 - outcome.contacts * 15));
+        outcome.finished = outcome.won = true;
+    }
 }
 void MazeGame::render(Renderer &r) const {
-    char b[40];
-    std::snprintf(b, sizeof b, "Время: %d", int(elapsed));
-    r.text(12, 28, b, Gold);
-    r.rect(4, 48, 232, 154, 0x18E7);
-    for (auto &w : walls)
-        r.rect(int(w.x), int(w.y), int(w.w), int(w.h), Muted);
-    r.rect(210, 172, 24, 28, Accent);
-    r.circle(int(x), int(y), 6, Gold);
+    char b[80];
+    int limit = ContactLimits[std::min<int>(options_.contact_index, 5)];
+    if (limit)
+        std::snprintf(b, sizeof b, "Касания: %u / %d", outcome.contacts, limit);
+    else
+        std::snprintf(b, sizeof b, "Касания: %u / без лимита", outcome.contacts);
+    ui::text_box(r, {4, 28, 232, 30}, b, Gold);
+    r.rect(8, 61, 224, 142, 0x18E7);
+    int goal = map_.columns * map_.rows - 1;
+    r.circle(int(map_.center_x(goal)), int(map_.center_y(goal)), 8, Accent);
+    for (int i = 0; i < map_.wall_count; i++) {
+        auto &w = map_.walls[i];
+        r.rect(int(w.x), int(w.y), int(std::ceil(w.w)), int(std::ceil(w.h)), Muted);
+    }
+    r.circle(int(x), int(y), 4, Gold);
 }
 void CommandsGame::choose() {
     expected = int(rng.bounded(6));
     remaining = limit;
+    target_x_ = 120;
+    target_y_ = 132;
 }
 void CommandsGame::start(Difficulty d, uint32_t seed) {
     rng.state = seed ? seed : 1;
     outcome = {};
-    limit = 3.2f - int(d) * .6f;
+    limit = 3.8f - int(d) * .5f;
+    feedback_ = angle_ = 0;
+    failed_ = false;
+    object_x_ = target_x_ = 120;
+    object_y_ = target_y_ = 132;
     choose();
 }
 void CommandsGame::update(const Actions &a, float dt) {
     if (outcome.finished)
         return;
+    float blend = 1 - std::exp(-dt * 10);
+    object_x_ += (target_x_ - object_x_) * blend;
+    object_y_ += (target_y_ - object_y_) * blend;
+    angle_ += dt * (feedback_ > 0 ? 10 : 1);
+    if (feedback_ > 0) {
+        feedback_ -= dt;
+        if (feedback_ <= 0) {
+            if (failed_) {
+                outcome.finished = true;
+                return;
+            }
+            if (outcome.score >= 30) {
+                outcome.finished = true;
+                outcome.won = true;
+                return;
+            }
+            choose();
+        }
+        return;
+    }
     remaining -= dt;
     if (remaining <= 0) {
-        outcome.finished = true;
+        failed_ = true;
+        feedback_ = .7f;
         return;
     }
     int action = a.direction;
     if (a.twist)
         action = 4;
-    if (a.tap)
+    if (a.tap) {
+        if ((a.x - object_x_) * (a.x - object_x_) + (a.y - object_y_) * (a.y - object_y_) > 30 * 30)
+            return;
         action = 5;
+    }
     if (action < 0)
         return;
     if (action != expected) {
-        outcome.finished = true;
+        failed_ = true;
+        feedback_ = .7f;
         return;
     }
     outcome.score++;
-    limit = std::max(.75f, limit * .965f);
-    if (outcome.score >= 30) {
-        outcome.finished = true;
-        return;
+    feedback_ = .55f;
+    limit = std::max(1.2f, limit * .97f);
+    if (expected == 0)
+        target_y_ = 102;
+    else if (expected == 1)
+        target_x_ = 190;
+    else if (expected == 2)
+        target_y_ = 154;
+    else if (expected == 3)
+        target_x_ = 50;
+    else if (expected == 4) {
+        target_x_ = 170;
+        target_y_ = 104;
+        angle_ += 2;
+    } else {
+        target_y_ = 111;
     }
-    choose();
 }
 void CommandsGame::render(Renderer &r) const {
     score(r, outcome.score);
-    r.circle(120, 116, 49, colors[expected % 4]);
-    r.text(22, 105, directions[expected], Bg, 2);
-    r.rect(12, 181, 216, 10, 0x2128);
-    r.rect(12, 181, int(216 * std::max(0.f, remaining) / limit), 10, Accent);
-    r.text(12, 155, expected == 4 ? "Поворот вокруг экрана" : "Следуй подсказке", Ink);
+    r.rect(8, 49, 224, 39, 0x212B);
+    ui::text_box(r, {10, 50, 220, 36},
+                 feedback_ > 0 ? (failed_ ? "Ошибка" : "Верно!") : directions[expected],
+                 failed_ ? Red : Ink, 2);
+    uint16_t color = failed_ ? Red : feedback_ > 0 ? Accent : Gold;
+    int radius = expected == 5 ? 24 : 18;
+    r.circle(int(object_x_), int(object_y_), radius + 3, Ink);
+    r.circle(int(object_x_), int(object_y_), radius, color);
+    int dx = int(std::cos(angle_) * 13), dy = int(std::sin(angle_) * 13);
+    ui::line(r, int(object_x_), int(object_y_), int(object_x_) + dx, int(object_y_) + dy, Bg);
+    r.circle(int(object_x_) + dx, int(object_y_) + dy, 3, Bg);
+    ui::text_box(r, {10, 168, 220, 19},
+                 expected == 4   ? "Поворот вокруг экрана"
+                 : expected == 5 ? "Коснись светлого круга"
+                                 : "Наклон двигает круг",
+                 Muted);
+    r.rect(12, 193, 216, 8, 0x2128);
+    r.rect(12, 193, int(216 * std::clamp(remaining / limit, 0.f, 1.f)), 8, Accent);
 }
-static const char *answers[] = {"Да, действуй!",     "Всё получится",    "Спроси чуть позже",
-                                "Попробуй иначе",    "Удача рядом",      "Сделай первый шаг",
-                                "Доверься себе",     "Нужна пауза",      "Ответ уже рядом",
-                                "Сегодня твой день", "Лучше не спешить", "Позови друга"};
+const std::array<AnswerPair, 24> &answer_pairs() {
+    static const std::array<AnswerPair, 24> pairs{{
+        {"Бесспорно", "Тесты зелёные", AnswerCategory::Positive},
+        {"Несомненно", "Апрув получен", AnswerCategory::Positive},
+        {"Определённо да", "Мержим в main", AnswerCategory::Positive},
+        {"Можешь рассчитывать", "SLA гарантирует", AnswerCategory::Positive},
+        {"Скорее всего", "На staging работает", AnswerCategory::Positive},
+        {"Хорошие перспективы", "Релиз одобрен", AnswerCategory::Positive},
+        {"Да", "HTTP 200 OK", AnswerCategory::Positive},
+        {"Знаки говорят «да»", "CI пропустил", AnswerCategory::Positive},
+        {"Да, определённо", "В проде работает", AnswerCategory::Positive},
+        {"Без сомнений", "Баг не воспроизвёлся", AnswerCategory::Positive},
+        {"Ответ неясен", "Нужны логи", AnswerCategory::Uncertain},
+        {"Спроси позже", "Ждём деплоя", AnswerCategory::Uncertain},
+        {"Сейчас не скажу", "Request timeout", AnswerCategory::Uncertain},
+        {"Невозможно предсказать", "Undefined behavior", AnswerCategory::Uncertain},
+        {"Спроси ещё раз", "Повтори запрос", AnswerCategory::Uncertain},
+        {"Не рассчитывай", "Доступ запрещён", AnswerCategory::Negative},
+        {"Мой ответ — нет", "HTTP 403 Forbidden", AnswerCategory::Negative},
+        {"Источники говорят «нет»", "Тесты упали", AnswerCategory::Negative},
+        {"Перспективы не очень", "Техдолг победил", AnswerCategory::Negative},
+        {"Весьма сомнительно", "Не прошло ревью", AnswerCategory::Negative},
+        {"Всё возможно", "Но сначала бэкап", AnswerCategory::Rare},
+        {"Судьба решит", "Зависит от DNS", AnswerCategory::Rare},
+        {"Не сегодня", "Пятница, 17:59", AnswerCategory::Rare},
+        {"Попробуй ещё", "Нужна перезагрузка", AnswerCategory::Rare},
+    }};
+    return pairs;
+}
 void MagicBall::start(Difficulty, uint32_t seed) {
     rng.state = seed ? seed : 1;
     answer = -1;
-    animation = 0;
+    age = 100;
     time = 0;
+    requests_ = 0;
+}
+void MagicBall::request_answer() {
+    if (age < .85f)
+        return;
+    uint32_t roll = rng.bounded(10000);
+    if (roll < 400)
+        answer = 20 + int(rng.bounded(4));
+    else {
+        uint32_t category = rng.bounded(100);
+        answer = category < 45   ? int(rng.bounded(10))
+                 : category < 70 ? 10 + int(rng.bounded(5))
+                                 : 15 + int(rng.bounded(5));
+    }
+    age = 0;
+    requests_++;
 }
 void MagicBall::update(const Actions &a, float dt) {
     time += dt;
-    animation = std::max(0.f, animation - dt);
-    if (a.shake || a.tap) {
-        int next = int(rng.bounded(12));
-        if (next == answer)
-            next = (next + 1) % 12;
-        answer = next;
-        animation = .7f;
-    }
+    age += dt;
+    if (a.shake || a.tap)
+        request_answer();
 }
 void MagicBall::render(Renderer &r) const {
-    int radius = 60 + int(std::sin(time * 3) * 3);
-    r.circle(120, 112, radius, 0x39B0);
-    r.circle(120, 112, radius - 6, 0x18CB);
-    r.text(14, 101,
-           animation > 0 ? "Думаю..."
-           : answer < 0  ? "Задай свой вопрос"
-                         : answers[answer],
-           Ink);
-    r.rect(12, 177, 216, 25, Accent);
-    r.text(45, 180, "Спросить ещё", Bg);
+    uint16_t glow = answer < 0                                                    ? 0x8CFF
+                    : answer_pairs()[answer].category == AnswerCategory::Positive ? Accent
+                    : answer_pairs()[answer].category == AnswerCategory::Negative ? 0xF9CD
+                                                                                  : Gold;
+    ui::orb(r, time + (age < .65f ? age * 5 : 0), glow);
+    if (classic_visible()) {
+        ui::text_box(r, {22, 94, 196, 36}, answer_pairs()[answer].classic, Ink);
+        if (it_visible())
+            ui::text_box(r, {22, 134, 196, 26}, answer_pairs()[answer].it, Gold);
+    } else
+        ui::text_box(r, {22, 101, 196, 40}, answer < 0 ? "Задай свой вопрос" : "Шар размышляет...",
+                     Ink);
+    ui::button(r, {12, 177, 216, 25}, "Спросить ещё", Accent);
 }
 GameRegistry default_registry() {
     static SequenceGame s;

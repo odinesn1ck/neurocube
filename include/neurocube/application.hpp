@@ -1,4 +1,5 @@
 #pragma once
+#include "config.hpp"
 #include "domain.hpp"
 namespace nc {
 struct ButtonEvents {
@@ -9,7 +10,7 @@ class ButtonRecognizer {
     float debounce = 0, held = 0;
 
   public:
-    ButtonEvents update(bool down, float dt);
+    ButtonEvents update(bool, float);
 };
 class GestureRecognizer {
     float fx = 0, fy = 0, offset_x = 0, offset_y = 0, cooldown = 0, dwell = 0, twist_cooldown = 0;
@@ -17,7 +18,7 @@ class GestureRecognizer {
 
   public:
     float sensitivity = 1;
-    Actions update(const InputFrame &, float dt);
+    Actions update(const InputFrame &, float);
     void calibrate(float x, float y) {
         offset_x = x;
         offset_y = y;
@@ -39,26 +40,46 @@ struct GameRegistry {
     Game *find(const char *) const;
 };
 GameRegistry default_registry();
-enum class Screen { Menu, Rules, Playing, Paused, Result, Settings };
+enum class Screen {
+    Menu,
+    Rules,
+    Playing,
+    Paused,
+    Result,
+    Settings,
+    Calibration,
+    Countdown,
+    MazeSetup,
+    Splash
+};
 class App {
     GameRegistry registry_;
     RecordStore &store_;
     GestureRecognizer gestures_;
     Records records_{};
     Screen screen_ = Screen::Menu;
-    int selected_ = 0;
-    int menu_page_ = 0;
+    int selected_ = 0, menu_page_ = 0;
     Difficulty difficulty_ = Difficulty::Normal;
     uint32_t seed_ = 0x4E435542;
     bool dirty_ = false, save_ok_ = true;
-    float clock_ = 0;
+    float clock_ = 0, phase_time_ = 0;
+    GameOptions maze_options_{}, active_options_{};
+    bool calibration_ready_ = false, calibrating_ = false;
+    float cal_time_ = 0, cal_x_ = 0, cal_y_ = 0, cal_min_x_ = 0, cal_max_x_ = 0, cal_min_y_ = 0,
+          cal_max_y_ = 0;
+    int cal_samples_ = 0;
+    InputFrame latest_{};
+    const char *recipient_;
     void finish();
+    void begin_play();
+    void update_calibration(const InputFrame &, float);
 
   public:
-    explicit App(RecordStore &, GameRegistry registry = default_registry());
-    void update(const InputFrame &, float dt);
+    explicit App(RecordStore &, GameRegistry registry = default_registry(), bool splash = false,
+                 const char *recipient = config::Recipient);
+    void update(const InputFrame &, float);
     void render(Renderer &) const;
-    void launch(int index, bool rules = true);
+    void launch(int, bool rules = true);
     void restart();
     void pause();
     void resume();
@@ -92,5 +113,12 @@ class App {
     void calibrate(float x, float y) {
         gestures_.calibrate(x, y);
     }
+    const GameOptions &maze_options() const {
+        return maze_options_;
+    }
+    float phase_time() const {
+        return phase_time_;
+    }
+    uint32_t current_record() const;
 };
 } // namespace nc

@@ -1,36 +1,38 @@
-# NeuroCube overnight progress
+# Состояние разработки NeuroCube
 
-## Completed implementation
+Обновлено 21.10.2026. Ветка `codex/neurocube-mvp`; [PR #1](https://github.com/odinesn1ck/neurocube/pull/1), без merge.
 
-- Clean Architecture core, replaceable Renderer and RecordStore; 16-slot static registry and paged menu.
-- Russian 240x240 UI, rules, pause/restart/next/menu, three difficulties and calibration.
-- Sequence, maze and command games; separate Magic Ball mode.
-- Two-sector CRC records journal, recovery from damaged writes, schema version 2 with version 1 reads.
-- Waveshare HAL for LCD, CST816 touch, QMI8658 IMU and GPIO25 button. Battery/charging pins untouched.
-- Hardware Bridge: detect, info, logs, build, flash, selftest, records, screenshot; strict UF2 and USB identity checks.
-- Windows simulator and pinned bootstrap; GitHub Actions workflow prepared in docs/ci/build.yml.
-- BLOCKED_EXTERNAL_PERMISSION: GitHub rejected the workflow upload because the PAT lacks workflow scope. Code publishing continues; CI is not active. Only the unpublished local commit was recreated without the protected workflow path; no remote history was rewritten.
+## Реализовано
 
-## Verification so far
+- Ранний BAT_EN=GPIO28 HIGH по официальной схеме и примеру Waveshare; read-only диагностика питания. Минимальное исправление `f98cf63` установлено на плату, `NC1 power` подтвердил удержание выхода. Зарядный контроллер не изменён.
+- Отдельная калибровка через сенсорное меню: подтверждение нейтрали, сбор неподвижных отсчётов, результат, повтор и возврат. Калибровка и чувствительность сохраняются вместе с рекордами.
+- Simon и Commands: правила, отсчёт 3–2–1, фазы и неблокирующая обратная связь; крупные команды и движущийся игровой объект.
+- Лабиринт: девять гарантированно связанных карт (три геометрии × три варианта), два ползунка перед каждой попыткой, счётчик контактов с rearm 140 мс. Проигрыш при превышении лимита, режим без лимита.
+- Magic Ball: оригинальная процедурная сфера, 20 основных и 4 редких парных ответа; классическая фраза и IT-пара через 400 мс, общий обработчик касания/встряхивания и debounce 850 мс, приоритет навигации.
+- Заставка «Привет, Андрей» 2,3 с, пропуск касанием/кнопкой; имя в `include/neurocube/config.hpp`.
+- Формат рекордов v3 (512 байт): чтение v1/v2, сохранение старых очков, отдельная таблица лабиринта по геометрии/варианту/лимиту. Legacy-рекорд лабиринта сохраняется, но не сравнивается с новыми картами.
 
-- VERIFIED_IN_SIMULATOR: 478 native checks, including full 32-step sequence, maze victory, Commands completion, pause/navigation, gestures, record corruption recovery and registry extension.
-- VERIFIED_IN_SIMULATOR: 13 Python bridge/architecture tests; 600-frame simulator run and Russian menu rendering.
-- VERIFIED_ON_HARDWARE: runtime identity, programmatic BOOTSEL, complete factory backup with verification, firmware load/readback verification, runtime hello.
-- VERIFIED_ON_HARDWARE: QMI8658 identity 5 and samples, touch identity 0xB6, no I2C errors in sampled telemetry, framebuffer capture over CDC.
-- NOT_TESTED: visible LCD image, physical touch/button/motion, battery operation.
+## Проверки
 
-## Final delivery
+| Статус | Свидетельство |
+|---|---|
+| VERIFIED_IN_SIMULATOR | 1088 C++ проверок: все девять карт с реальным прохождением физикой, фазы/отсчёт/рестарт, контакты, калибровка, миграция, 50000 выборов Magic Ball и layout всех пар |
+| VERIFIED_IN_SIMULATOR | 13 Python проверок архитектуры и Hardware Bridge; галерея экранов и всех 24 пар, без записи пользовательских рекордов |
+| VERIFIED_ON_HARDWARE | Ранее подтверждены USB/BOOTSEL/verify, IMU и touch ID, CDC framebuffer; пользователь подтвердил дисплей, меню, сенсор, паузу, shake, игры, PLUS и реальные рекорды на предыдущем образе |
+| VERIFIED_ON_HARDWARE | Минимальный power-fix `f98cf63`: hello, GPIO28 HIGH, входы питания и неизменные реальные рекорды |
+| NOT_TESTED | Автономность 5+ минут, повторное включение PWR и новые интерфейсы человеком; подтверждение пользователя ещё не получено |
+| NOT_TESTED | Установка полного polish-образа и его USB smoke: пока ожидается завершение физического теста первого power-fix |
 
-Debug integration passed on the board with synthetic input: all four mode transitions, pause/resume, Sequence and Commands actions, Magic Ball tap/shake, real Flash record persistence across reboot. Synthetic records were removed and verified empty after another reboot. Framebuffer transfer was fixed after an initial timeout and then passed.
+## P0: физическая приёмка питания остаётся открытой
 
-PR: https://github.com/odinesn1ck/neurocube/pull/1 (draft, not merged). Final production firmware 03dc1b3e3894 is installed, debug input is disabled, electronic selftest passed and records are empty. Two fresh build directories produced identical UF2. Release files are published and their server digests verified: https://github.com/odinesn1ck/neurocube/releases/tag/nightly-2026-10-21. CI remains blocked by PAT scope.
+Причина мгновенного выключения найдена: прежний HAL не удерживал BAT_EN. Исправление установлено, но электрическое чтение выхода не доказывает автономную работу. До подтверждения пользователя подарок не считается принятым. Последующие USB/flash отложены, чтобы не прервать тест аккумулятора. Независимая разработка продолжается.
 
-Full report: docs/overnight-results-2026-10-21.md; evidence: docs/evidence/. Synthetic input is never presented as physical control verification.
+## Сохранность данных
 
-## Recovery
+До изменений сохранены оба сектора рекордов (8192 байта) вне git: `%USERPROFILE%/neurocube-tools/backups/records-before-polish-2026-10-21.bin`, SHA256 `73d92ee32cab5560bdafb9c7315199bf876d5966edf805bf3e51d208ff11c361`. Реальные очки: Simon 3, старый лабиринт 885, Commands 1 (Normal), sequence 11. Не запускать очистку synthetic records на этих данных.
 
-Factory backup is outside git in %USERPROFILE%/neurocube-tools/backups/factory-419CB819454EA93D.uf2, SHA256 5871beca6837ba3758b6c0bf6a0408e0e2aa84e53888e290a29d9e67635a7b66. The device serial is checked before and after BOOTSEL. No OTP, secure boot, charging or battery control modifications.
+Заводская копия также сохранена вне git; сведения в [hardware.md](hardware.md). Прошивка Bridge исключает сектора рекордов. Старый ночной [отчёт](overnight-results-2026-10-21.md) описывает предыдущий этап, а не текущее состояние.
 
-## Remaining human acceptance
+## Доставка
 
-Follow docs/morning-checklist.md. Gift acceptance requires real operation of all three games, Magic Ball, records after reboot and battery autonomy; this has not yet been established.
+Предыдущий [ночной релиз](https://github.com/odinesn1ck/neurocube/releases/tag/nightly-2026-10-21) остаётся историческим. Полный polish-образ будет опубликован отдельно с SHA256 и точным исходным коммитом. CI: ранее PAT не позволял загрузить workflow; повторная проверка доступов выполняется отдельно.

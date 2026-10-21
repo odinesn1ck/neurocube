@@ -1,6 +1,8 @@
 #include "neurocube/application.hpp"
 #include "neurocube/framebuffer.hpp"
+#include "neurocube/games.hpp"
 #include <cstdio>
+#include <filesystem>
 #include <fstream>
 #include <string>
 #ifdef _WIN32
@@ -13,9 +15,8 @@ struct FileStore : RecordStore {
     bool load(Records &r) override {
         std::ifstream f(path, std::ios::binary);
         RecordPage p{};
-        if (!f.read((char *)p.data(), p.size()))
-            return false;
-        return decode_records(p.data(), p.size(), r);
+        f.read((char *)p.data(), p.size());
+        return decode_records(p.data(), size_t(f.gcount()), r);
     }
     bool save(const Records &r) override {
         auto p = encode_records(r);
@@ -25,7 +26,7 @@ struct FileStore : RecordStore {
     }
 };
 static FileStore store;
-static App app(store);
+static App app(store, default_registry(), true);
 static Framebuffer fb;
 static void ppm(const char *path) {
     std::ofstream f(path, std::ios::binary);
@@ -35,6 +36,99 @@ static void ppm(const char *path) {
                       char((p & 31) * 255 / 31)};
         f.write(rgb, 3);
     }
+}
+static int gallery(const std::string &directory) {
+    std::filesystem::create_directories(directory);
+    struct VolatileStore : RecordStore {
+        bool load(Records &) override {
+            return false;
+        }
+        bool save(const Records &) override {
+            return true;
+        }
+    } memory;
+    App scene(memory, default_registry(), true);
+    auto save = [&](const std::string &name) {
+        scene.render(fb);
+        ppm((directory + "/" + name + ".ppm").c_str());
+    };
+    auto tap = [&](int x, int y) {
+        InputFrame i;
+        i.tap = true;
+        i.x = x;
+        i.y = y;
+        scene.update(i, .02f);
+    };
+    auto wait = [&](float seconds) {
+        for (int i = 0; i < int(seconds * 100); i++)
+            scene.update({}, .01f);
+    };
+    save("00-splash");
+    tap(120, 100);
+    save("01-menu");
+    tap(100, 220);
+    save("02-settings");
+    tap(100, 155);
+    save("03-calibration");
+    InputFrame i;
+    i.imu = i.tap = true;
+    i.x = 100;
+    i.y = 120;
+    i.ax = .12f;
+    i.ay = -.08f;
+    scene.update(i, .02f);
+    i.tap = false;
+    for (int n = 0; n < 80; n++)
+        scene.update(i, .01f);
+    save("04-calibration-saved");
+    for (int game = 0; game < 4; game++) {
+        scene.launch(game);
+        save(std::to_string(10 + game) + "-intro");
+        tap(120, 180);
+        if (game == 0 || game == 2) {
+            save(std::to_string(20 + game) + "-countdown");
+            wait(3.1f);
+        }
+        save(std::to_string(30 + game) + "-playing");
+        if (game == 0) {
+            wait(2.3f);
+            save("40-sequence-recall");
+        }
+        if (game == 1) {
+            tap(90, 220);
+            save("41-maze-retry-setup");
+        }
+        if (game == 3) {
+            tap(2, 35);
+            wait(.3f);
+            save("42-magic-classic");
+            wait(.4f);
+            save("43-magic-pair");
+        }
+    }
+    for (int index = 0; index < 24; index++) {
+        MagicBall ball;
+        bool found = false;
+        for (uint32_t seed = 1; seed < 20000; seed++) {
+            ball.start(Difficulty::Easy, seed);
+            Actions a;
+            a.tap = true;
+            ball.update(a, .01f);
+            if (ball.answer_index() == index) {
+                found = true;
+                break;
+            }
+        }
+        if (!found)
+            return 2;
+        ball.update({}, 1);
+        fb.clear(Bg);
+        ball.render(fb);
+        ppm((directory + "/pair-" + std::to_string(index) + ".ppm").c_str());
+    }
+    std::puts("VERIFIED_IN_SIMULATOR: UI gallery and all 24 answer pairs captured; volatile "
+              "records only");
+    return 0;
 }
 #ifdef _WIN32
 static InputFrame pending;
@@ -82,6 +176,8 @@ LRESULT CALLBACK WindowProc(HWND w, UINT msg, WPARAM wp, LPARAM lp) {
 }
 #endif
 int main(int argc, char **argv) {
+    if (argc > 1 && std::string(argv[1]) == "--gallery")
+        return gallery(argc > 2 ? argv[2] : "artifacts/gallery");
     if (argc > 1 && std::string(argv[1]) == "--headless") {
         for (int i = 0; i < 600; i++)
             app.update({}, 1.f / 60);

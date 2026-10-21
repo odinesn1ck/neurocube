@@ -1,10 +1,13 @@
+#include "legacy_records.hpp"
 #include "neurocube/application.hpp"
 #include "neurocube/framebuffer.hpp"
 #include "neurocube/games.hpp"
+#include "neurocube/ui.hpp"
 #include <algorithm>
 #include <cmath>
 #include <cstdio>
 #include <cstdlib>
+#include <string>
 using namespace nc;
 static int checks = 0;
 #define CHECK(x)                                                                                   \
@@ -172,7 +175,7 @@ void games_test() {
     SequenceGame s;
     s.start(Difficulty::Normal, 123);
     int first = -1;
-    for (int k = 0; k < 200 && s.playback(); k++) {
+    for (int k = 0; k < 800 && s.playback(); k++) {
         s.update({}, .01f);
         if (s.cue() >= 0)
             first = s.cue();
@@ -184,10 +187,12 @@ void games_test() {
     CHECK(s.result().score == 1);
     SequenceGame wrong;
     wrong.start(Difficulty::Normal, 123);
-    for (int k = 0; k < 100; k++)
+    for (int k = 0; k < 800 && wrong.playback(); k++)
         wrong.update({}, .01f);
     action.direction = (first + 1) % 4;
     wrong.update(action, .01f);
+    for (int n = 0; n < 80; n++)
+        wrong.update({}, .01f);
     CHECK(wrong.result().finished);
     CommandsGame c;
     c.start(Difficulty::Easy, 7);
@@ -200,11 +205,18 @@ void games_test() {
             cmd.twist = true;
         else
             cmd.tap = true;
+        if (cmd.tap) {
+            cmd.x = int(c.object_x());
+            cmd.y = int(c.object_y());
+        }
         c.update(cmd, .01f);
+        for (int n = 0; n < 60 && c.feedback() > 0; n++)
+            c.update({}, .01f);
     }
     CHECK(c.result().finished && c.result().score == 30);
     c.start(Difficulty::Hard, 1);
     c.update({}, 20);
+    c.update({}, 1);
     CHECK(c.result().finished);
     CHECK(circle_hits_wall(10, 10, 5, {12, 8, 4, 4}));
     CHECK(!circle_hits_wall(0, 0, 5, {12, 8, 4, 4}));
@@ -214,7 +226,7 @@ void games_test() {
     action.tilt_x = 1;
     for (int k = 0; k < 300; k++)
         m.update(action, .02f);
-    CHECK(m.ball_x() < 60 && m.ball_y() >= 55);
+    CHECK(m.ball_x() >= 14 && m.ball_x() <= 226 && m.ball_y() >= 67);
     MagicBall ball;
     ball.start(Difficulty::Easy, 77);
     CHECK(ball.answer_index() == -1);
@@ -226,7 +238,10 @@ void games_test() {
     ask.shake = false;
     ask.tap = true;
     ball.update(ask, .01f);
-    CHECK(ball.answer_index() != prev && !ball.result().finished);
+    CHECK(ball.answer_index() == prev && ball.requests() == 1);
+    ball.update({}, 1);
+    ball.update(ask, .01f);
+    CHECK(ball.requests() == 2 && !ball.result().finished);
 }
 void framebuffer_test() {
     Framebuffer f;
@@ -266,27 +281,61 @@ void completed_games_test() {
         for (int j = 0; j < round; j++) {
             Actions a;
             a.direction = pattern[j];
+            while (sequence.playback())
+                sequence.update({}, .01f);
             sequence.update(a, .01f);
         }
         CHECK(sequence.result().score == uint32_t(round));
     }
+    for (int n = 0; n < 80 && !sequence.result().finished; n++)
+        sequence.update({}, .01f);
     CHECK(sequence.result().finished);
-    MazeGame maze;
-    maze.start(Difficulty::Easy, 1);
-    const float targets[][2] = {{26, 172}, {100, 172}, {100, 70},
-                                {160, 70}, {160, 178}, {222, 182}};
-    for (auto &target : targets) {
-        for (int n = 0; n < 1000 && !maze.result().finished; n++) {
-            float dx = target[0] - maze.ball_x(), dy = target[1] - maze.ball_y();
-            if (dx * dx + dy * dy < 9)
-                break;
-            Actions a;
-            a.tilt_x = std::clamp(dx * .04f, -.8f, .8f);
-            a.tilt_y = std::clamp(dy * .04f, -.8f, .8f);
-            maze.update(a, .02f);
+    for (int geometry = 0; geometry < 3; geometry++)
+        for (int variant = 0; variant < 3; variant++) {
+            MazeGame maze;
+            maze.configure({uint8_t(geometry), 0, uint8_t(variant)});
+            maze.start(Difficulty(geometry), 1);
+            const auto &map = maze.map();
+            std::array<int, 35> parent;
+            parent.fill(-1);
+            std::array<int, 35> queue{};
+            int head = 0, tail = 1;
+            parent[0] = 0;
+            const int delta[] = {-map.columns, 1, map.columns, -1};
+            while (head < tail) {
+                int c = queue[head++];
+                for (int d = 0; d < 4; d++)
+                    if (map.openings[c] & (1 << d)) {
+                        int next = c + delta[d];
+                        CHECK(next >= 0 && next < map.columns * map.rows);
+                        if (parent[next] < 0) {
+                            parent[next] = c;
+                            queue[tail++] = next;
+                        }
+                    }
+            }
+            CHECK(tail == map.columns * map.rows);
+            std::array<int, 35> route{};
+            int count = 0, c = map.columns * map.rows - 1;
+            while (c) {
+                route[count++] = c;
+                c = parent[c];
+            }
+            for (int j = count - 1; j >= 0; j--) {
+                int cell = route[j];
+                for (int n = 0; n < 2500 && !maze.result().finished; n++) {
+                    float dx = map.center_x(cell) - maze.ball_x(),
+                          dy = map.center_y(cell) - maze.ball_y();
+                    if (dx * dx + dy * dy < .16f)
+                        break;
+                    Actions a;
+                    a.tilt_x = std::clamp(dx * .07f, -.7f, .7f);
+                    a.tilt_y = std::clamp(dy * .07f, -.7f, .7f);
+                    maze.update(a, .02f);
+                }
+            }
+            CHECK(maze.result().finished && maze.result().won && maze.result().score > 0);
         }
-    }
-    CHECK(maze.result().finished && maze.result().score > 0);
 }
 
 void recovery_and_extension_test() {
@@ -359,7 +408,159 @@ void button_and_priority_test() {
     app.update(frame, .02f);
     CHECK(app.screen() == Screen::Paused && g1.starts == 1);
 }
+
+void calibration_and_migration_test() {
+    for (auto *fixture : {&legacy_v1, &legacy_v2}) {
+        Records r;
+        CHECK(decode_records(fixture->data(), fixture->size(), r));
+        CHECK(r.best[0][1] == 42 && r.best[1][1] == 700 && r.best[2][1] == 8);
+        auto page = encode_records(r);
+        Records migrated;
+        CHECK(decode_records(page.data(), page.size(), migrated));
+        CHECK(migrated.best == r.best);
+    }
+    struct Capture : StubGame {
+        Actions last;
+        void update(const Actions &a, float dt) override {
+            StubGame::update(a, dt);
+            last = a;
+        }
+    };
+    Capture g;
+    MemoryStore store;
+    App app(store, {{&g, &g, &g, &g}});
+    InputFrame tap;
+    tap.tap = true;
+    tap.x = 100;
+    tap.y = 220;
+    app.update(tap, .02f);
+    CHECK(app.screen() == Screen::Settings);
+    tap.y = 155;
+    app.update(tap, .02f);
+    CHECK(app.screen() == Screen::Calibration);
+    CHECK(store.writes == 0);
+    tap.imu = true;
+    tap.ax = .31f;
+    tap.ay = -.23f;
+    tap.y = 120;
+    app.update(tap, .1f);
+    tap.tap = false;
+    for (int n = 0; n < 8; n++)
+        app.update(tap, .1f);
+    CHECK(app.records().calibrated && store.writes == 1);
+    CHECK(std::abs(app.records().calibration_x - .31f) < .001f);
+    App restored(store, {{&g, &g, &g, &g}});
+    restored.launch(0, false);
+    for (int n = 0; n < 20; n++)
+        restored.update(tap, .05f);
+    CHECK(std::abs(g.last.tilt_x) < .001f && std::abs(g.last.tilt_y) < .001f);
+    App splash(store, {{&g, &g, &g, &g}}, true);
+    CHECK(splash.screen() == Screen::Splash);
+    splash.update({}, .1f);
+    CHECK(splash.screen() == Screen::Splash);
+    tap.tap = true;
+    splash.update(tap, .01f);
+    CHECK(splash.screen() == Screen::Menu);
+    splash.launch(0, false);
+    CHECK(splash.screen() != Screen::Splash);
+    CHECK(ui::CalibrationItem.contains(12, 150));
+    CHECK(!ui::CalibrationItem.contains(12, 180));
+    CHECK(ui::layout("Привет, Андрей", 232, 44, 2).fits);
+}
+void polish_test() {
+    ContactCounter counter;
+    for (int n = 0; n < 200; n++)
+        counter.update(true, .02f);
+    CHECK(counter.count() == 1);
+    counter.update(false, .1f);
+    counter.update(true, .02f);
+    CHECK(counter.count() == 1);
+    counter.update(false, .15f);
+    counter.update(true, .02f);
+    CHECK(counter.count() == 2);
+    MagicBall ball;
+    ball.start(Difficulty::Easy, 987);
+    Actions ask;
+    ask.tap = ask.shake = true;
+    ball.update(ask, .01f);
+    CHECK(ball.requests() == 1 && !ball.classic_visible());
+    ball.update({}, .25f);
+    CHECK(ball.classic_visible() && !ball.it_visible());
+    ball.update({}, .41f);
+    CHECK(ball.it_visible());
+    int counts[4]{};
+    for (int n = 0; n < 50000; n++) {
+        ball.update(ask, 1);
+        counts[int(answer_pairs()[ball.answer_index()].category)]++;
+    }
+    CHECK(counts[3] > 1500 && counts[3] < 2500);
+    CHECK(counts[0] > 20500 && counts[0] < 22700);
+    CHECK(counts[1] > 11000 && counts[1] < 13000);
+    CHECK(counts[2] > 13500 && counts[2] < 15300);
+    for (const auto &p : answer_pairs()) {
+        CHECK(ui::layout(p.classic, 196, 36).fits);
+        CHECK(ui::layout(p.it, 196, 26).fits);
+    }
+    CHECK(std::string(answer_pairs()[23].it) == "Нужна перезагрузка");
+    for (const char *s : {"Вверх", "Вправо", "Вниз", "Влево", "Поверни", "Коснись"})
+        CHECK(ui::layout(s, 220, 36, 2).fits);
+    MemoryStore store;
+    App app(store);
+    InputFrame tap;
+    tap.tap = true;
+    tap.x = 100;
+    tap.y = 100;
+    app.launch(0);
+    CHECK(app.screen() == Screen::Rules);
+    app.update(tap, .02f);
+    CHECK(app.screen() == Screen::Countdown);
+    for (int n = 0; n < 20; n++)
+        app.update(tap, .1f);
+    CHECK(app.screen() == Screen::Countdown && app.game().result().score == 0);
+    for (int n = 0; n < 11; n++)
+        app.update({}, .1f);
+    CHECK(app.screen() == Screen::Playing);
+    app.restart();
+    CHECK(app.screen() == Screen::Rules);
+    app.launch(1);
+    CHECK(app.screen() == Screen::MazeSetup);
+    tap.x = 216;
+    tap.y = 75;
+    app.update(tap, .02f);
+    CHECK(app.screen() == Screen::MazeSetup);
+    tap.y = 135;
+    app.update(tap, .02f);
+    CHECK(app.screen() == Screen::MazeSetup);
+    tap.y = 180;
+    app.update(tap, .02f);
+    CHECK(app.screen() == Screen::Playing);
+    app.restart();
+    CHECK(app.screen() == Screen::MazeSetup);
+    app.launch(3, false);
+    tap.x = 3;
+    tap.y = 36;
+    app.update(tap, .02f);
+    auto &magic = static_cast<MagicBall &>(app.game());
+    CHECK(magic.requests() == 1);
+    for (int n = 0; n < 10; n++)
+        app.update({}, .1f);
+    tap.y = 220;
+    tap.x = 30;
+    app.update(tap, .02f);
+    CHECK(app.screen() == Screen::Paused && magic.requests() == 1);
+    Records r;
+    r.best[1][1] = 885;
+    r.maze_best[2][1][5] = 777;
+    r.calibrated = true;
+    r.calibration_x = .2f;
+    auto bytes = encode_records(r);
+    Records back;
+    CHECK(decode_records(bytes.data(), bytes.size(), back));
+    CHECK(back.best[1][1] == 885 && back.maze_best[2][1][5] == 777 &&
+          back.maze_best[2][1][4] == 0 && back.calibrated);
+}
 int main() {
+    polish_test();
     records_test();
     app_test();
     gesture_test();
@@ -368,5 +569,6 @@ int main() {
     completed_games_test();
     recovery_and_extension_test();
     button_and_priority_test();
+    calibration_and_migration_test();
     std::printf("PASS %d checks (portable native tests)\n", checks);
 }

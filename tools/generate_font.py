@@ -3,7 +3,7 @@ from pathlib import Path
 import sys
 from PIL import Image, ImageFont, ImageDraw
 font = ImageFont.truetype(sys.argv[1], 13)
-codes = [ord('?')] + [c for c in range(32,127) if c!=ord('?')] + list(range(0x410,0x450)) + [0x401,0x451]
+codes = [ord('?')] + [c for c in range(32,127) if c!=ord('?')] + list(range(0x410,0x450)) + [0x401,0x451,0xAB,0xBB,0x2014]
 rows=[]
 for cp in codes:
     im=Image.new('L',(10,16)); d=ImageDraw.Draw(im)

@@ -32,10 +32,10 @@ static void status(nc::App &app, const nc::InputFrame &i) {
 }
 static void handle(const char *cmd, nc::App &app, const nc::InputFrame &i) {
     if (!strcmp(cmd, "NC1 hello")) {
-        printf("{\"v\":1,\"type\":\"hello\",\"product\":\"NeuroCube\",\"firmware\":\"0.1.1\","
+        printf("{\"v\":1,\"type\":\"hello\",\"product\":\"NeuroCube\",\"firmware\":\"0.2.0\","
                "\"serial\":\"%s\",\"revision\":\"%s\",\"capabilities\":[\"status\",\"imu\","
                "\"selftest\","
-               "\"framebuffer\",\"records\"],\"debug_input\":%s}\n",
+               "\"framebuffer\",\"records\",\"power\",\"settings\"],\"debug_input\":%s}\n",
                serial_id, NEUROCUBE_REVISION,
 #ifdef NEUROCUBE_DEBUG_INPUT
                "true"
@@ -43,7 +43,8 @@ static void handle(const char *cmd, nc::App &app, const nc::InputFrame &i) {
                "false"
 #endif
         );
-    } else if (!strcmp(cmd,"NC1 power")) { nc::Board::power_diagnostics();
+    } else if (!strcmp(cmd, "NC1 power")) {
+        nc::Board::power_diagnostics();
     } else if (!strcmp(cmd, "NC1 status") || !strcmp(cmd, "NC1 imu"))
         status(app, i);
     else if (!strcmp(cmd, "NC1 records")) {
@@ -52,7 +53,18 @@ static void handle(const char *cmd, nc::App &app, const nc::InputFrame &i) {
         for (int g = 0; g < nc::GameCapacity; g++)
             for (int d = 0; d < 3; d++)
                 printf("%s%lu", g || d ? "," : "", (unsigned long)app.records().best[g][d]);
-        printf("]}\n");
+        printf("],\"maze_best\":[");
+        for (int g = 0; g < 3; g++)
+            for (int v = 0; v < 3; v++)
+                for (int c = 0; c < 6; c++)
+                    printf("%s%lu", g || v || c ? "," : "",
+                           (unsigned long)app.records().maze_best[g][v][c]);
+        printf("],\"record_version\":3}\n");
+    } else if (!strcmp(cmd, "NC1 settings")) {
+        const auto &r = app.records();
+        printf("{\"v\":1,\"type\":\"settings\",\"calibrated\":%s,\"calibration_x\":%.5f,"
+               "\"calibration_y\":%.5f,\"sensitivity\":%.2f}\n",
+               r.calibrated ? "true" : "false", r.calibration_x, r.calibration_y, r.sensitivity);
     } else if (!strcmp(cmd, "NC1 selftest")) {
         auto &s = board.status;
         printf("{\"v\":1,\"type\":\"selftest\",\"imu_identity\":%s,\"imu_sample\":%s,\"touch_"
@@ -135,7 +147,7 @@ int main() {
     stdio_init_all();
     pico_get_unique_board_id_string(serial_id, sizeof serial_id);
     board.init();
-    nc::App app(storage);
+    nc::App app(storage, nc::default_registry(), true);
     app.reseed(get_rand_32());
     uint64_t last = time_us_64();
     char line[160];

@@ -1,14 +1,14 @@
 // Hardware facts and register sequences checked against Waveshare model-specific
 // examples at 51a7fe28c1e5dd19a089a062980a275709e94df6. See docs/hardware.md.
 #include "neurocube/board.hpp"
-#include "hardware/flash.h"
 #include "hardware/adc.h"
-#include <cstdio>
+#include "hardware/flash.h"
 #include "hardware/i2c.h"
 #include "hardware/spi.h"
 #include "pico/flash.h"
 #include "pico/stdlib.h"
 #include <algorithm>
+#include <cstdio>
 #include <cstring>
 extern "C" char __flash_binary_end;
 namespace nc {
@@ -36,16 +36,30 @@ void Board::data(uint8_t c) {
     gpio_put(DC, 1);
     spi_write_blocking(spi1, &c, 1);
 }
-void Board::hold_power() { output(28,true); }
+void Board::hold_power() {
+    output(28, true);
+}
 void Board::power_diagnostics() {
-    uint32_t raw=0;adc_select_input(3);for(int n=0;n<8;n++)raw+=adc_read();
-    printf("{\"v\":1,\"type\":\"power\",\"bat_en\":%s,\"key_pwr_low\":%s,\"stat_raw\":%d,\"battery_adc_raw\":%lu,\"battery_adc_calibrated\":false,\"autonomy\":\"REQUIRES_PHYSICAL_TEST\"}\n",gpio_get(28)?"true":"false",gpio_get(24)?"false":"true",gpio_get(17),(unsigned long)(raw/8));
+    uint32_t raw = 0;
+    adc_select_input(3);
+    for (int n = 0; n < 8; n++)
+        raw += adc_read();
+    printf(
+        "{\"v\":1,\"type\":\"power\",\"bat_en\":%s,\"key_pwr_low\":%s,\"stat_raw\":%d,\"battery_"
+        "adc_raw\":%lu,\"battery_adc_calibrated\":false,\"autonomy\":\"REQUIRES_PHYSICAL_TEST\"}\n",
+        gpio_get(28) ? "true" : "false", gpio_get(24) ? "false" : "true", gpio_get(17),
+        (unsigned long)(raw / 8));
 }
 void Board::init() {
     hold_power();
-    gpio_init(24);gpio_set_dir(24,GPIO_IN);gpio_pull_up(24);
-    gpio_init(17);gpio_set_dir(17,GPIO_IN);
-    adc_init();adc_gpio_init(29);adc_select_input(3);
+    gpio_init(24);
+    gpio_set_dir(24, GPIO_IN);
+    gpio_pull_up(24);
+    gpio_init(17);
+    gpio_set_dir(17, GPIO_IN);
+    adc_init();
+    adc_gpio_init(29);
+    adc_select_input(3);
     output(CS, 1);
     output(DC, 0);
     output(RST, 1);
@@ -206,7 +220,7 @@ struct WriteContext {
 static void flash_write(void *ctx) {
     auto *c = static_cast<WriteContext *>(ctx);
     flash_range_erase(c->offset, 4096);
-    flash_range_program(c->offset, c->page.data(), 256);
+    flash_range_program(c->offset, c->page.data(), RecordBytes);
 }
 bool FlashStore::save(const Records &r) {
     if (reinterpret_cast<uintptr_t>(&__flash_binary_end) > XIP_BASE + StorageOffset)
@@ -220,7 +234,8 @@ bool FlashStore::save(const Records &r) {
     if (flash_safe_execute(flash_write, &ctx, 500) != PICO_OK)
         return false;
     Records check;
-    return decode_records(reinterpret_cast<const uint8_t *>(XIP_BASE + ctx.offset), 256, check) &&
+    return decode_records(reinterpret_cast<const uint8_t *>(XIP_BASE + ctx.offset), RecordBytes,
+                          check) &&
            encode_records(check) == ctx.page;
 }
 } // namespace nc
