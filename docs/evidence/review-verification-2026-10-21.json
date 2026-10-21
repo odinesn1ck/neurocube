@@ -1,0 +1,40 @@
+{
+  "revision": "ab338f55400488d31bc811ec1a8eefe97f5e114d",
+  "firmware": "0.3.1",
+  "native_assertions": 87517642,
+  "generated_seeds_tested": 6000,
+  "physics_routes_completed": 300,
+  "python_tests": 14,
+  "records_and_settings_preserved": true,
+  "usb_smoke": {
+    "frame_progress": true,
+    "no_new_i2c_errors": true,
+    "records_unchanged_during_readonly_test": true,
+    "latch_high": true,
+    "electronic_selftest": true,
+    "legacy_scores_preserved": true,
+    "maze_scores_preserved": true
+  },
+  "physical_acceptance": "NOT_TESTED",
+  "record_backup_sha256": "55b044b430f28687b506c71112f0f0e0add0a63e505a82e2a989096efbc9e030",
+  "uf2_sha256": "531e5045eaebd57d381710798f73857206c65eb8f12c7da0b18f4e5f9f1bbb2b",
+  "ci_runs": [
+    {
+      "id": 39588634944,
+      "html_url": "https://github.com/odinesn1ck/neurocube/actions/runs/39588634944",
+      "event": "push",
+      "head_sha": "ab338f55400488d31bc811ec1a8eefe97f5e114d",
+      "conclusion": "success"
+    },
+    {
+      "id": 39588638893,
+      "html_url": "https://github.com/odinesn1ck/neurocube/actions/runs/39588638893",
+      "event": "pull_request",
+      "head_sha": "ab338f55400488d31bc811ec1a8eefe97f5e114d",
+      "conclusion": "success"
+    }
+  ],
+  "release": "https://github.com/odinesn1ck/neurocube/releases/tag/v0.3.1-rc1",
+  "downloaded_uf2_matches": true,
+  "uf2_size": 407040
+}

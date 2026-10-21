@@ -16,4 +16,39 @@
 
 ## Аппаратная проверка и доставка
 
-Сборка и проверка платы выполняются после native-тестов. Физический холодный старт/автономность, удобство новых экранов и жестов остаются NOT_TESTED до подтверждения пользователя. Актуальный установленный коммит и USB evidence — в [progress](../progress.md). [Короткий чек-лист](../morning-checklist.md#приёмка-исправлений-031).
+Production 0.3.1 из [ab338f5](https://github.com/odinesn1ck/neurocube/commit/ab338f55400488d31bc811ec1a8eefe97f5e114d) собрана и установлена на serial 419CB819454EA93D с readback verify. [USB smoke](review-usb-smoke-2026-10-21.json) пройден; рекорды, sequence 15 и настройки до/после совпали. Резервная копия 8192 байт сохранена вне git, SHA256 `55b044b430f28687b506c71112f0f0e0add0a63e505a82e2a989096efbc9e030`. Физический холодный старт/автономность, удобство новых экранов и жестов остаются NOT_TESTED до подтверждения пользователя. Актуальный установленный коммит и USB evidence — в [progress](../progress.md). [Короткий чек-лист](../morning-checklist.md#приёмка-исправлений-031).
+
+
+[Релиз и UF2](https://github.com/odinesn1ck/neurocube/releases/tag/v0.3.1-rc1), [CI и проверка доставки](review-verification-2026-10-21.json). Восемь файлов релиза проверены по серверному SHA256; UF2 дополнительно скачан и побайтно сравнен с установленным образом. Native/Python/документация/ARM прошли также на GitHub Windows runner (push и PR).
+
+ARM `.su`: main 424, App::update 72, App::launch 32, MazeGame::start 1592, make_maze 288 байт; известная цепочка генерации около 2408 байт против резерва 4096. Это статические кадры, не измеренный IRQ/high-water. Формат журнала, 24 пары Magic Ball, приветствие, QR и скринсейвер не изменены.
+
+## Изменённые файлы
+
+- `CHANGELOG.md`
+- `CMakeLists.txt`
+- `docs/architecture.md`
+- `docs/backlog.md`
+- `docs/evidence/README.md`
+- `docs/evidence/code-review-2026-10-21.md`
+- `docs/evidence/review-fixes-2026-10-21.md`
+- `docs/hardware.md`
+- `docs/images/review-fixes-gallery-2026-10-21.png`
+- `docs/morning-checklist.md`
+- `docs/player-guide.md`
+- `docs/product-vision.md`
+- `docs/progress.md`
+- `docs/tasks/README.md`
+- `include/neurocube/application.hpp`
+- `include/neurocube/domain.hpp`
+- `include/neurocube/games.hpp`
+- `include/neurocube/ui.hpp`
+- `src/application/app.cpp`
+- `src/application/gestures.cpp`
+- `src/application/registry.cpp`
+- `src/games/games.cpp`
+- `src/infrastructure/board.cpp`
+- `src/infrastructure/main.cpp`
+- `src/infrastructure/simulator.cpp`
+- `tests/core_tests.cpp`
+- `tests/test_architecture.py`
