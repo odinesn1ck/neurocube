@@ -170,7 +170,7 @@ class MagicBall final : public Game {
 
   public:
     Metadata metadata() const override {
-        return {"magic", "Шар ответов", "Задай вопрос. Встряхни куб или коснись экрана.", false,
+        return {"magic", "Шар ответов", "Задумай ответ, встряхни шар", false,
                 false};
     }
     void start(Difficulty, uint32_t) override;

@@ -404,7 +404,7 @@ void MagicBall::render(Renderer &r) const {
         if (it_visible())
             ui::text_box(r, {22, 134, 196, 26}, answer_pairs()[answer].it, Gold);
     } else
-        ui::text_box(r, {22, 101, 196, 40}, answer < 0 ? "Задай свой вопрос" : "Шар размышляет...",
+        ui::text_box(r, {22, 101, 196, 40}, answer < 0 ? "Задумай ответ, встряхни шар" : "Шар размышляет...",
                      Ink);
     ui::button(r, {12, 177, 216, 25}, "Спросить ещё", Accent);
 }
