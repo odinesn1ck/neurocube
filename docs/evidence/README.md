@@ -58,3 +58,5 @@
 - [rc3: громкость +25% и расширенная кнопка звука](game-audio-touch-0.3.4-rc3.md).
 
 - [rc4: сигналы контактов и успешных действий](game-feedback-audio-0.3.4-rc4.md).
+
+- [Плавная скорость Simon: все 32 раунда, таблица и кадры](simon-progressive-speed.md), [native-лог](simon-progressive-native.json).

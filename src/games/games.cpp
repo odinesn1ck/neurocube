@@ -11,6 +11,12 @@ static void score(Renderer &r, uint32_t s) {
     std::snprintf(b, sizeof b, "Счёт: %lu", (unsigned long)s);
     r.text(12, 28, b, Gold);
 }
+float sequence_signal_seconds(Difficulty difficulty, int round) {
+    constexpr float initial[] = {1.40f, 1.22f, 1.04f};
+    constexpr float acceleration = .024f, minimum = .50f;
+    return std::max(minimum, initial[std::clamp(int(difficulty), 0, 2)] -
+                                acceleration * (std::clamp(round, 1, 32) - 1));
+}
 void SequenceGame::start(Difficulty d, uint32_t seed) {
     reset_events();
     rng.state = seed ? seed : 1;
@@ -20,7 +26,8 @@ void SequenceGame::start(Difficulty d, uint32_t seed) {
     shown = -1;
     phase_ = SequencePhase::Showing;
     outcome = {};
-    step = 1.4f - int(d) * .18f;
+    difficulty_ = d;
+    step = sequence_signal_seconds(difficulty_, length);
     // Each shuffled group includes all four directions, avoiding one-axis openings.
     for (int base = 0; base < int(sequence.size()); base += 4) {
         int bag[] = {0, 1, 2, 3};
@@ -52,6 +59,7 @@ void SequenceGame::update(const Actions &a, float dt) {
                 return;
             }
             length++;
+            step = sequence_signal_seconds(difficulty_, length);
             cursor = 0;
             timer = -.7f;
             phase_ = SequencePhase::Showing;

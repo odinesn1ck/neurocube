@@ -77,6 +77,40 @@ static int gallery(const std::string &directory) {
         tap(box.x+box.w/2,box.y+box.h/2);save("audio-"+std::to_string(game)+"-on");
         scene.update({},.02f);tap(box.x+box.w/2,box.y+box.h/2);scene.update({},.02f);
     }
+    // Exercise actual game phases and render late, fast rounds without touching records.
+    SequenceGame accelerated;
+    accelerated.start(Difficulty::Hard, 42);
+    for (int round = 1; round <= 32; ++round) {
+        int pattern[32]{}, count = 0, previous = -1, guard = 0;
+        bool captured = false, dark_captured = false;
+        while (accelerated.playback()) {
+            if (++guard > 10000) return 2;
+            accelerated.update({}, .01f);
+            int cue = accelerated.cue();
+            if (cue >= 0 && previous < 0) {
+                if (count >= round) return 3;
+                pattern[count++] = cue;
+            }
+            previous = cue;
+            if (!captured && cue >= 0 && (round == 1 || round == 16 || round == 32)) {
+                accelerated.render(fb);
+                ppm((directory + "/sequence-round-" + std::to_string(round) + "-active.ppm").c_str());
+                captured = true;
+            }
+            if (round == 32 && captured && !dark_captured && cue < 0) {
+                accelerated.render(fb);
+                ppm((directory + "/sequence-round-32-dark.ppm").c_str());
+                dark_captured = true;
+            }
+        }
+        if (count != round) return 4;
+        for (int n = 0; n < round; ++n) {
+            Actions correct; correct.direction = pattern[n];
+            accelerated.update(correct, .01f);
+            while (accelerated.phase() == SequencePhase::Correct) accelerated.update({}, .01f);
+        }
+    }
+    if (!accelerated.result().won) return 5;
     App splash_scene(memory,default_registry(),true);
     // Restore the original scene's splash using assignment is not permitted (RecordStore reference).
     scene.menu();

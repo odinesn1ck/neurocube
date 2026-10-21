@@ -1,12 +1,14 @@
 #pragma once
 #include "domain.hpp"
 namespace nc {
+float sequence_signal_seconds(Difficulty, int round);
 enum class SequencePhase { Showing, Recall, Correct, Failure, Complete };
 class SequenceGame final : public Game {
     std::array<int, 32> sequence{};
     Random rng;
     int length = 1, cursor = 0, shown = -1;
     float timer = 0, step = 1.2f;
+    Difficulty difficulty_ = Difficulty::Normal;
     SequencePhase phase_ = SequencePhase::Showing;
     Result outcome;
 
@@ -30,6 +32,7 @@ class SequenceGame final : public Game {
     bool playback() const {
         return phase_ == SequencePhase::Showing || phase_ == SequencePhase::Correct;
     }
+    float signal_seconds() const { return step; }
     SequencePhase phase() const {
         return phase_;
     }
