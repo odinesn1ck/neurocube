@@ -21,3 +21,7 @@ Pico SDK 2.3.1: BSD-3; TinyUSB закреплён submodule и MIT; CMSIS stub A
 [Каноническая MIT](https://opensource.org/license/mit), [GCC Runtime Exception](https://gcc.gnu.org/onlinedocs/libstdc++/manual/license.html), [newlib aggregate notices](https://sourceware.org/newlib/COPYING.NEWLIB). Новые notices исправляют комплект 1.0, но не меняют автоматически содержимое уже опубликованных старых архивов. Старые релизы не удалялись и не заменялись.
 
 Встроенных чужих музыки/иллюстраций/фильмов нет: графика процедурная, истории и звуковой синтез оригинальные. Заводские firmware backups не входят в Git или комплект. Проверка здесь фиксирует техническое происхождение и явные условия, а не заявляет юридическое разрешение спорного компонента.
+
+## Проверка актуальной поставки после замены
+
+Source fb6d178: новые C/header происходят из esp-bsp f259a6abd5808019b1903a422092a4234ca95a51 с Apache-2.0; старых файлов и их полного содержимого в новых архивах нет. Полный LICENSE, copyrights, prominent modification notice и provenance включены. [Машиночитаемая проверка](es8311-replacement-candidate.json). Это снимает product restriction для текущего codec-кода, но не выдаёт разрешение задним числом на старые публикации. Требуется отдельное решение по истории, см. актуальное исследование выше. Аппаратная аудиоприёмка пока NOT_TESTED.

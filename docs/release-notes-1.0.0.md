@@ -11,3 +11,5 @@
 В комплекте UF2/ELF/BIN, Windows simulator, исходники, LICENSE/third-party notices, руководство, manifest и SHA256. Симулятор использует mock аудио. Процедурные карты не имеют общего рекорда между разными seed. Deep sleep не включён: idle сохраняет battery latch и сканирование wake. Проверки native/USB не являются физической приёмкой LCD/ввода/батареи; отмечайте фактический результат по [чек-листу](morning-checklist.md).
 
 Перед обновлением — разрешение, идентификация платы и свежий backup журнала вне Git; после — verify и records/settings readback. Стабильный релиз, merge и изменение visibility не выполняются автоматически.
+
+Кандидат после замены ES8311: source `fb6d178`, Apache-2.0 codec с сохранением PCM1280 и всех игровых событий. Исправлена UTC-упаковка source ZIP; все CI/local dist-файлы совпадают. [Проверенные артефакты и SHA256](evidence/es8311-replacement-candidate.json). Установленная ранее 1.0.0/89007ce и её прежний хеш не относятся к этому пакету. Новая аппаратная аудиоприёмка NOT_TESTED.

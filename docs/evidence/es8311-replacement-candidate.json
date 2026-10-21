@@ -1,0 +1,72 @@
+{
+  "source_commit": "fb6d178a131bff350b5523add7d37fa746f72f91",
+  "version": "1.0.0",
+  "uf2": {
+    "sha256": "96a7f6103e34ce7cf8ad628e9fe493d7c423ed36566abfdbedff1ddd0551ffa3",
+    "blocks": 1013,
+    "size": 518656
+  },
+  "reproducibility": {
+    "UF2_ELF_BIN_EXE": "PASS: two independent builds",
+    "ZIP": "PASS: repeated packaging"
+  },
+  "frozen_files_vs_0_3_5": 27,
+  "pio_dma_board_power_core_gameplay": "unchanged; audio transport reviewed separately",
+  "debug_injection": false,
+  "codec_license": "Apache-2.0; unrestricted by processor vendor",
+  "codec_upstream_commit": "f259a6abd5808019b1903a422092a4234ca95a51",
+  "archives": [
+    {
+      "name": "neurocube-1.0.0-source.zip",
+      "entries": 215,
+      "crc_manifest_and_old_driver_absence": "PASS",
+      "sha256": "fd4c7dbe87d2be74c936b0dd0349cf5e2a0d68d7d0bee5cf45da56898a871205"
+    },
+    {
+      "name": "neurocube-1.0.0-windows.zip",
+      "entries": 236,
+      "crc_manifest_and_old_driver_absence": "PASS",
+      "sha256": "a09ebeb0a6d1fed3e9d6a6448380edd291c5651fcba68e333239fae12f55ae04"
+    },
+    {
+      "name": "neurocube-1.0.0.zip",
+      "entries": 239,
+      "crc_manifest_and_old_driver_absence": "PASS",
+      "sha256": "9fe856097c9b6f12f45523b11c9f41880f07e9fa23ff77f0749af1b5fc81be14"
+    }
+  ],
+  "checksum_file": "SHA256SUMS.txt",
+  "developer_paths_in_release_binaries": false,
+  "current_restricted_driver_absent": "PASS: names, original source hashes, grant text in C/header sources",
+  "all_git_objects_scanned": 1059,
+  "old_releases_scanned": 9,
+  "old_assets_scanned": 72,
+  "credential_findings": 0,
+  "gitleaks_history_worktree_assets_candidate": "PASS",
+  "privacy_categories": {
+    "local_build_path": 28,
+    "email_review": 13
+  },
+  "linker_symbols": {
+    "__flash_binary_end": "0x1003f394",
+    "__bss_end__": "0x2002c480",
+    "__end__": "0x2002c480",
+    "__HeapLimit": "0x20080000",
+    "__StackLimit": "0x20080000",
+    "__StackBottom": "0x20081000",
+    "__StackTop": "0x20082000"
+  },
+  "hardware_audio": "NOT_TESTED",
+  "historical_license_status": "Unresolved old restricted code remains in history/old assets; owner decision required",
+  "ci": {
+    "run": "https://github.com/odinesn1ck/neurocube/actions/runs/39673975815",
+    "artifact": "https://github.com/odinesn1ck/neurocube/actions/runs/39673975815/artifacts/12380739205",
+    "downloaded_UF2_BIN_ELF_source_windows_full_ZIPs_manifest_checksums_byte_identical": true,
+    "status": "PASS"
+  },
+  "static_main_ram_bytes": 181376,
+  "main_ram_remaining_bytes": 342912,
+  "core0_stack_bytes": 4096,
+  "largest_measured_core_static_frame_bytes": 880,
+  "stack_scope": "Static analysis only; full dynamic high-water/interrupt nesting not measured"
+}

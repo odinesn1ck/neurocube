@@ -19,3 +19,9 @@ GitHub API при начале аудита сообщил `private=false`: ре
 На source commit `89007ced036608535bf3ed465b22d83c428ad9bd` проверены все 983 доступных Git-объекта, 206 tracked files и те же 72 assets девяти релизов. Credential findings: 0; suspicious dump paths: 0; повторный Gitleaks history/worktree/assets — PASS. Privacy review: 41 location (28 прежних build paths и 13 мест с обязательными публичными copyright email); дополнительные четыре места появились в сохранённых лицензионных уведомлениях. Эти контакты не удаляются из notices.
 
 Новые release ZIP отдельно распакованы с защитой путей, проверены известным PAT только в памяти и Gitleaks: PASS. Локальные developer paths в новых UF2/ELF/BIN/EXE отсутствуют. Скачанный CI UF2 совпал побайтно. [Сводка аудита](final-1.0.0-public-audit.json), [проверка поставки](final-1.0.0-candidate.json). Финальный коммит отчётности меняет только документацию; результаты сборки относятся к указанному source commit, а не к последующим редакционным коммитам.
+
+## Актуальная Apache-поставка
+
+[Итоговый source fb6d178 и проверка пакетов](es8311-replacement-candidate.json): current-code ES8311 license PASS (Apache-2.0, применима к RP2350), старый драйвер отсутствует в HEAD и всех новых архивах. 1059 доступных Git-объектов и 72 прежних assets перепроверены; секреты не найдены, новые ZIP также PASS. Скачанный CI пакет целиком совпал с локальным после UTC-исправления source ZIP.
+
+**Общий BLOCKED сохраняется**: новая аппаратная аудиоприёмка NOT_TESTED, прежний restricted код остаётся в старой публичной истории и assets. [Оценка риска и варианты решения владельца](es8311-license-replacement.md#исторические-git-objects-и-assets). Удаление в HEAD и новый Apache grant не являются ретроактивным relicensing. Никаких destructive действий не выполнялось.

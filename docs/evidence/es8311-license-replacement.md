@@ -49,3 +49,17 @@ Apache-2.0 §§2–4 разрешает воспроизведение, прои
 ## Проверка упаковки между компьютером и CI
 
 Первый Apache-кандидат 0956f4f прошёл CI; скачанные UF2/ELF/BIN/Windows ZIP/full ZIP/manifest совпали побайтно. Отдельный source ZIP имел одинаковые файлы, но Git записал время ZIP entries в локальном TZ вместо UTC. Builder исправлен: source ZIP использует ту же UTC-упаковку canonical Git-байтов, что и остальные архивы. Для окончательного поставочного кандидата проверка повторяется; это изменение только упаковки, без изменений codec или игр.
+
+## Окончательный проверенный кандидат
+
+Source commit: `fb6d178a131bff350b5523add7d37fa746f72f91`. [Полная проверка поставки](es8311-replacement-candidate.json). [CI push PASS](https://github.com/odinesn1ck/neurocube/actions/runs/39673975815), [CI PR PASS](https://github.com/odinesn1ck/neurocube/actions/runs/39673982172). [Скачать все артефакты](https://github.com/odinesn1ck/neurocube/actions/runs/39673975815/artifacts/12380739205).
+
+UF2: 518656 байт / 1013 блоков; SHA256 `96a7f6103e34ce7cf8ad628e9fe493d7c423ed36566abfdbedff1ddd0551ffa3`. Локальные файлы: `artifacts/release-1.0.0-apache-final/dist` (UF2/ELF/BIN, Windows/source/full ZIP, manifest, SHA256SUMS.txt). Две независимые сборки и повторная упаковка совпали. После UTC-исправления **все** скачанные CI dist-файлы, включая source ZIP и SHA256SUMS.txt, побайтно совпали с локальными.
+
+Статические guards: 27 frozen sources без изменений относительно v0.3.5-rc1; adapter hash соответствует provenance; debug injection OFF; UF2 не пересекает journal/reserved page. CRC/manifest всех ZIP PASS; отсутствие старых C/header проверено по именам, SHA256 исходных файлов и restricted grant в C/header contents. Новый LICENSE/provenance включены во все пакеты.
+
+Регрессия: 100640959 core, 2986825 timing, 10746 audio, 2503 codec checks; 4 native suite, 18 Python tests, Windows GUI/headless/gallery PASS. Основная статическая RAM 181376 байт; до main RAM limit остаётся 342912, core0 stack4096. Крупнейший измеренный core frame880; это не динамический high-water. Относительно прежнего кандидата основная RAM увеличилась на 16 байт из-за callback transport; игровой буфер/звуковой синтез не менялись.
+
+Аудит source commit: 1059 доступных Git-объектов, tracked worktree, 9 прежних релизов/72 assets; новые ZIP отдельно проверены. Known PAT in-memory и Gitleaks history/worktree/assets/candidate: PASS, credential findings0. 41 прежняя privacy location: 28 generic developer build paths в старых материалах и 13 обязательных copyright-контактов. Новые production binary paths очищены. Это проверка доступного снимка с ограниченными детекторами, не математическое доказательство отсутствия любых секретов; старые license issues проверка секретов не снимает.
+
+Итог: **current-code license PASS**, **software/CI/reproducibility PASS**, **replacement hardware acceptance NOT_TESTED**, **historical distribution unresolved**, **stable release BLOCKED**. Пока отсутствует отдельное разрешение на запись окончательного кандидата fb6d178, плата не перепрошивается. В раннем запросе фигурировал 0956f4f; он заменён запросом на fb6d178 после исправления source ZIP. Стабильный release, tag, merge, history rewrite и удаление старых assets не выполнялись.
