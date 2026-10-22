@@ -1,0 +1,12 @@
+{
+  "date": "2026-10-21",
+  "level": "VERIFIED_IN_SIMULATOR",
+  "native_checks": 1529,
+  "python_checks": 13,
+  "episodes": 3,
+  "qr_decoder": "ZXing-C++ 2.3.0",
+  "qr_payload": "https://github.com/odinesn1ck/neurocube",
+  "qr_source": "simulator framebuffer",
+  "hardware_wake": "NOT_TESTED",
+  "power_latch_changes": false
+}

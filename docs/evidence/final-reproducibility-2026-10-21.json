@@ -1,0 +1,8 @@
+{
+  "source_commit": "bfa1a7313ddad293e17b1f882b92019e8fb7990e",
+  "identical": true,
+  "sha256": "d59b63b199a135d73c83892117439238baa097632efd34aa5e1294fd01c4ec09",
+  "size": 403968,
+  "firmware": "0.3.0",
+  "core0_stack_reserved": 4096
+}

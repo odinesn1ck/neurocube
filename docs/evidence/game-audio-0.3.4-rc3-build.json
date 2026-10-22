@@ -1,0 +1,25 @@
+{
+  "version": "0.3.4-rc3",
+  "source_commit": "c90b6163a5edbbeafb7c5708ebd7e369433c33c6",
+  "audio_checks": 10152,
+  "native_core": "passed",
+  "python_tests": 14,
+  "simulator": "gallery passed; mock audio",
+  "pcm_peak": 1280,
+  "previous_pcm_peak": 1024,
+  "amplitude_increase_percent": 25,
+  "touch_area": [
+    88,
+    48
+  ],
+  "visible_button": [
+    72,
+    44
+  ],
+  "physical_checks": "Installed with picotool verify on 419CB819454EA93D; USB smoke passed; records/settings preserved; physical touch and loudness assessment pending",
+  "ci": "https://github.com/odinesn1ck/neurocube/actions/runs/39655564714",
+  "ci_conclusion": "success",
+  "sha256": "ad38130e9224953956a69add8ac96c55b2b8e22744b62b32fd57896a36a3c4b1",
+  "blocks": 1017,
+  "size": 520704
+}

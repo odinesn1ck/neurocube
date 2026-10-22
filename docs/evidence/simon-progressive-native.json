@@ -1,0 +1,65 @@
+{
+  "timing_checks": 2986825,
+  "audio_checks": 10757,
+  "native_suites": 3,
+  "python_tests": 14,
+  "difficulties": 3,
+  "seeds": [
+    1,
+    42
+  ],
+  "rounds_each": 32,
+  "recall_wait_seconds_each": 3600,
+  "table_columns": [
+    "round",
+    "easy",
+    "normal",
+    "hard"
+  ],
+  "table": [
+    [
+      1,
+      1.4,
+      1.22,
+      1.04
+    ],
+    [
+      5,
+      1.304,
+      1.124,
+      0.944
+    ],
+    [
+      10,
+      1.184,
+      1.004,
+      0.824
+    ],
+    [
+      15,
+      1.064,
+      0.884,
+      0.704
+    ],
+    [
+      20,
+      0.944,
+      0.764,
+      0.584
+    ],
+    [
+      25,
+      0.824,
+      0.644,
+      0.5
+    ],
+    [
+      32,
+      0.656,
+      0.5,
+      0.5
+    ]
+  ],
+  "timing_stdout": "round,easy,normal,hard\n1,1.400,1.220,1.040\n5,1.304,1.124,0.944\n10,1.184,1.004,0.824\n15,1.064,0.884,0.704\n20,0.944,0.764,0.584\n25,0.824,0.644,0.500\n32,0.656,0.500,0.500\nPASS 2986825 sequence timing checks\n",
+  "physical_late_rounds": "NOT_TESTED"
+}

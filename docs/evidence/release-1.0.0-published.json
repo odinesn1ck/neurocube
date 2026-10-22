@@ -1,0 +1,64 @@
+{
+  "id": 420603638,
+  "url": "https://github.com/odinesn1ck/neurocube/releases/tag/v1.0.0",
+  "tag": "v1.0.0",
+  "source_commit": "f6c60d749babd2295ffb1106ef7c6426618cf9a8",
+  "published_at": "2026-10-22T10:51:43Z",
+  "draft": false,
+  "prerelease": false,
+  "assets": [
+    {
+      "name": "manifest.json",
+      "sha256": "f81e8c9954b1cb73c926b0ad657aeffcedecd1148f173f619d1301be48ac5dc8",
+      "download_byte_identical": true
+    },
+    {
+      "name": "neurocube-1.0.0-source.zip",
+      "sha256": "05818b67c978fb4b6cc8202c633e6032750e6a4949ceeecdfc9567d1d0061bb3",
+      "download_byte_identical": true
+    },
+    {
+      "name": "neurocube-1.0.0-windows.zip",
+      "sha256": "e217f01b9e6c5818b0354e5679ffba7d59570b79223448297bf41ab9b85227ca",
+      "download_byte_identical": true
+    },
+    {
+      "name": "neurocube-1.0.0.bin",
+      "sha256": "8efd3746f2fd95e4ae52db56e8fcb17920488f0a8146f798f4b893ef20e174e5",
+      "download_byte_identical": true
+    },
+    {
+      "name": "neurocube-1.0.0.elf",
+      "sha256": "1c6254ff724e703a3f3557ae53c2cbfe5d9a4edc7b088b4706e25e6ed09c175e",
+      "download_byte_identical": true
+    },
+    {
+      "name": "neurocube-1.0.0.uf2",
+      "sha256": "c6cf11961fe335945d69fd30f233090db397745116aa1ecca1661919d2073aca",
+      "download_byte_identical": true
+    },
+    {
+      "name": "neurocube-1.0.0.zip",
+      "sha256": "0f9e3330790784f1fbe6b611d5dd9e0b63ef5cad765c9bcfe6c948fe3aee0060",
+      "download_byte_identical": true
+    },
+    {
+      "name": "release-notes-1.0.0.md",
+      "sha256": "e19a7d960fd02da90cc7dfeadbaf312929a628db82b705d6467dcc9b3f96690e",
+      "download_byte_identical": true
+    },
+    {
+      "name": "release-publication.json",
+      "sha256": "b6fa6ba5034c967da6094eb48d4c7672e456365c488f5517560103a3d5724555",
+      "download_byte_identical": true
+    },
+    {
+      "name": "SHA256SUMS.txt",
+      "sha256": "7fefc11fca11748f6c27101c99663003c5b2d500eaf03d44ed1aaec67e78321f",
+      "download_byte_identical": true
+    }
+  ],
+  "audio_user_acceptance": "???? ??",
+  "merge_performed": false,
+  "historical_distribution_issue": "LICENSE-002 remains open; old history/assets unchanged"
+}

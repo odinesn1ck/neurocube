@@ -1,0 +1,18 @@
+{
+  "change": "© 2026, мальчик Коля + OpenAI on shutdown screen",
+  "display_lines": [
+    "© 2026,",
+    "мальчик Коля + OpenAI"
+  ],
+  "version": "1.0.1",
+  "native_suites": 4,
+  "native_result": "PASS",
+  "python_tests": 18,
+  "python_result": "PASS",
+  "simulator_gallery": "PASS; current executable screenshot inspected",
+  "screenshot": "shutdown-copyright-1.0.1.png",
+  "copyright_glyph": "U+00A9 from same Noto Sans Mono; all 164 existing glyphs byte-preserved",
+  "power_sequence": "unchanged; only App::render and font glyph changed",
+  "physical_device": "NOT_TESTED; 1.0.0/f6c60d7 remains installed",
+  "published_release_1_0_0": "unchanged"
+}

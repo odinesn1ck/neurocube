@@ -1,0 +1,288 @@
+{
+  "date": "2026-10-21",
+  "scope": "GitHub Windows CI only; no USB or flash",
+  "runs": [
+    {
+      "id": 39579001547,
+      "url": "https://github.com/odinesn1ck/neurocube/actions/runs/39579001547",
+      "head_sha": "21f475a73c09f635c01f92bc5bb6033dc50c76d6",
+      "event": "push",
+      "conclusion": "success",
+      "artifact_id": 12335003257,
+      "artifact_name": "neurocube-mvp-21f475a73c09f635c01f92bc5bb6033dc50c76d6",
+      "archive_sha256": "cc9a06d23806c815fa937ca4c56e5c595afcfbc48eec2294c3b72b046fd727be",
+      "files": [
+        "build-pico/neurocube.uf2",
+        "build-pico/neurocube.bin",
+        "build-pico/neurocube.elf",
+        "build-pico/SHA256.txt",
+        "build-native/neurocube_sim.exe",
+        "build-native/core_tests.exe",
+        "build-native/menu.ppm"
+      ],
+      "uf2_bytes": 403968,
+      "uf2_sha256": "327439b91a004679fe00c311ff740952dfc255ae78ab8aa4e4fc83db265a5d3b",
+      "artifact_digest_verified": true,
+      "uf2_manifest_verified": true,
+      "jobs": [
+        {
+          "id": 119151627256,
+          "run_id": 39579001547,
+          "workflow_name": "Build and test NeuroCube",
+          "head_branch": "codex/neurocube-mvp",
+          "run_url": "https://api.github.com/repos/odinesn1ck/neurocube/actions/runs/39579001547",
+          "run_attempt": 1,
+          "node_id": "CR_kwDOVRVwRM8AAAAbvf2L-A",
+          "head_sha": "21f475a73c09f635c01f92bc5bb6033dc50c76d6",
+          "url": "https://api.github.com/repos/odinesn1ck/neurocube/actions/jobs/119151627256",
+          "html_url": "https://github.com/odinesn1ck/neurocube/actions/runs/39579001547/job/119151627256",
+          "status": "completed",
+          "conclusion": "success",
+          "created_at": "2026-10-21T09:42:12Z",
+          "started_at": "2026-10-21T09:42:14Z",
+          "completed_at": "2026-10-21T09:44:12Z",
+          "name": "windows",
+          "steps": [
+            {
+              "name": "Set up job",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 1,
+              "started_at": "2026-10-21T09:42:15Z",
+              "completed_at": "2026-10-21T09:42:16Z"
+            },
+            {
+              "name": "Run actions/checkout@v4",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 2,
+              "started_at": "2026-10-21T09:42:16Z",
+              "completed_at": "2026-10-21T09:42:20Z"
+            },
+            {
+              "name": "Run actions/setup-python@v5",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 3,
+              "started_at": "2026-10-21T09:42:20Z",
+              "completed_at": "2026-10-21T09:42:20Z"
+            },
+            {
+              "name": "Install pinned user-local toolchain",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 4,
+              "started_at": "2026-10-21T09:42:20Z",
+              "completed_at": "2026-10-21T09:43:50Z"
+            },
+            {
+              "name": "Documentation links",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 5,
+              "started_at": "2026-10-21T09:43:50Z",
+              "completed_at": "2026-10-21T09:43:50Z"
+            },
+            {
+              "name": "Native tests and simulator",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 6,
+              "started_at": "2026-10-21T09:43:50Z",
+              "completed_at": "2026-10-21T09:43:57Z"
+            },
+            {
+              "name": "Build RP2350 firmware",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 7,
+              "started_at": "2026-10-21T09:43:57Z",
+              "completed_at": "2026-10-21T09:44:08Z"
+            },
+            {
+              "name": "Run actions/upload-artifact@v4",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 8,
+              "started_at": "2026-10-21T09:44:08Z",
+              "completed_at": "2026-10-21T09:44:09Z"
+            },
+            {
+              "name": "Post Run actions/setup-python@v5",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 15,
+              "started_at": "2026-10-21T09:44:09Z",
+              "completed_at": "2026-10-21T09:44:09Z"
+            },
+            {
+              "name": "Post Run actions/checkout@v4",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 16,
+              "started_at": "2026-10-21T09:44:09Z",
+              "completed_at": "2026-10-21T09:44:11Z"
+            },
+            {
+              "name": "Complete job",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 17,
+              "started_at": "2026-10-21T09:44:11Z",
+              "completed_at": "2026-10-21T09:44:11Z"
+            }
+          ],
+          "check_run_url": "https://api.github.com/repos/odinesn1ck/neurocube/check-runs/119151627256",
+          "labels": [
+            "windows-2022"
+          ],
+          "runner_id": 1000000052,
+          "runner_name": "GitHub Actions 1000000052",
+          "runner_group_id": 0,
+          "runner_group_name": "GitHub Actions"
+        }
+      ]
+    },
+    {
+      "id": 39579001945,
+      "url": "https://github.com/odinesn1ck/neurocube/actions/runs/39579001945",
+      "head_sha": "21f475a73c09f635c01f92bc5bb6033dc50c76d6",
+      "event": "pull_request",
+      "conclusion": "success",
+      "artifact_id": 12335033184,
+      "artifact_name": "neurocube-mvp-228d9d7e80ce91d6e7fd9118ea2a996c12d93b44",
+      "archive_sha256": "d95678bc60391c69557b901855b5299dc71834b410d88316fe0189a9f7774a2a",
+      "files": [
+        "build-pico/neurocube.uf2",
+        "build-pico/neurocube.bin",
+        "build-pico/neurocube.elf",
+        "build-pico/SHA256.txt",
+        "build-native/neurocube_sim.exe",
+        "build-native/core_tests.exe",
+        "build-native/menu.ppm"
+      ],
+      "uf2_bytes": 403968,
+      "uf2_sha256": "ff84177a26c5ab781250f14d0d01c206bc1b1537b539b07a89cf980ea3a31980",
+      "artifact_digest_verified": true,
+      "uf2_manifest_verified": true,
+      "jobs": [
+        {
+          "id": 119151627745,
+          "run_id": 39579001945,
+          "workflow_name": "Build and test NeuroCube",
+          "head_branch": "codex/neurocube-mvp",
+          "run_url": "https://api.github.com/repos/odinesn1ck/neurocube/actions/runs/39579001945",
+          "run_attempt": 1,
+          "node_id": "CR_kwDOVRVwRM8AAAAbvf2N4Q",
+          "head_sha": "21f475a73c09f635c01f92bc5bb6033dc50c76d6",
+          "url": "https://api.github.com/repos/odinesn1ck/neurocube/actions/jobs/119151627745",
+          "html_url": "https://github.com/odinesn1ck/neurocube/actions/runs/39579001945/job/119151627745",
+          "status": "completed",
+          "conclusion": "success",
+          "created_at": "2026-10-21T09:42:12Z",
+          "started_at": "2026-10-21T09:42:15Z",
+          "completed_at": "2026-10-21T09:44:17Z",
+          "name": "windows",
+          "steps": [
+            {
+              "name": "Set up job",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 1,
+              "started_at": "2026-10-21T09:42:16Z",
+              "completed_at": "2026-10-21T09:42:17Z"
+            },
+            {
+              "name": "Run actions/checkout@v4",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 2,
+              "started_at": "2026-10-21T09:42:17Z",
+              "completed_at": "2026-10-21T09:42:23Z"
+            },
+            {
+              "name": "Run actions/setup-python@v5",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 3,
+              "started_at": "2026-10-21T09:42:23Z",
+              "completed_at": "2026-10-21T09:42:23Z"
+            },
+            {
+              "name": "Install pinned user-local toolchain",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 4,
+              "started_at": "2026-10-21T09:42:23Z",
+              "completed_at": "2026-10-21T09:43:53Z"
+            },
+            {
+              "name": "Documentation links",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 5,
+              "started_at": "2026-10-21T09:43:53Z",
+              "completed_at": "2026-10-21T09:43:54Z"
+            },
+            {
+              "name": "Native tests and simulator",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 6,
+              "started_at": "2026-10-21T09:43:54Z",
+              "completed_at": "2026-10-21T09:44:00Z"
+            },
+            {
+              "name": "Build RP2350 firmware",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 7,
+              "started_at": "2026-10-21T09:44:00Z",
+              "completed_at": "2026-10-21T09:44:11Z"
+            },
+            {
+              "name": "Run actions/upload-artifact@v4",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 8,
+              "started_at": "2026-10-21T09:44:11Z",
+              "completed_at": "2026-10-21T09:44:13Z"
+            },
+            {
+              "name": "Post Run actions/setup-python@v5",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 15,
+              "started_at": "2026-10-21T09:44:13Z",
+              "completed_at": "2026-10-21T09:44:13Z"
+            },
+            {
+              "name": "Post Run actions/checkout@v4",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 16,
+              "started_at": "2026-10-21T09:44:13Z",
+              "completed_at": "2026-10-21T09:44:15Z"
+            },
+            {
+              "name": "Complete job",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 17,
+              "started_at": "2026-10-21T09:44:15Z",
+              "completed_at": "2026-10-21T09:44:15Z"
+            }
+          ],
+          "check_run_url": "https://api.github.com/repos/odinesn1ck/neurocube/check-runs/119151627745",
+          "labels": [
+            "windows-2022"
+          ],
+          "runner_id": 1000000053,
+          "runner_name": "GitHub Actions 1000000053",
+          "runner_group_id": 0,
+          "runner_group_name": "GitHub Actions"
+        }
+      ]
+    }
+  ]
+}

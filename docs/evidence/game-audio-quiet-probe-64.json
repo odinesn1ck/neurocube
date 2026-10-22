@@ -1,0 +1,31 @@
+{
+  "ram_only": true,
+  "pcm_peak": 64,
+  "logs": [
+    "QUIET_PROBE ready=1 peak=64",
+    "QUIET_PROBE started=1 played=1 dropped=0 faults=0 busy=0"
+  ],
+  "elf_sha256": "19680afb84e3d3989e72acad84c89e29f42525b87ecf9aa2285006fed80859ea",
+  "data_preserved": true,
+  "returned_hello": {
+    "v": 1,
+    "type": "hello",
+    "product": "NeuroCube",
+    "firmware": "0.3.4",
+    "serial": "419CB819454EA93D",
+    "revision": "0eee6ee786f3",
+    "capabilities": [
+      "status",
+      "imu",
+      "selftest",
+      "framebuffer",
+      "records",
+      "power",
+      "settings",
+      "display",
+      "ui",
+      "audio"
+    ],
+    "debug_input": false
+  }
+}

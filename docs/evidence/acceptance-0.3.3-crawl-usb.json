@@ -1,0 +1,2659 @@
+{
+  "source": "production read-only USB; framebuffer is not LCD photograph",
+  "samples": [
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 0,
+        "idle_phase": 0,
+        "progress": 0.0,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 0,
+        "idle_phase": 0,
+        "progress": 0.0,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 0,
+        "idle_phase": 0,
+        "progress": 0.0,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 0,
+        "idle_phase": 0,
+        "progress": 0.0,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 0,
+        "idle_phase": 0,
+        "progress": 0.0,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 0,
+        "idle_phase": 0,
+        "progress": 0.0,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 0,
+        "idle_phase": 0,
+        "progress": 0.0,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 0,
+        "idle_phase": 0,
+        "progress": 0.0,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 0,
+        "idle_phase": 0,
+        "progress": 0.0,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 0,
+        "idle_phase": 0,
+        "progress": 0.0,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 0,
+        "idle_phase": 0,
+        "progress": 0.0,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 0,
+        "idle_phase": 0,
+        "progress": 0.0,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 0,
+        "idle_phase": 0,
+        "progress": 0.0,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 0,
+        "idle_phase": 0,
+        "progress": 0.0,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 0,
+        "idle_phase": 0,
+        "progress": 0.0,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 0,
+        "idle_phase": 0,
+        "progress": 0.0,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 0,
+        "idle_phase": 0,
+        "progress": 0.0,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 0,
+        "idle_phase": 0,
+        "progress": 0.0,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 0,
+        "idle_phase": 0,
+        "progress": 0.0,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 0,
+        "idle_phase": 0,
+        "progress": 0.0,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 0,
+        "idle_phase": 0,
+        "progress": 0.0,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 0,
+        "idle_phase": 0,
+        "progress": 0.0,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 0,
+        "idle_phase": 0,
+        "progress": 0.0,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 0,
+        "idle_phase": 0,
+        "progress": 0.0,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 0,
+        "idle_phase": 0,
+        "progress": 0.0,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 0,
+        "idle_phase": 0,
+        "progress": 0.0,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 0,
+        "idle_phase": 0,
+        "progress": 0.0,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 0,
+        "idle_phase": 0,
+        "progress": 0.0,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 0,
+        "idle_phase": 0,
+        "progress": 0.0,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 0,
+        "idle_phase": 0,
+        "progress": 0.0,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 0,
+        "idle_phase": 0,
+        "progress": 0.0,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 0,
+        "idle_phase": 0,
+        "progress": 0.0,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 0,
+        "idle_phase": 0,
+        "progress": 0.0,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 0,
+        "idle_phase": 0,
+        "progress": 0.0,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 0,
+        "idle_phase": 0,
+        "progress": 0.0,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 0,
+        "idle_phase": 0,
+        "progress": 0.0,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 0,
+        "idle_phase": 0,
+        "progress": 0.0,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 0,
+        "idle_phase": 0,
+        "progress": 0.0,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 0,
+        "idle_phase": 0,
+        "progress": 0.0,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 0,
+        "idle_phase": 0,
+        "progress": 0.0,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 0,
+        "idle_phase": 0,
+        "progress": 0.0,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 0,
+        "idle_phase": 0,
+        "progress": 0.0,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 0,
+        "idle_phase": 0,
+        "progress": 0.0,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 0,
+        "idle_phase": 0,
+        "progress": 0.0,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 0,
+        "idle_phase": 0,
+        "progress": 0.0,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 0,
+        "idle_phase": 0,
+        "progress": 0.0,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 0,
+        "idle_phase": 0,
+        "progress": 0.0,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 0,
+        "idle_phase": 0,
+        "progress": 0.0,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 0,
+        "idle_phase": 0,
+        "progress": 0.0,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 0,
+        "idle_phase": 0,
+        "progress": 0.0,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 0,
+        "idle_phase": 0,
+        "progress": 0.0,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 0,
+        "idle_phase": 0,
+        "progress": 0.0,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 0,
+        "idle_phase": 0,
+        "progress": 0.0,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 0,
+        "idle_phase": 0,
+        "progress": 0.0,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 0,
+        "idle_phase": 0,
+        "progress": 0.0,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 0,
+        "idle_phase": 0,
+        "progress": 0.0,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 0,
+        "idle_phase": 0,
+        "progress": 0.0,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 0,
+        "idle_phase": 0,
+        "progress": 0.0,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 0,
+        "idle_phase": 0,
+        "progress": 0.0,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 0,
+        "idle_phase": 0,
+        "progress": 0.0,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 0,
+        "idle_phase": 0,
+        "progress": 0.0,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 0,
+        "idle_phase": 0,
+        "progress": 0.0,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 0,
+        "idle_phase": 0,
+        "progress": 0.0,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 0,
+        "idle_phase": 0,
+        "progress": 0.0,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 0,
+        "idle_phase": 0,
+        "progress": 0.0,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 0,
+        "idle_phase": 0,
+        "progress": 0.0,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 0,
+        "idle_phase": 0,
+        "progress": 0.0,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 0,
+        "idle_phase": 0,
+        "progress": 0.0,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 0,
+        "idle_phase": 0,
+        "progress": 0.0,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 0,
+        "idle_phase": 0,
+        "progress": 0.0,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 0,
+        "idle_phase": 0,
+        "progress": 0.0,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 0,
+        "idle_phase": 0,
+        "progress": 0.0,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 0,
+        "idle_phase": 0,
+        "progress": 0.0,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 0,
+        "idle_phase": 0,
+        "progress": 0.0,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 0,
+        "idle_phase": 0,
+        "progress": 0.0,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 0,
+        "idle_phase": 0,
+        "progress": 0.0,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 0,
+        "idle_phase": 0,
+        "progress": 0.0,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 0,
+        "idle_phase": 0,
+        "progress": 0.0,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 0,
+        "idle_phase": 0,
+        "progress": 0.0,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 0,
+        "idle_phase": 0,
+        "progress": 0.0,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 0,
+        "idle_phase": 0,
+        "progress": 0.0,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 0,
+        "idle_phase": 0,
+        "progress": 0.0,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 0,
+        "idle_phase": 0,
+        "progress": 0.0,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 0,
+        "idle_phase": 0,
+        "progress": 0.0,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 0,
+        "idle_phase": 0,
+        "progress": 0.0,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 0,
+        "idle_phase": 0,
+        "progress": 0.0,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 0,
+        "idle_phase": 0,
+        "progress": 0.0,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 0,
+        "idle_phase": 0,
+        "progress": 0.0,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 0,
+        "idle_phase": 0,
+        "progress": 0.0,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 0,
+        "idle_phase": 0,
+        "progress": 0.0,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 0,
+        "idle_phase": 0,
+        "progress": 0.0,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 11,
+        "idle_phase": 1,
+        "progress": 104.53,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 11,
+        "idle_phase": 1,
+        "progress": 138.75,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 11,
+        "idle_phase": 1,
+        "progress": 163.95,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 11,
+        "idle_phase": 1,
+        "progress": 189.13,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 11,
+        "idle_phase": 1,
+        "progress": 215.44,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 11,
+        "idle_phase": 1,
+        "progress": 240.84,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 11,
+        "idle_phase": 1,
+        "progress": 266.33,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 11,
+        "idle_phase": 1,
+        "progress": 292.04,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 11,
+        "idle_phase": 1,
+        "progress": 317.79,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 11,
+        "idle_phase": 1,
+        "progress": 343.85,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 11,
+        "idle_phase": 1,
+        "progress": 369.91,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 11,
+        "idle_phase": 1,
+        "progress": 395.95,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 11,
+        "idle_phase": 1,
+        "progress": 422.05,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 11,
+        "idle_phase": 1,
+        "progress": 448.27,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 11,
+        "idle_phase": 1,
+        "progress": 474.56,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 11,
+        "idle_phase": 1,
+        "progress": 500.79,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 11,
+        "idle_phase": 1,
+        "progress": 527.1,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 11,
+        "idle_phase": 1,
+        "progress": 553.48,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 11,
+        "idle_phase": 1,
+        "progress": 585.7,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 11,
+        "idle_phase": 1,
+        "progress": 611.81,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 11,
+        "idle_phase": 1,
+        "progress": 637.98,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 11,
+        "idle_phase": 1,
+        "progress": 664.13,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 11,
+        "idle_phase": 1,
+        "progress": 690.24,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 11,
+        "idle_phase": 1,
+        "progress": 716.42,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 11,
+        "idle_phase": 1,
+        "progress": 742.77,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 11,
+        "idle_phase": 1,
+        "progress": 769.06,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 11,
+        "idle_phase": 1,
+        "progress": 795.13,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 11,
+        "idle_phase": 1,
+        "progress": 821.11,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 11,
+        "idle_phase": 1,
+        "progress": 846.9,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 11,
+        "idle_phase": 1,
+        "progress": 872.6,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 11,
+        "idle_phase": 1,
+        "progress": 898.19,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 11,
+        "idle_phase": 1,
+        "progress": 923.76,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 11,
+        "idle_phase": 1,
+        "progress": 949.34,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 11,
+        "idle_phase": 1,
+        "progress": 974.76,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 11,
+        "idle_phase": 1,
+        "progress": 1000.11,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 11,
+        "idle_phase": 1,
+        "progress": 1026.41,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 11,
+        "idle_phase": 1,
+        "progress": 1052.64,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 255,
+        "pwm_level": 256,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 11,
+        "idle_phase": 2,
+        "progress": 1060.72,
+        "brightness": 87,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 79,
+        "pwm_level": 79,
+        "idle": false,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    },
+    {
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 12,
+        "idle_phase": 3,
+        "progress": 1060.72,
+        "brightness": 0,
+        "maze_seed": 0
+      },
+      "display": {
+        "v": 1,
+        "type": "display",
+        "backlight_requested": 0,
+        "pwm_level": 0,
+        "idle": true,
+        "idle_mode": "polling_backlight_off",
+        "physical_wake": "NOT_TESTED"
+      }
+    }
+  ],
+  "captures": [
+    {
+      "name": "start",
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 11,
+        "idle_phase": 1,
+        "progress": 104.53,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "file": "docs\\images\\hardware-0.3.3-crawl-start.png"
+    },
+    {
+      "name": "middle",
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 11,
+        "idle_phase": 1,
+        "progress": 553.48,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "file": "docs\\images\\hardware-0.3.3-crawl-middle.png"
+    },
+    {
+      "name": "end",
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 11,
+        "idle_phase": 1,
+        "progress": 1052.64,
+        "brightness": 255,
+        "maze_seed": 0
+      },
+      "file": "docs\\images\\hardware-0.3.3-crawl-end.png"
+    },
+    {
+      "name": "dark",
+      "ui": {
+        "v": 1,
+        "type": "ui",
+        "screen": 12,
+        "idle_phase": 3,
+        "progress": 1060.72,
+        "brightness": 0,
+        "maze_seed": 0
+      },
+      "file": "docs\\images\\hardware-0.3.3-crawl-dark.png"
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "windows_gui_process": "PASS: hidden window created and closed through WM_CLOSE",
+  "exit_code": 0,
+  "physical_lcd": "NOT_TESTED",
+  "audio": "mock; no PC audio",
+  "save_path": "isolated ignored artifacts directory"
+}

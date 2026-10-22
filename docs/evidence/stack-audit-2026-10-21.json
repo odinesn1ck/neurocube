@@ -1,0 +1,18 @@
+{
+  "source_commit": "bfa1a7313ddad293e17b1f882b92019e8fb7990e",
+  "reserved_core0_stack_bytes": 4096,
+  "compiler_stack_usage": [
+    "W:/git/neurocube/src/infrastructure/board.cpp:226:6:virtual bool nc::FlashStore::save(const nc::Records&)\t520\tstatic",
+    "W:/git/neurocube/src/infrastructure/main.cpp:159:5:int main()\t424\tstatic",
+    "W:/git/neurocube/src/application/app.cpp:80:6:bool nc::App::flush()\t0\tstatic",
+    "W:/git/neurocube/src/application/app.cpp:142:6:void nc::App::update(const nc::InputFrame&, float)\t64\tstatic",
+    "W:/git/neurocube/src/domain/records.cpp:59:6:bool nc::decode_records(const uint8_t*, size_t, Records&)\t472\tstatic",
+    "W:/git/neurocube/src/domain/records.cpp:99:5:int nc::recover_records(const uint8_t*, const uint8_t*, Records&)\t880\tstatic",
+    "W:/git/neurocube/src/presentation/crawl.cpp:23:6:void nc::render_crawl(Renderer&, float, int)\t288\tstatic",
+    "App::flush compiler-generated .part.0 helper: 456 bytes (GCC .su labels it 0())"
+  ],
+  "method": "GCC -fstack-usage plus linker map; per-function sizes are not dynamic high-water measurement",
+  "scope": "Single foreground FlashStore owner, core1 unused, persistent App/CDC/journal workspace in .bss",
+  "known_nested_record_path_bytes": 2832,
+  "note": "Known application frames only; SDK/interrupt stack is not a measured high-water mark."
+}

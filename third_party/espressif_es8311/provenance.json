@@ -1,0 +1,37 @@
+{
+  "repository": "https://github.com/espressif/esp-bsp",
+  "commit": "f259a6abd5808019b1903a422092a4234ca95a51",
+  "component": "components/es8311",
+  "license": "Apache-2.0",
+  "upstream_notice_file": null,
+  "original_component_commit": "7889f2ad923b",
+  "sources": [
+    {
+      "path": "LICENSE",
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    {
+      "path": "es8311.c",
+      "sha256": "066b70987fcc4e44e140702263bd6b88557f3505e10cfa4d7f0163e32a638072"
+    },
+    {
+      "path": "include/es8311.h",
+      "sha256": "70fb26aaff58e01a187312ea58d23891c371a5b81ca54e69fb4892f73f763cd6"
+    },
+    {
+      "path": "priv_include/es8311_reg.h",
+      "sha256": "fa76f643f51eb6d6a2079a669d3b9048a4456adf4cc7d9e8f52b80d7ee55d813"
+    },
+    {
+      "path": "README.md",
+      "sha256": "920569dcd471d6d01b9c42131f7820ea1647a728389e3c641c8f5479ebc36ab8"
+    },
+    {
+      "path": "idf_component.yml",
+      "sha256": "79785e6fa806c5a0a2fb791a8cbe40b59a9295cdcb8bd76dc05ae561821137c7"
+    }
+  ],
+  "master_mode_reference": "https://files.waveshare.com/wiki/common/ES8311.user.Guide.pdf#page=13",
+  "restricted_waveshare_driver_used_as_source": false,
+  "neurocube_audio_adapter_sha256": "0a0e2af7724214fe1108e7d6fb0885c620621e2fce53f7de55e26da0692fc787"
+}

@@ -1,0 +1,27 @@
+/build*/
+/.venv/
+/.tools/
+/artifacts/
+/__pycache__/
+*.pyc
+*.log
+/tools/local.json
+
+**/__pycache__/
+sim-records.bin
+
+# Credentials, hardware backups and release binaries are never source artifacts.
+.env
+.env.*
+*.pem
+*.key
+*.pfx
+*.p12
+*.uf2
+*.elf
+*.bin
+*.dump
+/backups/
+/factory/
+/credentials*
+/token*.txt

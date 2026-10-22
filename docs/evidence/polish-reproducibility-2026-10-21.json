@@ -1,0 +1,9 @@
+{
+  "source_commit": "d643c9da77c603700963726e7c1878c1bc60e123",
+  "identical": true,
+  "sha256": "db374b143023c6cd350f9910dafcc2389c42676c3e415c21049b1f48f385aab6",
+  "size": 394240,
+  "hardware_status": "COMPILED_ONLY",
+  "battery_autonomy": "NOT_TESTED",
+  "installed_power_fix": "f98cf63"
+}

@@ -1,0 +1,11 @@
+{
+  "version": "0.3.3",
+  "source_commit": "90bfda3b6376909dba551c7a4fba087944278c8f",
+  "hardware": "NOT_TESTED; not flashed, explicit shutdown permission pending",
+  "native_assertions": 100640359,
+  "python_tests": 14,
+  "maze_seeds": 6000,
+  "simulated_maze_routes": 300,
+  "uf2_sha256": "0d86e06ec8a81f67bff6f51500d28394aceda4a92567d6609adbfc9cb95549fd",
+  "uf2_bytes": 412672
+}

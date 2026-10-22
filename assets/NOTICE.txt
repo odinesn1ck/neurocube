@@ -1,0 +1,45 @@
+Waveshare hardware reference attribution
+
+Board register initialization and pin assignments were checked against Waveshare
+RP2350-Touch-LCD-1.54 examples, commit 51a7fe28c1e5dd19a089a062980a275709e94df6.
+Upstream: https://github.com/waveshareteam/RP2350-Touch-LCD-1.54
+The upstream repository declares Apache-2.0, included as Waveshare-LICENSE.txt.
+File-specific notices take precedence for their respective content; see
+THIRD_PARTY_LICENSES.md for the current Apache-2.0 ES8311 replacement.
+
+DEV_Config.h/c carry this additional permission notice:
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS OR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
+Noto Sans Mono bitmap subset: The Noto Project Authors, SIL OFL 1.1;
+see OFL.txt. Font generation is in tools/generate_font.py.
+
+Pico SDK and TinyUSB are external dependencies, not vendored here. Distributed
+firmware also incorporates their licensed code. See Pico-SDK-LICENSE.txt and
+TinyUSB-LICENSE.txt in release archives.
+
+Audio PIO: third_party/waveshare_audio/audio_pio.pio is the unchanged pinned
+Waveshare program under Apache-2.0. The old ES8311 driver/shims are removed.
+Codec: third_party/espressif_es8311 is a modified Apache-2.0 derivative of
+Espressif esp-bsp f259a6abd5808019b1903a422092a4234ca95a51/components/es8311.
+Copyright 2015-2026 Espressif Systems (Shanghai) CO LTD; NeuroCube changes 2026.
+Modifications: portable callback transport, fixed 24 kHz master profile, no ESP-IDF,
+no heap; unused APIs removed. LICENSE, provenance and modification notices are
+included in source and release packages. Component upstream has no NOTICE file.
+The grant for the new component does not relicense historical removed code.

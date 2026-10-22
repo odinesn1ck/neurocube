@@ -1,0 +1,648 @@
+{
+  "level": "VERIFIED_ON_HARDWARE",
+  "input_source": "SYNTHETIC_DEBUG_INPUT",
+  "physical_controls": "NOT_TESTED",
+  "battery": "NOT_TESTED",
+  "started_utc": "2026-10-20T20:29:48.759384+00:00",
+  "checks": [
+    {
+      "name": "debug_identity",
+      "passed": true,
+      "detail": {
+        "v": 1,
+        "type": "hello",
+        "product": "NeuroCube",
+        "firmware": "0.1.0",
+        "serial": "419CB819454EA93D",
+        "capabilities": [
+          "status",
+          "imu",
+          "selftest",
+          "framebuffer",
+          "records"
+        ],
+        "debug_input": true
+      }
+    },
+    {
+      "name": "safe_empty_baseline",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "inject_ack",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "electronic_selftest",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "menu",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "inject_ack",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "game_0_rules",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "inject_ack",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "game_0_playing",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "sequence_cue",
+      "passed": true,
+      "detail": {
+        "cue": 1
+      }
+    },
+    {
+      "name": "inject_ack",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "sequence_round",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "inject_ack",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "pause",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "paused_score_stable",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "inject_ack",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "resume",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "inject_ack",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "menu",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "sequence_record_written",
+      "passed": true,
+      "detail": {
+        "v": 1,
+        "type": "records",
+        "sequence": 3,
+        "best": [
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    {
+      "name": "menu",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "inject_ack",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "game_1_rules",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "inject_ack",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "game_1_playing",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "inject_ack",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "maze_running",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "inject_ack",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "inject_ack",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "menu",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "menu",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "inject_ack",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "game_2_rules",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "inject_ack",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "game_2_playing",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "inject_ack",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "command_visible",
+      "passed": true,
+      "detail": {
+        "v": 1,
+        "type": "debug",
+        "command": 0
+      }
+    },
+    {
+      "name": "inject_ack",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "command_accepted",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "inject_ack",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "inject_ack",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "menu",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "menu",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "inject_ack",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "game_3_rules",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "inject_ack",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "game_3_playing",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "inject_ack",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "magic_touch",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "inject_ack",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "inject_ack",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "inject_ack",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "magic_shake_no_restart",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "inject_ack",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "menu",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "records_survive_real_reboot",
+      "passed": true,
+      "detail": {
+        "v": 1,
+        "type": "records",
+        "sequence": 4,
+        "best": [
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    {
+      "name": "clear_synthetic_scores",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "synthetic_scores_removed",
+      "passed": true,
+      "detail": null
+    }
+  ],
+  "baseline_records": {
+    "v": 1,
+    "type": "records",
+    "sequence": 2,
+    "best": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  "saved_records": {
+    "v": 1,
+    "type": "records",
+    "sequence": 4,
+    "best": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  "after_reboot_records": {
+    "v": 1,
+    "type": "records",
+    "sequence": 4,
+    "best": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  "clean_records": {
+    "v": 1,
+    "type": "records",
+    "sequence": 5,
+    "best": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  "passed": true
+}

@@ -1,0 +1,37 @@
+{
+  "source_commit": "f6c60d749babd2295ffb1106ef7c6426618cf9a8",
+  "old_peak_limit": 1280,
+  "new_peak_limit": 2560,
+  "samples_compared": 6720,
+  "error_samples": 2400,
+  "answer_samples": 4320,
+  "old_actual_peaks": [
+    1054,
+    1196
+  ],
+  "new_actual_peaks": [
+    2109,
+    2392
+  ],
+  "double_each_sample_within_integer_quantization": "PASS; <=1 PCM unit",
+  "stereo_channels_equal": true,
+  "clipping": false,
+  "physical_comfort": "NOT_TESTED",
+  "uf2": {
+    "sha256": "c6cf11961fe335945d69fd30f233090db397745116aa1ecca1661919d2073aca",
+    "blocks": 1013,
+    "size": 518656
+  },
+  "production_reproducibility": "PASS: two independent UF2/ELF/BIN/EXE builds and repeated ZIPs",
+  "native_suites": 4,
+  "python_tests": 18,
+  "tests": "PASS",
+  "archive_crc_manifest": "PASS",
+  "physical_acceptance": "NOT_TESTED; awaiting flash permission",
+  "ci": {
+    "result": "PASS",
+    "run": "https://github.com/odinesn1ck/neurocube/actions/runs/39758451890",
+    "artifact": "https://github.com/odinesn1ck/neurocube/actions/runs/39758451890/artifacts/12417506103",
+    "downloaded_dist_files_byte_identical": true
+  }
+}

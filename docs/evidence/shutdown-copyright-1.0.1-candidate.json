@@ -1,0 +1,16 @@
+{
+  "version": "1.0.1",
+  "source_commit": "0cf9d59a7c240f3c6b6672d2fc40842a5a6693ee",
+  "uf2": {
+    "sha256": "1cd9e20a4d7e7f8ac918e285d949d4491a893d27cee85d2abe753dfaff57baf8",
+    "blocks": 1014,
+    "size": 519168
+  },
+  "copyright": "© 2026, мальчик Коля + OpenAI",
+  "ci": "https://github.com/odinesn1ck/neurocube/actions/runs/39768065217",
+  "artifact": "https://github.com/odinesn1ck/neurocube/actions/runs/39768065217/artifacts/12421167433",
+  "downloaded_dist_byte_identical": true,
+  "independent_builds_identical": true,
+  "freeze_baseline": "v1.0.0",
+  "physical_installation": "NOT_TESTED; awaiting permission"
+}

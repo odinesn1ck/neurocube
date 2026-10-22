@@ -1,0 +1,24 @@
+{
+  "status": "VERIFIED_IN_SIMULATOR; firmware COMPILED_ONLY",
+  "core_checks": 100640959,
+  "sequence_timing_checks": 2986825,
+  "audio_checks": 10746,
+  "codec_checks": 2503,
+  "native_suites": 4,
+  "native_result": "PASS",
+  "python_tests": 18,
+  "python_result": "PASS",
+  "simulator": {
+    "headless": "PASS",
+    "gallery": "PASS",
+    "windows_gui_created_and_closed": "PASS",
+    "real_sound": "NOT_TESTED; mock audio"
+  },
+  "arm_release_build": "PASS",
+  "accepted_pcm_peak": 1280,
+  "codec_volume": 60,
+  "hardware_audio": "NOT_TESTED",
+  "flash_performed": false,
+  "freeze": "27 unchanged core/header/board/display sources vs v0.3.5-rc1; audio transport reviewed separately",
+  "test_scope": "codec test runs new C driver against fake I2C; event/game tests remain portable. No real audio or battery acceptance inferred."
+}

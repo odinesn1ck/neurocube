@@ -1,0 +1,10 @@
+{
+  "baseline": "v1.0.0",
+  "approved_change": "User requested shutdown copyright: © 2026, мальчик Коля + OpenAI; adds Noto © glyph only",
+  "files": {
+    "src/application/app.cpp": "13b2f82aa1be92f8529bcc9fa7704317058552f7f62b92b49bbe11a958260169",
+    "src/presentation/font_data.hpp": "822ea861969a705fe8443ba6399a2ada8af4a86b5fb6803f5ff95ac1d1a90b22"
+  },
+  "font_source_sha256": "d9e2b23d19f8230be7146f409a52b1d23117e635e28f2e2892cf91b7382f325b",
+  "existing_164_glyphs_preserved": true
+}
