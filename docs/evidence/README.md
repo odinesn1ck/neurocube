@@ -86,3 +86,5 @@
 - [Стабильная 1.0.0: подтверждение публикации и SHA256 всех assets](release-1.0.0-published.json), [прогресс до публикации](progress-through-1.0.0-prepublication.md).
 
 - [Копирайт выключения1.0.1: проверки](shutdown-copyright-1.0.1.json), [экран симулятора](shutdown-copyright-1.0.1.png).
+
+- [Готовый кандидат1.0.1: UF2, SHA256 и CI](shutdown-copyright-1.0.1-candidate.json).
