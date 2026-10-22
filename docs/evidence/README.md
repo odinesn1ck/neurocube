@@ -80,3 +80,5 @@
 - [Разрешённая установка Apache-кандидата fb6d178](es8311-replacement-flash.json).
 
 - [По запросу +100%: кандидат PCM2560, waveform comparison, CI и UF2](audio-pcm2560-candidate.json).
+
+- [Установка PCM2560 с сохранением данных](audio-pcm2560-flash.json).
