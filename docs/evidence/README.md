@@ -82,3 +82,5 @@
 - [По запросу +100%: кандидат PCM2560, waveform comparison, CI и UF2](audio-pcm2560-candidate.json).
 
 - [Установка PCM2560 с сохранением данных](audio-pcm2560-flash.json).
+
+- [Стабильная 1.0.0: подтверждение публикации и SHA256 всех assets](release-1.0.0-published.json), [прогресс до публикации](progress-through-1.0.0-prepublication.md).

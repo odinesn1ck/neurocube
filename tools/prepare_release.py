@@ -158,7 +158,8 @@ def main():
     manifest = {
         'version':version, 'source_commit':source, 'source_date_epoch':epoch,
         'status':'PREPARED_NOT_PUBLISHED',
-        'public_readiness':'BLOCKED: replacement hardware audio acceptance and historical distribution decision pending',
+        'public_readiness':'Current codec license verified; user acoustic acceptance of f6c60d7 documented; historical LICENSE-002 remains open',
+        'acceptance_scope':'No new full physical regression inferred; see docs/progress.md',
         'codec_license':'Apache-2.0; unrestricted by processor vendor',
         'audio_pcm_peak':2560,
         'codec_upstream_commit':provenance['commit'],
