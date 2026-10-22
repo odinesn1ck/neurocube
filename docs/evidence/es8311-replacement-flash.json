@@ -1,0 +1,72 @@
+{
+  "firmware": "1.0.0",
+  "source_commit": "fb6d178a131bff350b5523add7d37fa746f72f91",
+  "codec": "Apache-2.0 adaptation from Espressif esp-bsp",
+  "uf2_sha256": "96a7f6103e34ce7cf8ad628e9fe493d7c423ed36566abfdbedff1ddd0551ffa3",
+  "device_serial": "419CB819454EA93D",
+  "backup_bytes": 8192,
+  "backup_sha256": "db28126236e5756ed3674840e272df373a4590081d22d8f1a76347b12de65d74",
+  "picotool_load_readback": "PASS",
+  "runtime_hello": {
+    "v": 1,
+    "type": "hello",
+    "product": "NeuroCube",
+    "firmware": "1.0.0",
+    "serial": "419CB819454EA93D",
+    "revision": "fb6d178a131b",
+    "capabilities": [
+      "status",
+      "imu",
+      "selftest",
+      "framebuffer",
+      "records",
+      "power",
+      "settings",
+      "display",
+      "ui",
+      "audio"
+    ],
+    "debug_input": false
+  },
+  "records_preserved": true,
+  "settings_preserved": true,
+  "battery_latch_high": true,
+  "audio": {
+    "v": 1,
+    "type": "audio",
+    "enabled": true,
+    "ready": true,
+    "busy": true,
+    "played": 1,
+    "dropped": 0,
+    "faults": 0,
+    "pcm_peak": 1280
+  },
+  "electronic_selftest": {
+    "v": 1,
+    "type": "selftest",
+    "imu_identity": true,
+    "imu_sample": true,
+    "touch_identity": true,
+    "lcd_spi_sent": true,
+    "display_visual": "NOT_TESTED",
+    "motion": "NOT_TESTED",
+    "touch_physical": "NOT_TESTED",
+    "button_physical": "NOT_TESTED",
+    "battery": "NOT_TESTED"
+  },
+  "pcm_peak": 1280,
+  "codec_volume": 60,
+  "physical_audio_battery_touch_acceptance": "NOT_TESTED",
+  "audio_after_settling": {
+    "v": 1,
+    "type": "audio",
+    "enabled": true,
+    "ready": true,
+    "busy": false,
+    "played": 1,
+    "dropped": 0,
+    "faults": 0,
+    "pcm_peak": 1280
+  }
+}

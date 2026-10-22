@@ -76,3 +76,5 @@
 - [Apache-2.0 замена ES8311: источники, регистры и приёмка](es8311-license-replacement.md).
 
 - [Apache ES8311: итоговые артефакты, воспроизводимость и CI](es8311-replacement-candidate.json), [регрессия](es8311-replacement-tests.json).
+
+- [Разрешённая установка Apache-кандидата fb6d178](es8311-replacement-flash.json).

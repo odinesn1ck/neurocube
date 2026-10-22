@@ -42,9 +42,9 @@ Apache-2.0 §§2–4 разрешает воспроизведение, прои
 
 ## Безопасная аппаратная приёмка и rollback
 
-До записи — отдельное разрешение конкретного кандидата, проверка serial/topology, новый backup8192 байта вне Git, picotool readback verify, сравнение records/settings. На устройстве пока последняя установленная 1.0.0/89007ce с прежним драйвером. Rollback image с SHA256 `8fee590574092ccf9ab33753d43d739ef63a09d686a7a7f97061a5d1e0128f8a` сохранён вне новых release archives; не переопубликовывается как лицензионно чистый. При неисправности остановить звук и согласовать восстановление этой локальной проверенной версии с теми же backup/verify guards.
+До записи — отдельное разрешение конкретного кандидата, проверка serial/topology, новый backup8192 байта вне Git, picotool readback verify, сравнение records/settings. До установки Apache-кандидата на устройстве была 1.0.0/89007ce с прежним драйвером. Rollback image с SHA256 `8fee590574092ccf9ab33753d43d739ef63a09d686a7a7f97061a5d1e0128f8a` сохранён вне новых release archives; не переопубликовывается как лицензионно чистый. При неисправности остановить звук и согласовать восстановление этой локальной проверенной версии с теми же backup/verify guards.
 
-После разрешённой записи пользователь проверяет комфорт «уоп» приветствия/Magic Ball/успеха и «кх» ошибки/стены/выключения, общий mute (системные сигналы звучат всегда), отсутствие щелчков/пульсаций. Только принятый PCM1280; громкий диагностический тон не используется. Проверить PWR, автономность и сохранность записей после включения. Пока прошивка не разрешена и человек не подтвердил звук, статус **NOT_TESTED**.
+После разрешённой записи пользователь проверяет комфорт «уоп» приветствия/Magic Ball/успеха и «кх» ошибки/стены/выключения, общий mute (системные сигналы звучат всегда), отсутствие щелчков/пульсаций. Только принятый PCM1280; громкий диагностический тон не используется. Проверить PWR, автономность и сохранность записей после включения. Физическое звучание до подтверждения человеком остаётся **NOT_TESTED**; электронный результат разрешённой установки приведён ниже.
 
 ## Проверка упаковки между компьютером и CI
 
@@ -62,4 +62,10 @@ UF2: 518656 байт / 1013 блоков; SHA256 `96a7f6103e34ce7cf8ad628e9fe493
 
 Аудит source commit: 1059 доступных Git-объектов, tracked worktree, 9 прежних релизов/72 assets; новые ZIP отдельно проверены. Known PAT in-memory и Gitleaks history/worktree/assets/candidate: PASS, credential findings0. 41 прежняя privacy location: 28 generic developer build paths в старых материалах и 13 обязательных copyright-контактов. Новые production binary paths очищены. Это проверка доступного снимка с ограниченными детекторами, не математическое доказательство отсутствия любых секретов; старые license issues проверка секретов не снимает.
 
-Итог: **current-code license PASS**, **software/CI/reproducibility PASS**, **replacement hardware acceptance NOT_TESTED**, **historical distribution unresolved**, **stable release BLOCKED**. Пока отсутствует отдельное разрешение на запись окончательного кандидата fb6d178, плата не перепрошивается. В раннем запросе фигурировал 0956f4f; он заменён запросом на fb6d178 после исправления source ZIP. Стабильный release, tag, merge, history rewrite и удаление старых assets не выполнялись.
+Итог: **current-code license PASS**, **software/CI/reproducibility PASS**, **replacement hardware acceptance NOT_TESTED**, **historical distribution unresolved**, **stable release BLOCKED**. После отдельного разрешения пользователя окончательный fb6d178 установлен; подробности ниже. В раннем запросе фигурировал 0956f4f; он заменён запросом на fb6d178 после исправления source ZIP. Стабильный release, tag, merge, history rewrite и удаление старых assets не выполнялись.
+
+## Разрешённая установка fb6d178
+
+Пользователь: «грузи в железо». [Отчёт](es8311-replacement-flash.json). Проверены serial419CB819454EA93D и прежняя USB topology; перед записью сохранён и readback-верифицирован свежий журнал8192 байта вне Git, найдена текущая v3 страница с корректным CRC/sequence. picotool load/readback PASS; runtime1.0.0/fb6d178, debug_input=false. Все records и settings до/после равны. IMU/touch/LCD electronic selftest PASS, BAT_EN HIGH.
+
+Audio telemetry: ready=true, played=1 (приветствие), dropped=0, faults=0, PCM1280. После завершения сигнала busy=false и faults=0. Это **VERIFIED_ON_HARDWARE для USB/I²C/завершения аудиопередачи**, не подтверждение акустики или автономности. Пользователю направлен запрос проверки комфортных «уоп»/«кх» без щелчков/пульсаций. До ответа физическая аудиоприёмка NOT_TESTED. Старые assets/history, merge и stable release не изменялись.
