@@ -6,7 +6,7 @@ if(NEUROCUBE_PICO)
   set(PICO_FLASH_SIZE_BYTES 16777216 CACHE STRING "Waveshare flash size")
   include($ENV{PICO_SDK_PATH}/external/pico_sdk_import.cmake)
 endif()
-project(neurocube VERSION 1.0.0 LANGUAGES C CXX ASM)
+project(neurocube VERSION 1.0.1 LANGUAGES C CXX ASM)
 # Keep reproducible release binaries free of developer checkout/build paths.
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
   get_filename_component(NEUROCUBE_COMPILER_BIN "${CMAKE_CXX_COMPILER}" DIRECTORY)

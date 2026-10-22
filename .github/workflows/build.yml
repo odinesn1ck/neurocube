@@ -64,5 +64,5 @@ jobs:
             build-native/neurocube_sim.exe
             build-native/core_tests.exe
             build-native/menu.ppm
-            artifacts/release-1.0.0/dist/*
+            artifacts/release-candidate/dist/*
             build-native/Testing/Temporary/LastTest.log

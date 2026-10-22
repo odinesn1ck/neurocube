@@ -374,6 +374,7 @@ void App::render(Renderer &r) const {
     char b[128];
     if (screen_ == Screen::ShuttingDown) {
         ui::text_box(r, {4, 94, 232, 44}, "Выключаюсь", Ink, 2);
+        ui::text_box(r, {8, 156, 224, 48}, "© 2026,\nмальчик Коля + OpenAI", Muted);
         return;
     }
     if (screen_ == Screen::PowerNotice) {

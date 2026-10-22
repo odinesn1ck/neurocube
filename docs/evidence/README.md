@@ -84,3 +84,5 @@
 - [Установка PCM2560 с сохранением данных](audio-pcm2560-flash.json).
 
 - [Стабильная 1.0.0: подтверждение публикации и SHA256 всех assets](release-1.0.0-published.json), [прогресс до публикации](progress-through-1.0.0-prepublication.md).
+
+- [Копирайт выключения1.0.1: проверки](shutdown-copyright-1.0.1.json), [экран симулятора](shutdown-copyright-1.0.1.png).

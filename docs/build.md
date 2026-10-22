@@ -74,3 +74,5 @@ Bridge выполняет configure с --fresh: это исключает ост
 ## Резервная копия перед разрешённой прошивкой
 
 Сначала `detect`/`info`, свежие `records`/`settings` вне Git, затем точная сверка serial и USB topology. После разрешённого перехода в BOOTSEL сохранить диапазон `0x10FFE000..0x11000000` через `picotool save -r ... -v` в файл **вне репозитория**, проверить 8192 байта и SHA256. Bridge `flash --allow-flash` принимает уже идентифицированный BOOTSEL и выполняет readback verify. После запуска сравнить все scores, sequence, calibration, sensitivity и sound_enabled с исходным состоянием. Сам `flash` не заменяет предварительный backup. Никогда не применять erase-all или полный factory image для обычного обновления.
+
+Для1.0.1 builder сравнивает замороженные файлы с тегомv1.0.0; только render-копирайт и один глиф© разрешены точными SHA256 в tools/release-freeze-1.0.1.json. Новая UI-правка не ослабляет проверки board/power/audio. По умолчанию пакет создаётся в artifacts/release-candidate/dist.

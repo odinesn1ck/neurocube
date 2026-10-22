@@ -60,7 +60,7 @@ def archive(path, entries, epoch):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--output', type=Path, default=ROOT/'artifacts/release-1.0.0')
+    parser.add_argument('--output', type=Path, default=ROOT/'artifacts/release-candidate')
     parser.add_argument('--verify-reproducible', action='store_true')
     args = parser.parse_args()
     if git('status', '--porcelain', '--untracked-files=normal'):
@@ -68,8 +68,11 @@ def main():
     source = git('rev-parse', 'HEAD')
     version = re.search(r'project\(neurocube VERSION ([0-9.]+)',
                         (ROOT/'CMakeLists.txt').read_text()).group(1)
-    if version != '1.0.0':
-        raise bridge.BridgeError('This frozen release procedure prepares 1.0.0 only')
+    if version not in ('1.0.0', '1.0.1'):
+        raise bridge.BridgeError('No reviewed freeze baseline for this version')
+    freeze = json.loads((ROOT/'tools/release-freeze-1.0.1.json').read_text(encoding='utf-8')) if version == '1.0.1' else {}
+    baseline = freeze.get('baseline', 'v0.3.5-rc1')
+    overrides = freeze.get('files', {})
     # A release metadata change must not silently alter the accepted gameplay/HAL.
     frozen = []
     for directory in ('src/domain', 'src/application', 'src/games', 'src/presentation', 'include'):
@@ -78,10 +81,14 @@ def main():
                ('board.cpp', 'display_power.cpp')]
     for file in frozen:
         name = file.relative_to(ROOT).as_posix()
-        old = subprocess.check_output(['git', 'show', 'v0.3.5-rc1:'+name], cwd=ROOT)
+        old = subprocess.check_output(['git', 'show', baseline+':'+name], cwd=ROOT)
         # Explicit later user request: +100% PCM amplitude, no other header changes.
-        if name == 'include/neurocube/audio.hpp':
+        if version == '1.0.0' and name == 'include/neurocube/audio.hpp':
             old = old.replace(b'AudioPeak = 1280', b'AudioPeak = 2560')
+        if name in overrides:
+            if hashlib.sha256(file.read_bytes().replace(b'\r\n', b'\n')).hexdigest() != overrides[name]:
+                raise bridge.BridgeError('Unreviewed shutdown UI change: '+name)
+            continue
         # Git stores LF; Windows checkout may have CRLF.
         if old.replace(b'\r\n', b'\n') != file.read_bytes().replace(b'\r\n', b'\n'):
             raise bridge.BridgeError('Frozen functionality changed: '+name)
@@ -164,7 +171,8 @@ def main():
         'audio_pcm_peak':2560,
         'codec_upstream_commit':provenance['commit'],
         'audio_adapter_sha256':provenance['neurocube_audio_adapter_sha256'],
-        'debug_injection':False, 'frozen_files_compared_to_0_3_5':len(frozen),
+        'debug_injection':False, 'freeze_baseline':baseline,
+        'frozen_files_checked':len(frozen), 'reviewed_ui_overrides':overrides,
         'independent_builds_identical':args.verify_reproducible, 'uf2':uf2,
         'files':{name:{'size':file.stat().st_size,'sha256':digest(file)} for name,file in sorted(entries.items())}}
     (dist/'manifest.json').write_text(json.dumps(manifest, indent=2)+'\n')
