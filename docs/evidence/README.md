@@ -90,3 +90,5 @@
 - [Готовый кандидат1.0.1: UF2, SHA256 и CI](shutdown-copyright-1.0.1-candidate.json).
 
 - [Разрешённая установка1.0.1 и сохранность данных](shutdown-copyright-1.0.1-flash.json).
+
+- [Стабильная1.0.1: визуальная приёмка, публикация и хеши11 assets](release-1.0.1-published.json), [release notes](../release-notes-1.0.1.md).

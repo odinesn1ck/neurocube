@@ -13,14 +13,14 @@ NeuroCube — автономная карманная консоль с коро
 
 [Участие в разработке](CONTRIBUTING.md) · [MIT собственного кода](LICENSE) · [Сторонние компоненты](THIRD_PARTY_LICENSES.md)
 
-[Инструкция игрока](docs/player-guide.md) · [Сборка и установка инструментов](docs/build.md) · [Ручная приёмка](docs/morning-checklist.md) · [Карта документации](docs/README.md) · [Стабильный выпуск 1.0.0](https://github.com/odinesn1ck/neurocube/releases/tag/v1.0.0)
+[Инструкция игрока](docs/player-guide.md) · [Сборка и установка инструментов](docs/build.md) · [Ручная приёмка](docs/morning-checklist.md) · [Карта документации](docs/README.md) · [Стабильный выпуск 1.0.1](https://github.com/odinesn1ck/neurocube/releases/tag/v1.0.1)
 
 ## Быстрый запуск разработчика
 
 В Windows с Python 3.12 и Git:
 
 ```powershell
-git clone --branch v1.0.0 https://github.com/odinesn1ck/neurocube.git
+git clone --branch v1.0.1 https://github.com/odinesn1ck/neurocube.git
 cd neurocube
 .\tools\bootstrap.ps1
 $python = "$env:USERPROFILE\neurocube-tools\venv\Scripts\python.exe"

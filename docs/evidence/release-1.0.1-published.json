@@ -1,0 +1,70 @@
+{
+  "version": "1.0.1",
+  "id": 420630432,
+  "url": "https://github.com/odinesn1ck/neurocube/releases/tag/v1.0.1",
+  "tag": "v1.0.1",
+  "source_commit": "0cf9d59a7c240f3c6b6672d2fc40842a5a6693ee",
+  "published_at": "2026-10-22T11:20:38Z",
+  "stable_latest": true,
+  "assets": [
+    {
+      "name": "manifest.json",
+      "sha256": "6ad827c8d05b5ac1391466e3729369c2a83ce647eca7edf993e62a32e0818700",
+      "download_byte_identical": true
+    },
+    {
+      "name": "neurocube-1.0.1-source.zip",
+      "sha256": "657815fd7e665288f6c25ccb3e15370dc0fde8b3b90ab89883dd860ce3b3feb1",
+      "download_byte_identical": true
+    },
+    {
+      "name": "neurocube-1.0.1-windows.zip",
+      "sha256": "5d9df9eec7e026c33bbd71b13d91eb8ab0b3c78cf2e330041050cbfa644c7356",
+      "download_byte_identical": true
+    },
+    {
+      "name": "neurocube-1.0.1.bin",
+      "sha256": "919e66ba9a76e95750a883b4d707ebba4cc77f59b3881f2531285f078d6e8e9c",
+      "download_byte_identical": true
+    },
+    {
+      "name": "neurocube-1.0.1.elf",
+      "sha256": "ddce7322c470e369c81467f9e968949ee0cce337a07e2de127b7dceebb695dc2",
+      "download_byte_identical": true
+    },
+    {
+      "name": "neurocube-1.0.1.uf2",
+      "sha256": "1cd9e20a4d7e7f8ac918e285d949d4491a893d27cee85d2abe753dfaff57baf8",
+      "download_byte_identical": true
+    },
+    {
+      "name": "neurocube-1.0.1.zip",
+      "sha256": "ce14e9b52d9c0599011c60d2e535b7fa5b7a099c565d5a34a499295b656fdbef",
+      "download_byte_identical": true
+    },
+    {
+      "name": "release-notes-1.0.1.md",
+      "sha256": "6e5b3fe6be12579a613b3920587e2866c0c6eb3b322c1a8d2fbf8ccf42b5c5cf",
+      "download_byte_identical": true
+    },
+    {
+      "name": "release-publication.json",
+      "sha256": "c5a2226382d697f10d5f983b772332a4ee34eb764e4bb73098cdb12c15212b8d",
+      "download_byte_identical": true
+    },
+    {
+      "name": "SHA256SUMS.txt",
+      "sha256": "15171a5cf4a9ba5842382d6f221dad9802273bb24be7c6d78b208c4c95b9903b",
+      "download_byte_identical": true
+    },
+    {
+      "name": "shutdown-screen.png",
+      "sha256": "78b81d75b66bb0b5a0f6b38407dd9e81e5e08ac91e66af9f6063ab291a9d2d45",
+      "download_byte_identical": true
+    }
+  ],
+  "public_uf2_download_verified": true,
+  "user_visual_acceptance": "Confirmed by user",
+  "merge_performed": false,
+  "previous_release_1_0_0": "unchanged"
+}
