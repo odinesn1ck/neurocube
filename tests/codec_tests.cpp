@@ -79,7 +79,7 @@ int main() {
         CHECK(good.regs[0x32] == (clamp ? clamp * 256 / 100 - 1 : 0));
     }
     CHECK(es8311_voice_volume_set(&dev, 60, nullptr) == ES8311_OK);
-    CHECK(good.regs[0x32] == 0x98); // accepted codec gain; PCM stays 1280 in core
+    CHECK(good.regs[0x32] == 0x98); // accepted codec gain; PCM amplitude is independent in core
     good.regs[0xfd] = 0x83;
     good.regs[0xfe] = 0x11;
     uint16_t id = 0;

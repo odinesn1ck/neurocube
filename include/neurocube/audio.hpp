@@ -1,7 +1,7 @@
 #pragma once
 #include "domain.hpp"
 namespace nc {
-constexpr int AudioSampleRate = 24000, AudioPeak = 1280;
+constexpr int AudioSampleRate = 24000, AudioPeak = 2560;
 constexpr size_t MaxAudioSamples = 4320;
 constexpr int AudioPreparationMs = 180, AudioReleaseMs = 120;
 size_t sound_samples(SoundEffect);

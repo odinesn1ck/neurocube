@@ -21,3 +21,7 @@
 ## Замена ES8311
 
 [Источники, карта регистров, проверка и history risk](evidence/es8311-license-replacement.md). Старый драйвер и громкий RAM probe удалены из HEAD/сборки; громкость PCM1280 и события не изменены. После разрешения пользователя установлен Apache-кандидат 1.0.0/fb6d178. Регрессия новой реализации PASS: 4 native suite (включая 2503 codec checks), 18 Python tests, Windows simulator GUI/headless/gallery и ARM Release. [Сводка](evidence/es8311-replacement-tests.json). Финальный source fb6d178: локальная воспроизводимость и CI push/PR PASS; скачанный комплект всех dist-файлов совпал побайтно, включая UTC source ZIP. [Поставка и хеш](evidence/es8311-replacement-candidate.json). Новый драйвер установлен по отдельному разрешению; backup8192/readback/records/settings/electronic selftest PASS. [Установка](evidence/es8311-replacement-flash.json). Аудиопередача завершилась без ошибок; физическая слышимость/комфорт ещё NOT_TESTED, ожидается ответ пользователя.
+
+## Запрос увеличения громкости на 100%
+
+После установки fb6d178 пользователь запросил +100%: общий PCM peak1280 → 2560. Codec gain60, Apache codec, PIO/DMA, PA sequencing, сигналы/mute и сохранения без изменений. Готовится отдельный кандидат; пока на плате fb6d178/PCM1280. Уровень2560 не объявляется физически принятым до ответа пользователя; перед новой записью требуется отдельное разрешение.

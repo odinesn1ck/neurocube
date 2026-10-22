@@ -79,6 +79,9 @@ def main():
     for file in frozen:
         name = file.relative_to(ROOT).as_posix()
         old = subprocess.check_output(['git', 'show', 'v0.3.5-rc1:'+name], cwd=ROOT)
+        # Explicit later user request: +100% PCM amplitude, no other header changes.
+        if name == 'include/neurocube/audio.hpp':
+            old = old.replace(b'AudioPeak = 1280', b'AudioPeak = 2560')
         # Git stores LF; Windows checkout may have CRLF.
         if old.replace(b'\r\n', b'\n') != file.read_bytes().replace(b'\r\n', b'\n'):
             raise bridge.BridgeError('Frozen functionality changed: '+name)
@@ -157,6 +160,7 @@ def main():
         'status':'PREPARED_NOT_PUBLISHED',
         'public_readiness':'BLOCKED: replacement hardware audio acceptance and historical distribution decision pending',
         'codec_license':'Apache-2.0; unrestricted by processor vendor',
+        'audio_pcm_peak':2560,
         'codec_upstream_commit':provenance['commit'],
         'audio_adapter_sha256':provenance['neurocube_audio_adapter_sha256'],
         'debug_injection':False, 'frozen_files_compared_to_0_3_5':len(frozen),
